@@ -3,7 +3,7 @@
   @Company: StyleSeek
   @Brief: Catches any uncaught exceptions and sends them to honeybadger.
 */
-
+package Honeybadger;
 import java.util.concurrent.*;
 
 import java.io.*;
