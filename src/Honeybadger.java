@@ -54,12 +54,16 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
     */
     jsonError.add("server", makeServer());
     for(int retries = 0; retries < 3; retries++){
-      int responseCode = sendToHoneyBadger(myGson.toJson(jsonError));
-      if(responseCode!=201)
-        System.err.println("ERROR: Honeybadger did not respond with the correct code. Response was = "+responseCode);
-      else{
-        System.err.println("Honeybadger logged error correctly:  "+error);
-        break;
+      try{
+        int responseCode = sendToHoneyBadger(myGson.toJson(jsonError));
+        if(responseCode!=201)
+          System.err.println("ERROR: Honeybadger did not respond with the correct code. Response was = "+responseCode+" retry="+retries);
+        else{
+          System.err.println("Honeybadger logged error correctly:  "+error);
+          break;
+        }
+      }catch(IOException e){
+        System.out.println("ERROR: Honeybadger got an ioexception when trying to send the error retry="+retries);
       }
     }
   }
@@ -107,7 +111,7 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
   /*
     Send the json string error to honeybadger
   */
-  private int sendToHoneyBadger(String jsonError){
+  private int sendToHoneyBadger(String jsonError) throws IOException{
     URL obj = null;
     HttpsURLConnection con = null;
     DataOutputStream wr = null;
@@ -141,10 +145,6 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
     }
     catch(MalformedURLException e){
       System.err.println("ERROR: Bad url "+HONEY_BADGER_URL+" "+e);
-      System.exit(1);
-    }
-    catch(IOException e){
-      System.err.println("ERROR: Bad io "+HONEY_BADGER_URL+" "+e);
       System.exit(1);
     }
     finally{
