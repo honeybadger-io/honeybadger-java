@@ -8,13 +8,10 @@
 */
 package Honeybadger;
 import java.util.concurrent.*;
-
 import java.io.*;
 import com.google.gson.*;
 import com.google.gson.stream.*;
-
 import java.net.*;
-
 import javax.net.ssl.HttpsURLConnection;
 
 public class Honeybadger implements Thread.UncaughtExceptionHandler{
