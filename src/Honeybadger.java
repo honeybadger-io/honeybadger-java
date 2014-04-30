@@ -19,13 +19,13 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class Honeybadger implements Thread.UncaughtExceptionHandler{
   private final String HONEY_BADGER_URL = "https://api.honeybadger.io/v1/notices";
-  private String apiKey;
+  private String HONEYBADGER_API_KEY;
   private String envName;
 
   public Honeybadger(){
-    apiKey = System.getenv("HONEYBADGER_API_KEY"); //set this environmental variable to your api key
+    HONEYBADGER_API_KEY = System.getenv("HONEYBADGER_API_KEY"); //set this environmental variable to your api key
     envName = System.getenv("RACK_ENV");            //set this env var to your environment...development or production
-    if(apiKey==null || envName==null){
+    if(HONEYBADGER_API_KEY==null || envName==null){
       System.out.println("ERROR: You did not set the HONEYBADGER_API_KEY or RACK_ENV environmental variables...closing");
       System.exit(1);
     }
@@ -53,12 +53,15 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
       If you need to add more information to your errors add it here
     */
     jsonError.add("server", makeServer());
-
-    int responseCode = sendToHoneyBadger(myGson.toJson(jsonError));
-    if(responseCode!=201)
-      System.err.println("ERROR: Honeybadger did not respond with the correct code. Response was = "+responseCode);
-    else
-      System.err.println("Honeybadger logged error:  "+error);
+    for(int retries = 0; retries < 3; retries++){
+      int responseCode = sendToHoneyBadger(myGson.toJson(jsonError));
+      if(responseCode!=201)
+        System.err.println("ERROR: Honeybadger did not respond with the correct code. Response was = "+responseCode);
+      else{
+        System.err.println("Honeybadger logged error correctly:  "+error);
+        break;
+      }
+    }
   }
 
   /*
@@ -115,7 +118,7 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
       con = (HttpsURLConnection) obj.openConnection();
       //add request header
       con.setRequestMethod("POST");
-      con.setRequestProperty("X-API-Key", apiKey);
+      con.setRequestProperty("X-API-Key", HONEYBADGER_API_KEY);
       con.setRequestProperty("Content-Type", "application/json");
       con.setRequestProperty("Accept", "application/json");
    
@@ -137,10 +140,12 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
       }
     }
     catch(MalformedURLException e){
-      System.err.println("Bad url "+HONEY_BADGER_URL+" "+e);
+      System.err.println("ERROR: Bad url "+HONEY_BADGER_URL+" "+e);
+      System.exit(1);
     }
     catch(IOException e){
-      System.err.println("Bad io "+HONEY_BADGER_URL+" "+e);
+      System.err.println("ERROR: Bad io "+HONEY_BADGER_URL+" "+e);
+      System.exit(1);
     }
     finally{
       try{
@@ -150,7 +155,7 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
           wr.close();
       }
       catch(Exception e){
-        System.err.println("Failure to close honey badger "+e);
+        System.err.println("WARNING: Failure to close honey badger "+e);
       }
     }
     return responseCode;
