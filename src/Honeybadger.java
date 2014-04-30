@@ -2,6 +2,9 @@
   @Author: Scott Page
   @Company: StyleSeek
   @Brief: Catches any uncaught exceptions and sends them to honeybadger.
+  You must set the following Env Vars
+  HONEYBADGER_API_KEY ... Your honeybadger api key found in the settings page
+  RACK_ENV ... probably development or production
 */
 package Honeybadger;
 import java.util.concurrent.*;
@@ -22,6 +25,10 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
   public Honeybadger(){
     apiKey = System.getenv("HONEYBADGER_API_KEY"); //set this environmental variable to your api key
     envName = System.getenv("RACK_ENV");            //set this env var to your environment...development or production
+    if(apiKey==null || envName==null){
+      System.out.println("You did not set the HONEYBADGER_API_KEY or RACK_ENV environmental variables...closing");
+      System.exit();
+    }
     Thread.setDefaultUncaughtExceptionHandler(this);//report all uncaught exceptions to honey badger
   }
 
