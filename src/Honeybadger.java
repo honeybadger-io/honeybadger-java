@@ -14,7 +14,7 @@ import java.net.*;
 
 import javax.net.ssl.HttpsURLConnection;
 
-class Honeybadger implements Thread.UncaughtExceptionHandler{
+public class Honeybadger implements Thread.UncaughtExceptionHandler{
   private final String HONEY_BADGER_URL = "https://api.honeybadger.io/v1/notices";
   private String apiKey;
   private String envName;
