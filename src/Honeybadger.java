@@ -27,7 +27,7 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
     envName = System.getenv("RACK_ENV");            //set this env var to your environment...development or production
     if(apiKey==null || envName==null){
       System.out.println("You did not set the HONEYBADGER_API_KEY or RACK_ENV environmental variables...closing");
-      System.exit();
+      System.exit(1);
     }
     Thread.setDefaultUncaughtExceptionHandler(this);//report all uncaught exceptions to honey badger
   }
