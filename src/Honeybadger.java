@@ -71,7 +71,6 @@ public class Honeybadger implements Thread.UncaughtExceptionHandler{
   private JsonObject makeNotifier(){
     JsonObject notifier = new JsonObject();
     notifier.addProperty("name", "Honeybadger-java Notifier");
-    notifier.addProperty("url", "www.mytastebud.com");
     notifier.addProperty("version", "1.3.0");
     return notifier;
   }
