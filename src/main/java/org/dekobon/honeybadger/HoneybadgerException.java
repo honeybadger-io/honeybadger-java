@@ -6,6 +6,7 @@ package org.dekobon.honeybadger;
  * @author <a href="https://github.com/dekobon">dekobon</a>
  * @since 1.0.0
  */
+@SuppressWarnings("serial")
 public class HoneybadgerException extends RuntimeException {
     public HoneybadgerException() {
     }

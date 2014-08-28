@@ -34,7 +34,9 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
      * as the error handler for the current thread.
      */
     public static void registerAsUncaughtExceptionHandler() {
-        registerAsUncaughtExceptionHandler(Thread.currentThread());
+        Thread.UncaughtExceptionHandler handler =
+                new HoneybadgerUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(handler);
     }
 
     /**
@@ -43,9 +45,10 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
      *
      * @param t thread to register handler for
      */
-    public static void registerAsUncaughtExceptionHandler(Thread t) {
+    public static void registerAsUncaughtExceptionHandler(
+            java.lang.Thread t) {
         Thread.UncaughtExceptionHandler handler =
                 new HoneybadgerUncaughtExceptionHandler();
-        t.setDefaultUncaughtExceptionHandler(handler);
+        t.setUncaughtExceptionHandler(handler);
     }
 }
