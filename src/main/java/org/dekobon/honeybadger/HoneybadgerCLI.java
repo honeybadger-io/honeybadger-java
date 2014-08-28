@@ -14,7 +14,7 @@ public class HoneybadgerCLI {
         Scanner in = new Scanner(System.in);
 
         System.out.print("What is your Honeybadger API key: ");
-        System.setProperty(HoneybadgerReporter.HONEY_BADGER_API_KEY_SYS_PROP_KEY,
+        System.setProperty(HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY,
                 in.nextLine());
         System.out.print("\n");
 

@@ -12,6 +12,9 @@ to the thread in which you want to register the error handler.
 
 System Properties:
  - honeybadger.api_key - set this to the (typically 8 character) API key displayed on your Honeybadger interface
+ - honeybadger.excluded_sys_props - a comma delinated list of system property
+   keys to exclude from being reported to Honeybadger. This allows you to prevent
+   passwords and other sensitive information from being sent.
  - JAVA_ENV / ENV - set this to configure the application's running environment
 
 A typical implementation may look like:

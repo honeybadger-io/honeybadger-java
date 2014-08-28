@@ -17,9 +17,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Reporter utility class that gives a simple interface for sending Java
@@ -31,19 +29,25 @@ import java.util.UUID;
  */
 public class HoneybadgerReporter {
     /** System property key identifying the Honeybadger URL to use. */
-    public static final String HONEY_BADGER_URL_SYS_PROP_KEY =
+    public static final String HONEYBADGER_URL_SYS_PROP_KEY =
             "honeybadger.url";
     /** System property key identifying the Honeybadger API key to use. */
-    public static final String HONEY_BADGER_API_KEY_SYS_PROP_KEY =
+    public static final String HONEYBADGER_API_KEY_SYS_PROP_KEY =
             "honeybadger.api_key";
+
+    /** Comma delinated list of system properties to not include. */
+    public static final String HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY =
+            "honeybadger.excluded_sys_props";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final String hostname;
     private final String runtimeRoot;
+    private final Set<String> excludeSysProps;
 
     public HoneybadgerReporter() {
         this.hostname = hostname();
         this.runtimeRoot = runtimeRoot();
+        this.excludeSysProps = buildExcludeSysProps();
     }
 
     /**
@@ -195,11 +199,35 @@ public class HoneybadgerReporter {
         JsonObject jsonSysProps = new JsonObject();
 
         for (Map.Entry<Object, Object> entry: System.getProperties().entrySet()) {
+            // We skip all excluded properties
+            if (excludeSysProps.contains(entry.getKey().toString())) {
+                continue;
+            }
+
             jsonSysProps.addProperty(entry.getKey().toString(),
                                      entry.getValue().toString());
         }
 
         return jsonSysProps;
+    }
+
+    private Set<String> buildExcludeSysProps() {
+        String excluded = System.getProperty(HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
+        HashSet<String> set = new HashSet<>();
+
+        set.add(HONEYBADGER_API_KEY_SYS_PROP_KEY);
+        set.add(HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
+        set.add(HONEYBADGER_URL_SYS_PROP_KEY);
+
+        if (excluded == null || excluded.isEmpty()) {
+            return set;
+        }
+
+        for (String item : excluded.split(",")) {
+            set.add(item);
+        }
+
+        return set;
     }
 
     /**
@@ -227,7 +255,7 @@ public class HoneybadgerReporter {
      */
     private Request buildRequest(URI honeybadgerUrl, String jsonError) {
         final String honeybadgerApiKey =
-                System.getProperty(HONEY_BADGER_API_KEY_SYS_PROP_KEY);
+                System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
 
         Request request = Request
                .Post(honeybadgerUrl)
@@ -256,7 +284,7 @@ public class HoneybadgerReporter {
         try {
             final String url;
             final String sysProp =
-                    System.getProperty(HONEY_BADGER_URL_SYS_PROP_KEY);
+                    System.getProperty(HONEYBADGER_URL_SYS_PROP_KEY);
 
             if (sysProp != null) {
                 url = sysProp;
@@ -269,7 +297,7 @@ public class HoneybadgerReporter {
             String format = "Honeybadger URL was not correctly formed. " +
                             "Double check the [%s] system property and " +
                             "verify that it is a valid URL.";
-            String msg = String.format(format, HONEY_BADGER_URL_SYS_PROP_KEY);
+            String msg = String.format(format, HONEYBADGER_URL_SYS_PROP_KEY);
 
             throw new HoneybadgerException(msg, e);
         }
