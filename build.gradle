@@ -2,6 +2,8 @@ apply plugin: 'java'
 apply plugin:'application'
 apply plugin: 'idea'
 
+group = 'org.dekobon.honeybadger'
+version = '1.0.0'
 mainClassName = "org.dekobon.honeybadger.HoneybadgerCLI"
 
 run {
