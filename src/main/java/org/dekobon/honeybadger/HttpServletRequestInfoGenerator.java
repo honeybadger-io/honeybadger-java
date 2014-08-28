@@ -50,7 +50,7 @@ public class HttpServletRequestInfoGenerator
         cgiData.addProperty("SERVER_NAME", request.getServerName());
         cgiData.addProperty("SERVER_PORT", request.getServerPort());
         cgiData.addProperty("CONTENT_TYPE", request.getContentType());
-        cgiData.addProperty("CONTENT_LENGTH", request.getContentLengthLong());
+        cgiData.addProperty("CONTENT_LENGTH", request.getContentLength());
         cgiData.addProperty("REMOTE_ADDR", request.getRemoteAddr());
         cgiData.addProperty("REMOTE_PORT", request.getRemotePort());
         cgiData.addProperty("QUERY_STRING", request.getQueryString());
