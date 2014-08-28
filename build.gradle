@@ -16,13 +16,41 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    providedCompile
+    providedCompile.extendsFrom(compile)
+}
+
+javadoc {
+    classpath = sourceSets.main.output + sourceSets.main.compileClasspath +
+            configurations.providedCompile
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.providedCompile
+    }
+    test {
+        compileClasspath += configurations.providedCompile
+        runtimeClasspath += configurations.providedCompile
+    }
+}
+
 dependencies {
+    providedCompile group: 'javax.servlet', name: 'javax.servlet-api',
+            version: '3.1.0'
+
     compile 'org.slf4j:slf4j-api:1.7.7'
     compile 'com.google.code.gson:gson:2.3'
     compile 'org.apache.httpcomponents:fluent-hc:4.3.5'
 
+    testCompile ('com.google.guava:guava:16.0+') {
+        exclude group: 'org.slf4j'
+    }
+
     testCompile 'junit:junit:4.11'
-    testCompile('org.slf4j:slf4j-simple:1.7.7')
+    testCompile 'org.slf4j:slf4j-simple:1.7.7'
+    testCompile 'org.mockito:mockito-all:1.9.5'
 }
 
 task sourceJar(type: Jar) {
@@ -58,5 +86,11 @@ publishing {
                 }
             }
         }
+    }
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.providedCompile]
     }
 }
