@@ -1,15 +1,22 @@
 apply plugin: 'java'
+apply plugin:'application'
 apply plugin: 'idea'
+
+mainClassName = "org.dekobon.honeybadger.HoneybadgerCLI"
+
+run {
+    standardInput = System.in
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'org.slf4j:slf4j-api:+'
+    compile 'org.slf4j:slf4j-api:1.7.0+'
     compile 'com.google.code.gson:gson:2.3'
-    compile 'org.apache.httpcomponents:fluent-hc:4.3.+'
+    compile 'org.apache.httpcomponents:fluent-hc:4.3.1+'
 
     testCompile 'junit:junit:4.11+'
-    testCompile('org.slf4j:slf4j-simple:+')
+    testCompile('org.slf4j:slf4j-simple:1.7.0+')
 }

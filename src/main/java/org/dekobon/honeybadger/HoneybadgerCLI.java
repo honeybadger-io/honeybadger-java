@@ -1,0 +1,28 @@
+package org.dekobon.honeybadger;
+
+import java.util.Scanner;
+
+/**
+ * Simple CLI utility that will allow you to post an error message to
+ * Honeybadger.
+ *
+ * @author <a href="https://github.com/dekobon">dekobon</a>
+ * @since 1.0.0
+ */
+public class HoneybadgerCLI {
+    public static void main(String[] argv) {
+        Scanner in = new Scanner(System.in);
+
+        System.out.print("What is your Honeybadger API key: ");
+        System.setProperty(HoneybadgerReporter.HONEY_BADGER_API_KEY_SYS_PROP_KEY,
+                in.nextLine());
+        System.out.print("\n");
+
+        System.out.print("What message do you want to send: ");
+        String message = in.nextLine();
+
+        RuntimeException exception = new RuntimeException(message);
+        HoneybadgerReporter reporter = new HoneybadgerReporter();
+        reporter.reportError(exception);
+    }
+}
