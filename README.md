@@ -1,16 +1,26 @@
-honeybadger-java
+honeybadger-jvm-client-v2
 ================
 
-Java Client to report exceptions to Honeybadger.io
+*Java Client to report exceptions to Honeybadger.io*
 
-By adding the following line to your code(Possibly in the main function). All errors that you don't catch will be caught and sent to honeybadger.
+Forked from <a href="https://github.com/styleseek/honeybadger-java">honeybadger-java</a> - thanks for doing the hard work for figuring out the API.
 
-    Honeybadger honeybadger = new Honeybadger();
+If you want to send all unhandled errors to Honeybadger and have them logged to slf4j via the error log level, you will need to set some system properties and add a single line to the thread in which you want to register the error handler.
 
-In order for this to work, you must have the following environmental variables set.
-    HONEYBADGER_API_KEY
-    JAVA_ENV
+System Properties:
+ - honeybadger.api_key - set this to the (typically 8 character) API key displayed on your Honeybadger interface
+ - JAVA_ENV / ENV - set this to configure the application's running environment
 
-HONEYBADGER_API_KEY: Contains your Honeybadger api key. This is found in your projects settings on the Honeybadger web page.
+A typical implementation may look like:
 
-JAVA_ENV: Describes the environment where your program is running. I use development and production.
+```java
+import org.dekobon.honeybadger.HoneybadgerUncaughtExceptionHandler;
+
+...
+
+public static void main(String argv[]) {
+    HoneybadgerUncaughtExceptionHandler.registerAsUncaughtExceptionHandler();
+}
+```
+
+If you want to send exceptions to HoneyBadger without having to register an uncaught exception handler, you can create an instance of ```HonebadgerReporter``` and call the ```reportError(Throwable error)``` method directly.
