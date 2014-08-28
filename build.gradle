@@ -8,6 +8,7 @@ repositories {
 dependencies {
     compile 'org.slf4j:slf4j-api:+'
     compile 'com.google.code.gson:gson:2.3'
+    compile 'org.apache.httpcomponents:fluent-hc:4.3.+'
 
     testCompile 'junit:junit:4.11+'
     testCompile('org.slf4j:slf4j-simple:+')

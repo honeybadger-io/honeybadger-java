@@ -3,32 +3,42 @@ package org.dekobon.honeybadger;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.URI;
 
 /**
- * @author Elijah Zupancic
+ * Reporter utility class that gives a simple interface for sending Java
+ * {@link java.lang.Throwable} classes to the Honeybadger API.
+ *
+ * @author <a href="https://github.com/page1">page1</a>
+ * @author <a href="https://github.com/dekobon">dekobon</a>
  * @since 1.0.0
  */
 public class HoneybadgerReporter {
-    /** System property key identifying the honeybadger URL to use. */
+    /** System property key identifying the Honeybadger URL to use. */
     public static final String HONEY_BADGER_URL_SYS_PROP_KEY =
             "honeybadger.url";
+    /** System property key identifying the Honeybadger API key to use. */
     public static final String HONEY_BADGER_API_KEY_SYS_PROP_KEY =
             "honeybadger.api_key";
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void reportErrorToHoneyBadger(Throwable error) {
+    /**
+     * Send any Java {@link java.lang.Throwable} to the Honeybadger error
+     * reporting interface.
+     *
+     * @param error error to report
+     */
+    public void reportError(Throwable error) {
         Gson myGson = new Gson();
         JsonObject jsonError = new JsonObject();
         jsonError.add("notifier", makeNotifier());
@@ -37,7 +47,7 @@ public class HoneybadgerReporter {
 
         for (int retries = 0; retries < 3; retries++) {
             try {
-                int responseCode = sendToHoneyBadger(myGson.toJson(jsonError));
+                int responseCode = sendToHoneybadger(myGson.toJson(jsonError));
                 if (responseCode != 201)
                     logger.error("Honeybadger did not respond with the " +
                                  "correct code. Response was [{}]. Retries={}",
@@ -61,8 +71,8 @@ public class HoneybadgerReporter {
     */
     private JsonObject makeNotifier() {
         JsonObject notifier = new JsonObject();
-        notifier.addProperty("name", "Honeybadger-java Notifier");
-        notifier.addProperty("version", "1.3.0-1");
+        notifier.addProperty("name", "honeybadger-jvm-client-v2");
+        notifier.addProperty("version", "1.0.0");
         return notifier;
     }
 
@@ -95,54 +105,57 @@ public class HoneybadgerReporter {
         return jsonServer;
     }
 
-    /*
-      Send the json string error to honeybadger
-    */
-    private int sendToHoneyBadger(String jsonError) throws IOException {
-        URL honeybadgerUrl = honeybadgerUrl();
-        HttpURLConnection conn = openConnection(honeybadgerUrl);
-        int responseCode = -1;
+    /**
+     * Send an error encoded in JSON to the Honeybadger API.
+     *
+     * @param jsonError Error JSON payload
+     * @return Status code from the Honeybadger API
+     * @throws IOException thrown when a network was encountered
+     */
+    private int sendToHoneybadger(String jsonError) throws IOException {
+        URI honeybadgerUrl = honeybadgerUrl();
+        Request request = buildRequest(honeybadgerUrl, jsonError);
+        Response response = request.execute();
 
-        try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-             InputStreamReader reader = new InputStreamReader(conn.getInputStream());
-             BufferedReader in = new BufferedReader(reader) ) {
-            wr.writeBytes(jsonError);
-            wr.flush();
-
-            responseCode = conn.getResponseCode();
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-        }
-
-        return responseCode;
+        return response.returnResponse().getStatusLine().getStatusCode();
     }
 
-    private HttpURLConnection openConnection(URL honeybadgerUrl)
-            throws IOException {
+    /**
+     * Builds a Apache HTTP Client request object configured for calling the
+     * Honeybadger API.
+     *
+     * @param honeybadgerUrl Endpoint location
+     * @param jsonError Error JSON payload
+     * @return a configured request object
+     */
+    private Request buildRequest(URI honeybadgerUrl, String jsonError) {
         final String honeybadgerApiKey =
                 System.getProperty(HONEY_BADGER_API_KEY_SYS_PROP_KEY);
 
-        final URLConnection rawConn = honeybadgerUrl.openConnection();
-        @SuppressWarnings("unchecked")
-        final HttpURLConnection conn = (HttpURLConnection)rawConn;
+        Request request = Request
+               .Post(honeybadgerUrl)
+               .addHeader("X-API-Key", honeybadgerApiKey)
+               .addHeader("Accept", "application/json")
+               .version(HttpVersion.HTTP_1_1)
+               .bodyString(jsonError, ContentType.APPLICATION_JSON);
 
-        //add request header
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("X-API-Key", honeybadgerApiKey);
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Accept", "application/json");
+        if (System.getProperty("http.proxyHost") != null) {
+            int port = Integer.parseInt(System.getProperty("http.proxyPort"));
+            HttpHost proxy = new HttpHost(System.getProperty("http.proxyHost"),
+                                          port);
 
-        // Send post request
-        conn.setDoOutput(true);
+            request.viaProxy(proxy);
+        }
 
-        return conn;
+        return request;
     }
 
-    private URL honeybadgerUrl() {
+    /**
+     * Finds the Honeybadger endpoint to send erros to.
+     *
+     * @return the default URL unless it is overriden by a system property
+     */
+    private URI honeybadgerUrl() {
         try {
             final String url;
             final String sysProp =
@@ -154,8 +167,8 @@ public class HoneybadgerReporter {
                 url = "https://api.honeybadger.io/v1/notices";
             }
 
-            return new URL(url);
-        } catch (MalformedURLException e) {
+            return URI.create(url);
+        } catch (IllegalArgumentException e) {
             String format = "Honeybadger URL was not correctly formed. " +
                             "Double check the [%s] system property and " +
                             "verify that it is a valid URL.";
@@ -165,6 +178,12 @@ public class HoneybadgerReporter {
         }
     }
 
+    /**
+     * Finds the name of the environment by looking at a few common Java
+     * system properties and/or environment variables.
+     *
+     * @return the name of the environment, otherwise "development"
+     */
     private String environment() {
         String sysPropJavaEnv = System.getProperty("JAVA_ENV");
         if (sysPropJavaEnv != null) return sysPropJavaEnv;

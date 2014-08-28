@@ -3,7 +3,7 @@ package org.dekobon.honeybadger;
 /**
  * Exception class representing an error state with Honeybadger error reporting.
  *
- * @author Elijah Zupancic
+ * @author <a href="https://github.com/dekobon">dekobon</a>
  * @since 1.0.0
  */
 public class HoneybadgerException extends RuntimeException {
