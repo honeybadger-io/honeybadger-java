@@ -1,5 +1,7 @@
 apply plugin: 'java'
-apply plugin:'application'
+apply plugin: 'application'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'idea'
 
 group = 'org.dekobon.honeybadger'
@@ -15,10 +17,46 @@ repositories {
 }
 
 dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.0+'
+    compile 'org.slf4j:slf4j-api:1.7.7'
     compile 'com.google.code.gson:gson:2.3'
-    compile 'org.apache.httpcomponents:fluent-hc:4.3.1+'
+    compile 'org.apache.httpcomponents:fluent-hc:4.3.5'
 
-    testCompile 'junit:junit:4.11+'
-    testCompile('org.slf4j:slf4j-simple:1.7.0+')
+    testCompile 'junit:junit:4.11'
+    testCompile('org.slf4j:slf4j-simple:1.7.7')
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+
+            // This messy thing is here to add proper exclusions to
+            // generated POMs
+            project.configurations[JavaPlugin.RUNTIME_CONFIGURATION_NAME].allDependencies.findAll {
+                it instanceof ModuleDependency && !it.excludeRules.isEmpty()
+            }.each { ModuleDependency dep ->
+                pom.withXml {
+                    def xmlDep = asNode().dependencies.dependency.find {
+                        it.groupId[0].text() == dep.group && it.artifactId[0].text() == dep.name
+                    }
+                    def xmlExclusions = xmlDep.exclusions[0]
+                    if (!xmlExclusions) xmlExclusions = xmlDep.appendNode('exclusions')
+
+                    dep.excludeRules.each { ExcludeRule rule ->
+                        def xmlExclusion = xmlExclusions.appendNode('exclusion')
+                        xmlExclusion.appendNode('groupId', rule.group)
+                        xmlExclusion.appendNode('artifactId', rule.module)
+                    }
+                }
+            }
+        }
+    }
 }
