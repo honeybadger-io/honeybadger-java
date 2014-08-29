@@ -161,7 +161,9 @@ public class HoneybadgerReporter {
             JsonObject jsonTraceElement = new JsonObject();
             jsonTraceElement.addProperty("number", trace.getLineNumber());
             jsonTraceElement.addProperty("file", trace.getFileName());
-            jsonTraceElement.addProperty("method", trace.getMethodName());
+            jsonTraceElement.addProperty("method",
+                    String.format("%s.%s",
+                            trace.getClassName(), trace.getMethodName()));
             backTrace.add(jsonTraceElement);
         }
         jsonError.add("backtrace", backTrace);
