@@ -1,4 +1,4 @@
-package org.dekobon.honeybadger;
+package com.github.dekobon.honeybadger;
 
 import com.google.gson.JsonObject;
 

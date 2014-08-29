@@ -4,9 +4,9 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'idea'
 
-group = 'org.dekobon.honeybadger'
+group = 'com.github.dekobon'
 version = '1.0.3'
-mainClassName = "org.dekobon.honeybadger.HoneybadgerCLI"
+mainClassName = "com.github.dekobon.HoneybadgerCLI"
 
 run {
     standardInput = System.in

@@ -1,4 +1,4 @@
-package org.dekobon.honeybadger;
+package com.github.dekobon.honeybadger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
     }
 
     /**
-     * Use {@link org.dekobon.honeybadger.HoneybadgerUncaughtExceptionHandler}
+     * Use {@link HoneybadgerUncaughtExceptionHandler}
      * as the error handler for the current thread.
      */
     public static void registerAsUncaughtExceptionHandler() {
@@ -40,7 +40,7 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
     }
 
     /**
-     * Use {@link org.dekobon.honeybadger.HoneybadgerUncaughtExceptionHandler}
+     * Use {@link HoneybadgerUncaughtExceptionHandler}
      * as the error handler for the specified thread.
      *
      * @param t thread to register handler for
