@@ -45,3 +45,6 @@ the ```reportError(Throwable error)``` method directly.
 For the purpose of testing, you can use the CLI utility. Just execute it using
 ```gradle run``` and you can enter in your API key and message to be sent to
 Honeybadger.
+
+### Honeybadger Resources
+I found this <a href="https://www.honeybadger.io/pages/collector">page</a> very helpful when trying to understand what data the Honeybadger API accepts. In particular, the gist linked to from the page has a solid example of what to send to the API.
