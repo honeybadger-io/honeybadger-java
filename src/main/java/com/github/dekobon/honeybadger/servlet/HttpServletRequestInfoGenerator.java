@@ -1,5 +1,7 @@
-package com.github.dekobon.honeybadger;
+package com.github.dekobon.honeybadger.servlet;
 
+import com.github.dekobon.honeybadger.HoneybadgerException;
+import com.github.dekobon.honeybadger.RequestInfoGenerator;
 import com.google.gson.JsonObject;
 import org.apache.http.HttpHeaders;
 

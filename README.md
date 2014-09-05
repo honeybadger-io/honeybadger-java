@@ -17,16 +17,38 @@ System Properties:
    passwords and other sensitive information from being sent.
  - JAVA_ENV / ENV - set this to configure the application's running environment
 
-A typical implementation may look like:
+A typical stand-alone implementation may look like:
 
 ```java
 import org.dekobon.honeybadger.HoneybadgerUncaughtExceptionHandler;
 
-...
-
 public static void main(String argv[]) {
     HoneybadgerUncaughtExceptionHandler.registerAsUncaughtExceptionHandler();
+    // The rest of the application goes here
 }
+```
+
+A servlet based implemantion may look like:
+
+In your web.xml file:
+```xml
+    <!-- Send all uncaught servlet exceptions and servlet request details to Honeybadger -->
+    <filter>
+        <filter-name>HoneybadgerFilter</filter-name>
+        <filter-class>com.github.dekobon.honeybadger.servlet.HoneybadgerFilter</filter-class>
+        <init-param>
+            <param-name>honeybadger.api_key</param-name>
+            <param-value>API KEY GOES HERE</param-value>
+        </init-param>
+        <init-param>
+            <param-name>honeybadger.excluded_sys_props</param-name>
+            <param-value>bonecp.password,bonecp.username</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>HoneybadgerFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 ```
 
 If you want to send exceptions to HoneyBadger without having to register an uncaught 
