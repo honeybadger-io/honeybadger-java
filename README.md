@@ -3,9 +3,17 @@ honeybadger-jvm-client-v2
 
 *Java Client to report exceptions to Honeybadger.io*
 
+### Origin
 Forked from <a href="https://github.com/styleseek/honeybadger-java">honeybadger-java</a> - 
 thanks for doing the hard work for figuring out the API.
 
+### Description
+This is a library for sending errors that implement ```java.lang.Throwable``` on the JVM to the online error reporting service <a href="https://www.honeybadger.io/">Honeybadger</a>.
+
+### Download
+You can find the library on <a href="http://search.maven.org/#browse%7C-1627719036">Maven Central</a> or you can always clone this github repository.
+
+### Implementation
 If you want to send all unhandled errors to Honeybadger and have them logged to slf4j via 
 the error log level, you will need to set some system properties and add a single line 
 to the thread in which you want to register the error handler.
@@ -55,6 +63,10 @@ If you want to send exceptions to HoneyBadger without having to register an unca
 exception handler, you can create an instance of ```HonebadgerReporter``` and call 
 the ```reportError(Throwable error)``` method directly.
 
+### Testing
 For the purpose of testing, you can use the CLI utility. Just execute it using
 ```gradle run``` and you can enter in your API key and message to be sent to
 Honeybadger.
+
+### Honeybadger Resources
+I found this <a href="https://www.honeybadger.io/pages/collector">page</a> very helpful when trying to understand what data the Honeybadger API accepts. In particular, the gist linked to from the page has a solid example of what to send to the API.
