@@ -24,7 +24,7 @@ public class HttpServletRequestInfoGenerator
     public JsonObject generateRequest(HttpServletRequest request) {
         JsonObject jsonRequest = new JsonObject();
 
-        jsonRequest.addProperty("url", request.getRequestURI());
+        jsonRequest.addProperty("url", getFullURL(request));
         jsonRequest.add("cgi_data", cgiData(request));
         jsonRequest.add("params", params(request));
 
@@ -97,5 +97,22 @@ public class HttpServletRequestInfoGenerator
         }
 
         return jsonHeaders;
+    }
+
+    /**
+     * Gets the fully formed URL for a servlet request.
+     * @see <a href="http://stackoverflow.com/a/2222268/33611">Stack Overflow Answer</a>
+     * @param request Servlet request to parse for URL information
+     * @return fully formed URL as string
+     */
+    protected static String getFullURL(HttpServletRequest request) {
+        StringBuffer requestURL = request.getRequestURL();
+        String queryString = request.getQueryString();
+
+        if (queryString == null) {
+            return requestURL.toString();
+        } else {
+            return requestURL.append('?').append(queryString).toString();
+        }
     }
 }
