@@ -10,7 +10,7 @@ thanks for doing the hard work for figuring out the API.
 ### Description
 This is a library for sending errors that implement ```java.lang.Throwable``` on the JVM to the online error reporting service <a href="https://www.honeybadger.io/">Honeybadger</a>.
 
-### Download
+### Download / Maven Repository
 You can find the library on <a href="http://search.maven.org/#browse%7C-1627719036">Maven Central</a> or you can always clone this github repository.
 
 ### Implementation
