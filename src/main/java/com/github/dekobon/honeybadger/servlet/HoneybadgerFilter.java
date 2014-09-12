@@ -5,9 +5,7 @@ import com.github.dekobon.honeybadger.HoneybadgerReporter;
 import javax.servlet.*;
 import java.io.IOException;
 
-import static com.github.dekobon.honeybadger.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
-import static com.github.dekobon.honeybadger.HoneybadgerReporter.HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY;
-import static com.github.dekobon.honeybadger.HoneybadgerReporter.HONEYBADGER_URL_SYS_PROP_KEY;
+import static com.github.dekobon.honeybadger.HoneybadgerReporter.*;
 
 /**
  * Servlet filter that reports all unhandled servlet errors to Honeybadger.
@@ -23,6 +21,7 @@ public class HoneybadgerFilter  implements Filter {
         setSysPropFromfilterConfig(filterConfig, HONEYBADGER_URL_SYS_PROP_KEY);
         setSysPropFromfilterConfig(filterConfig, HONEYBADGER_API_KEY_SYS_PROP_KEY);
         setSysPropFromfilterConfig(filterConfig, HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
+        setSysPropFromfilterConfig(filterConfig, HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY);
 
         reporter = new HoneybadgerReporter();
     }
