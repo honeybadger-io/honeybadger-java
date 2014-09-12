@@ -32,8 +32,10 @@ public class HoneybadgerReporterTest {
         }
 
         System.setProperty("ENV", "test");
-//        System.setProperty("http.proxyHost", "localhost");
-//        System.setProperty("http.proxyPort", "8888");
+        System.setProperty("http.proxyHost", "localhost");
+        System.setProperty("http.proxyPort", "8888");
+        System.setProperty(HONEYBADGER_URL_SYS_PROP_KEY,
+                "http://api.honeybadger.io/v1/notices");
 
         System.setProperty(HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY,
                 String.format("%s,%s",
@@ -47,7 +49,9 @@ public class HoneybadgerReporterTest {
     public void willReportErrorWithRequest() throws Exception {
         MDC.put("testValue", "something");
 
-        Throwable t = new RuntimeException("Test exception 68");
+        Throwable cause = new RuntimeException("I'm the cause");
+        Throwable t = new RuntimeException("Test exception " +
+                System.currentTimeMillis(), cause);
         HashMap<String, String> params = new HashMap<>();
         params.put("url", "http://foo.com");
 

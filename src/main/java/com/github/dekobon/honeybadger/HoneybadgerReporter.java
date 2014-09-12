@@ -68,7 +68,7 @@ public class HoneybadgerReporter {
      * @return UUID of error created, if there was a problem null
      */
     public UUID reportError(Throwable error) {
-        return submitError(error, null);
+        return submitError(error, new JsonObject());
     }
 
     /**
@@ -97,6 +97,11 @@ public class HoneybadgerReporter {
     }
 
     protected UUID submitError(Throwable error, JsonObject request) {
+        JsonObject context = new JsonObject();
+
+        context.addProperty("full_stacktrace", stacktraceAsString(error));
+        request.add("context", context);
+
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
                 excludedExceptionClasses.contains(errorClassName)) {
@@ -187,20 +192,35 @@ public class HoneybadgerReporter {
         }
         jsonError.add("backtrace", backTrace);
 
-        if (error.getCause() != null) {
-            JsonObject sourceElement = new JsonObject();
+        JsonObject sourceElement = new JsonObject();
 
-            sourceElement.addProperty("1", "Cause:");
+        appendStacktraceToJsonElement(error, sourceElement);
 
-            int i = 1;
-            for (StackTraceElement st : error.getCause().getStackTrace()) {
-                sourceElement.addProperty(String.valueOf(++i), st.toString());
-            }
-
-            jsonError.add("source", sourceElement);
-        }
+        jsonError.add("source", sourceElement);
 
         return jsonError;
+    }
+
+    private String stacktraceAsString(Throwable error) {
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw, true);
+        error.printStackTrace(pw);
+        return sw.getBuffer().toString();
+    }
+
+    /**
+     * Created a Honeybadger source blob compatible full stacktrace.
+     */
+    private void appendStacktraceToJsonElement(Throwable error,
+                                               JsonObject json) {
+        String stack = stacktraceAsString(error);
+        Scanner scanner = new Scanner(stack);
+
+        int lineNo = 0;
+
+        while (scanner.hasNext()) {
+            json.addProperty(String.valueOf(++lineNo), scanner.nextLine());
+        }
     }
 
     private JsonObject makeServer() {
