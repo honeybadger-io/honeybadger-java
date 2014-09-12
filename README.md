@@ -54,6 +54,10 @@ In your web.xml file:
             <param-name>honeybadger.excluded_sys_props</param-name>
             <param-value>bonecp.password,bonecp.username</param-value>
         </init-param>
+        <init-param>
+            <param-name>honeybadger.excluded_exception_classes</param-name>
+            <param-value>org.apache.catalina.connector.ClientAbortException</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>HoneybadgerFilter</filter-name>
