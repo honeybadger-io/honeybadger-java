@@ -109,7 +109,9 @@ public class HttpServletRequestInfoGenerator
         StringBuffer requestURL = request.getRequestURL();
         String queryString = request.getQueryString();
 
-        if (queryString == null) {
+        if (requestURL == null) {
+            return null;
+        } else if (queryString == null) {
             return requestURL.toString();
         } else {
             return requestURL.append('?').append(queryString).toString();

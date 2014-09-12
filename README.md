@@ -23,6 +23,8 @@ System Properties:
  - honeybadger.excluded_sys_props - a comma delinated list of system property
    keys to exclude from being reported to Honeybadger. This allows you to prevent
    passwords and other sensitive information from being sent.
+ - honeybadger.excluded_exception_classes - a comma delinated list of fully formed
+   class names that will be excluded from error reporting.
  - JAVA_ENV / ENV - set this to configure the application's running environment
 
 A typical stand-alone implementation may look like:

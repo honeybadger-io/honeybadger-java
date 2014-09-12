@@ -1,3 +1,5 @@
 1.0.3 - Initial public release.
 1.0.4 - Fixed issue with full URL not being reported.
       - Added support for servlet filters.
+1.0.5 - Added support for excluding specific exception classes from being reported.
+      - Added *very* basic test class.

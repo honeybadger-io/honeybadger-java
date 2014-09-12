@@ -40,15 +40,21 @@ public class HoneybadgerReporter {
     public static final String HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY =
             "honeybadger.excluded_sys_props";
 
+    /** Comma delinated list of exception classes to ignore. */
+    public static final String HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY =
+            "honeybadger.excluded_exception_classes";
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final String hostname;
     private final String runtimeRoot;
-    private final Set<String> excludeSysProps;
+    private final Set<String> excludedSysProps;
+    private final Set<String> excludedExceptionClasses;
 
     public HoneybadgerReporter() {
         this.hostname = hostname();
         this.runtimeRoot = runtimeRoot();
-        this.excludeSysProps = buildExcludeSysProps();
+        this.excludedSysProps = buildExcludedSysProps();
+        this.excludedExceptionClasses = buildExcludedExceptionClasses();
     }
 
     /**
@@ -71,21 +77,29 @@ public class HoneybadgerReporter {
      *
      * @param error error to report
      * @param request Object to parse for request properies
-     * @return UUID of error created, if there was a problem null
+     * @return UUID of error created, if there was a problem or ignored null
      */
     public UUID reportError(Throwable error, Object request) {
+        if (error == null) { return null; }
+
         try {
             Class.forName("javax.servlet.http.HttpServletRequest");
             RequestInfoGenerator<?> generator =
                     new HttpServletRequestInfoGenerator();
             JsonObject jsonRequest = generator.routeRequest(request);
-            return  submitError(error, jsonRequest);
+            return submitError(error, jsonRequest);
         } catch (ClassNotFoundException e) {
             return submitError(error, null);
         }
     }
 
     protected UUID submitError(Throwable error, JsonObject request) {
+        final String errorClassName = error.getClass().getName();
+        if (errorClassName != null &&
+                excludedExceptionClasses.contains(errorClassName)) {
+            return null;
+        }
+
         Gson myGson = new Gson();
         JsonObject jsonError = new JsonObject();
         jsonError.add("notifier", makeNotifier());
@@ -187,7 +201,7 @@ public class HoneybadgerReporter {
         JsonObject jsonMdc = new JsonObject();
 
         @SuppressWarnings("unchecked")
-        Map<String, String> mdc = (Map<String, String>) MDC.getCopyOfContextMap();
+        Map<String, String> mdc = MDC.getCopyOfContextMap();
 
         if (mdc != null) {
             for (Map.Entry<String, String> entry : mdc.entrySet()) {
@@ -203,7 +217,7 @@ public class HoneybadgerReporter {
 
         for (Map.Entry<Object, Object> entry: System.getProperties().entrySet()) {
             // We skip all excluded properties
-            if (excludeSysProps.contains(entry.getKey().toString())) {
+            if (excludedSysProps.contains(entry.getKey().toString())) {
                 continue;
             }
 
@@ -214,13 +228,28 @@ public class HoneybadgerReporter {
         return jsonSysProps;
     }
 
-    private Set<String> buildExcludeSysProps() {
+    private Set<String> buildExcludedSysProps() {
         String excluded = System.getProperty(HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
         HashSet<String> set = new HashSet<>();
 
         set.add(HONEYBADGER_API_KEY_SYS_PROP_KEY);
         set.add(HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
         set.add(HONEYBADGER_URL_SYS_PROP_KEY);
+
+        if (excluded == null || excluded.isEmpty()) {
+            return set;
+        }
+
+        for (String item : excluded.split(",")) {
+            set.add(item);
+        }
+
+        return set;
+    }
+
+    private Set<String> buildExcludedExceptionClasses() {
+        String excluded = System.getProperty(HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY);
+        HashSet<String> set = new HashSet<>();
 
         if (excluded == null || excluded.isEmpty()) {
             return set;
