@@ -44,6 +44,9 @@ public class HoneybadgerReporter {
     public static final String HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY =
             "honeybadger.excluded_exception_classes";
 
+    public static final String DEFAULT_API_URI =
+            "https://api.honeybadger.io/v1/notices";
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final String hostname;
     private final String runtimeRoot;
@@ -169,7 +172,8 @@ public class HoneybadgerReporter {
     */
     private JsonObject makeError(Throwable error) {
         JsonObject jsonError = new JsonObject();
-        jsonError.addProperty("class", error.toString());
+        jsonError.addProperty("class", error.getClass().getName());
+        jsonError.addProperty("message", error.getMessage());
 
         JsonArray backTrace = new JsonArray();
         for (StackTraceElement trace : error.getStackTrace()) {
@@ -182,6 +186,19 @@ public class HoneybadgerReporter {
             backTrace.add(jsonTraceElement);
         }
         jsonError.add("backtrace", backTrace);
+
+        if (error.getCause() != null) {
+            JsonObject sourceElement = new JsonObject();
+
+            sourceElement.addProperty("1", "Cause:");
+
+            int i = 1;
+            for (StackTraceElement st : error.getCause().getStackTrace()) {
+                sourceElement.addProperty(String.valueOf(++i), st.toString());
+            }
+
+            jsonError.add("source", sourceElement);
+        }
 
         return jsonError;
     }
@@ -321,7 +338,7 @@ public class HoneybadgerReporter {
             if (sysProp != null) {
                 url = sysProp;
             } else {
-                url = "https://api.honeybadger.io/v1/notices";
+                url = DEFAULT_API_URI;
             }
 
             return URI.create(url);
