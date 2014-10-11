@@ -5,10 +5,7 @@ import com.github.dekobon.honeybadger.RequestInfoGenerator;
 import com.google.gson.JsonObject;
 import org.apache.http.HttpHeaders;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
-import java.io.IOException;
 import java.util.Enumeration;
 
 /**
@@ -63,21 +60,6 @@ public class HttpServletRequestInfoGenerator
 
     protected JsonObject params(HttpServletRequest request) {
         JsonObject jsonParams = new JsonObject();
-
-        {
-            JsonObject requestParams = new JsonObject();
-
-            try {
-                for (Part part : request.getParts()) {
-                    requestParams.addProperty(part.getName(), part.toString());
-                }
-            } catch (IOException | ServletException e) {
-                throw new HoneybadgerException(
-                        "Unable to parse servlet request parts", e);
-            }
-
-            jsonParams.add("request_params", requestParams);
-        }
 
         jsonParams.add("request_headers", httpHeaders(request));
 
