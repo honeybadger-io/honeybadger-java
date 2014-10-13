@@ -5,3 +5,7 @@
       - Added *very* basic test class.
       - Changed class name for exception to use actual class
       - Added more stack trace dumps to exception output
+1.0.6 - Changed class name for exception to use actual class. Added more stack
+        trace dumps.
+      - Removed multi-part query parameter parsing because in some servlet
+        environments it causes errors.
