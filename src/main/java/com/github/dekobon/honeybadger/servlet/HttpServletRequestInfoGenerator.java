@@ -7,6 +7,7 @@ import org.apache.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+import java.util.Map;
 
 /**
  * Parses the properties of a {@link javax.servlet.http.HttpServletRequest}
@@ -58,10 +59,49 @@ public class HttpServletRequestInfoGenerator
         return cgiData;
     }
 
+    protected JsonObject requestParams(HttpServletRequest request) {
+        JsonObject params = new JsonObject();
+
+        try {
+            Map<String, String[]> paramMap = request.getParameterMap();
+
+            if (paramMap == null || paramMap.isEmpty()) return params;
+
+            for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
+                params.addProperty(entry.getKey(), csv(entry.getValue()));
+            }
+        } catch (RuntimeException e) {
+            /* We really shouldn't ever have an exception here, but we can't
+             * control the underlying implementation, so we just recover by
+             * not displaying any data. */
+
+             params.addProperty("Error getting parameters", e.getMessage());
+
+             return params;
+         }
+
+        return params;
+    }
+
+    protected String csv(String[] strings) {
+        if (strings == null || strings.length == 0) return "";
+        if (strings.length == 1) return strings[0];
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < strings.length; i++) {
+            builder.append(strings[i]);
+            if (i < strings.length - 1) builder.append(", ");
+        }
+
+        return builder.toString();
+    }
+
     protected JsonObject params(HttpServletRequest request) {
         JsonObject jsonParams = new JsonObject();
 
         jsonParams.add("request_headers", httpHeaders(request));
+        jsonParams.add("request_parameters", requestParams(request));
 
         return jsonParams;
     }

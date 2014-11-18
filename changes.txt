@@ -9,3 +9,4 @@
         trace dumps.
       - Removed multi-part query parameter parsing because in some servlet
         environments it causes errors.
+1.0.7 - Added capture of POST/GET parameters.
