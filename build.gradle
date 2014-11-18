@@ -6,7 +6,7 @@ apply plugin: 'signing'
 apply plugin: 'idea'
 
 group = 'com.github.dekobon'
-version = '1.0.6'
+version = '1.0.7'
 archivesBaseName = rootProject.name
 mainClassName = "com.github.dekobon.HoneybadgerCLI"
 
