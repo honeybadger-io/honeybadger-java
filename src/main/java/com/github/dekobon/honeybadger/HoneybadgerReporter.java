@@ -139,6 +139,7 @@ public class HoneybadgerReporter {
                                            "to send the error to " +
                                            "Honeybadger. Retries=%d", retries);
                 logger.error(msg, e);
+                logger.error("Original Error", error);
                 return null;
             }
         }
