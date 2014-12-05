@@ -46,7 +46,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     compile 'org.apache.httpcomponents:fluent-hc:4.3.5'
 
-    testCompile ('com.google.guava:guava:16.0+') {
+    testCompile ('com.google.guava:guava:16.0,') {
         exclude group: 'org.slf4j'
     }
 
