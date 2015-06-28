@@ -16,4 +16,5 @@
       - Improved hostname look up method to support common environment variables.
       - Added support for gradle.properties file for specifying system properties
         in gradle builds.
-
+      - Changed default package namespace to io.honeybadger.reporter because
+        this library is now maintained by honeybadger.

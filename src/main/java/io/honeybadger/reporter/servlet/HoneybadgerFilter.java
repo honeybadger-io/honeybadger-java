@@ -1,11 +1,11 @@
-package com.github.dekobon.honeybadger.servlet;
+package io.honeybadger.reporter.servlet;
 
-import com.github.dekobon.honeybadger.HoneybadgerReporter;
+import io.honeybadger.reporter.HoneybadgerReporter;
 
 import javax.servlet.*;
 import java.io.IOException;
 
-import static com.github.dekobon.honeybadger.HoneybadgerReporter.*;
+import static io.honeybadger.reporter.HoneybadgerReporter.*;
 
 /**
  * Servlet filter that reports all unhandled servlet errors to Honeybadger.

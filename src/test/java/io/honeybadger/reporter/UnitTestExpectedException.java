@@ -1,4 +1,4 @@
-package com.github.dekobon.honeybadger;
+package io.honeybadger.reporter;
 
 /**
  * Exception class used to send exceptions to the remote HoneyBadger API

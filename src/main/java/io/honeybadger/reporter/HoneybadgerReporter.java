@@ -1,6 +1,6 @@
-package com.github.dekobon.honeybadger;
+package io.honeybadger.reporter;
 
-import com.github.dekobon.honeybadger.servlet.HttpServletRequestInfoGenerator;
+import io.honeybadger.reporter.servlet.HttpServletRequestInfoGenerator;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

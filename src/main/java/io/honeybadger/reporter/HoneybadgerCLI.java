@@ -1,4 +1,4 @@
-package com.github.dekobon.honeybadger;
+package io.honeybadger.reporter;
 
 import java.util.Scanner;
 

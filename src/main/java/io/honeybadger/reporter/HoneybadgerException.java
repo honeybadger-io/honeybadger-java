@@ -1,4 +1,4 @@
-package com.github.dekobon.honeybadger;
+package io.honeybadger.reporter;
 
 /**
  * Exception class representing an error state with Honeybadger error reporting.

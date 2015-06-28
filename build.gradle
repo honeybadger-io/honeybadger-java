@@ -10,7 +10,7 @@ version = '1.0.9'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 archivesBaseName = rootProject.name
-mainClassName = "com.github.dekobon.honeybadger.HoneybadgerCLI"
+mainClassName = "io.honeybadger.reporter.HoneybadgerCLI"
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
@@ -23,6 +23,7 @@ run {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 configurations {

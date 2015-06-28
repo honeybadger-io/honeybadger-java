@@ -1,4 +1,4 @@
-package com.github.dekobon.honeybadger;
+package io.honeybadger.reporter;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.http.HttpHeaders;
@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 
-import static com.github.dekobon.honeybadger.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
-import static com.github.dekobon.honeybadger.HoneybadgerReporter.HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY;
+import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
+import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY;
 import static com.google.common.collect.ImmutableList.of;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
