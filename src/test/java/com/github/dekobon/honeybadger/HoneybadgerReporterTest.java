@@ -14,7 +14,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 
-import static com.github.dekobon.honeybadger.HoneybadgerReporter.*;
+import static com.github.dekobon.honeybadger.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
+import static com.github.dekobon.honeybadger.HoneybadgerReporter.HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY;
 import static com.google.common.collect.ImmutableList.of;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -31,12 +32,6 @@ public class HoneybadgerReporterTest {
             " system property must be specified");
         }
 
-        System.setProperty("ENV", "test");
-        System.setProperty("http.proxyHost", "localhost");
-        System.setProperty("http.proxyPort", "8888");
-        System.setProperty(HONEYBADGER_URL_SYS_PROP_KEY,
-                "http://api.honeybadger.io/v1/notices");
-
         System.setProperty(HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY,
                 String.format("%s,%s",
                     UnsupportedOperationException.class.getName(),
@@ -50,7 +45,7 @@ public class HoneybadgerReporterTest {
         MDC.put("testValue", "something");
 
         Throwable cause = new RuntimeException("I'm the cause");
-        Throwable t = new RuntimeException("Test exception " +
+        Throwable t = new UnitTestExpectedException("Test exception " +
                 System.currentTimeMillis(), cause);
         HashMap<String, String> params = new HashMap<>();
         params.put("url", "http://foo.com");
@@ -58,7 +53,7 @@ public class HoneybadgerReporterTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getRequestURI()).thenReturn("http://www.foobar.com");
         when(request.getMethod()).thenReturn("GET");
-        when(request.getServerName()).thenReturn("tatsumaki.local");
+        when(request.getServerName()).thenReturn("hostname.imaginary");
         when(request.getServerPort()).thenReturn(80);
         when(request.getContentType()).thenReturn("application/json; charset=UTF-8");
 

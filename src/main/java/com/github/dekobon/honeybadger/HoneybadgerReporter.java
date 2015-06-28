@@ -396,14 +396,27 @@ public class HoneybadgerReporter {
         return "development";
     }
 
+    /**
+     * Attempt to find the hostname of the system reporting the error to
+     * Honeybadger.
+     *
+     * @return the hostname of the system reporting the error, "unknown" if not found
+     */
     private String hostname() {
         String host;
 
-        try {
-            host = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            logger.error("Unable to find hostname", e);
-            host = "unknown";
+        if (System.getenv("HOSTNAME") != null) {
+            host = System.getenv("HOSTNAME");
+        } else if (System.getenv("COMPUTERNAME") != null) {
+            host = System.getenv("COMPUTERNAME");
+        } else {
+            try {
+                host = InetAddress.getLocalHost().getHostName();
+            } catch (UnknownHostException e) {
+                logger.error("Unable to find hostname", e);
+                host = "unknown";
+            }
+
         }
 
         return host;

@@ -12,3 +12,4 @@
 1.0.7 - Added capture of POST/GET parameters.
 1.0.8 - We now output the original error when in addition to the connection
         error when we are having connectivity problems with Honeybadger.
+1.0.9 -
