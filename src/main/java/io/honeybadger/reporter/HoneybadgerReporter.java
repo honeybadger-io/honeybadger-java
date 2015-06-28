@@ -1,9 +1,9 @@
 package io.honeybadger.reporter;
 
-import io.honeybadger.reporter.servlet.HttpServletRequestInfoGenerator;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import io.honeybadger.reporter.servlet.HttpServletRequestInfoGenerator;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -25,7 +25,7 @@ import java.util.*;
  * {@link java.lang.Throwable} classes to the Honeybadger API.
  *
  * @author <a href="https://github.com/page1">page1</a>
- * @author <a href="https://github.com/dekobon">dekobon</a>
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.0
  */
 public class HoneybadgerReporter {

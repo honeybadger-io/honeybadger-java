@@ -3,7 +3,7 @@ package io.honeybadger.reporter;
 /**
  * Exception class representing an error state with Honeybadger error reporting.
  *
- * @author <a href="https://github.com/dekobon">dekobon</a>
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.0
  */
 @SuppressWarnings("serial")

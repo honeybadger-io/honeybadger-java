@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
  * Interface that parses the properties of an object and turns it
  * into the the response JSON sent to Honeybadger.
  *
- * @author <a href="https://github.com/dekobon">dekobon</a>
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.0
  */
 public interface RequestInfoGenerator<T> {

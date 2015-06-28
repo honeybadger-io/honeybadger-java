@@ -5,7 +5,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'idea'
 
-group = 'com.github.dekobon'
+group = 'io.honeybadger'
 version = '1.0.9'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -160,18 +160,18 @@ uploadArchives {
                 name 'Honeybadger JVM Client'
                 packaging 'jar'
                 description 'Library that sends exceptions to the online error management service Honeybadger.'
-                url 'https://github.com/dekobon/honeybadger-jvm-client-v2'
+                url 'https://github.com/honeybadger-io/honeybadger-jvm-client-v2'
 
                 scm {
-                    connection 'scm:git:git@github.com:dekobon/honeybadger-jvm-client-v2.git'
-                    developerConnection 'scm:git:git@github.com:dekobon/honeybadger-jvm-client-v2.git'
-                    url 'git@github.com:dekobon/honeybadger-jvm-client-v2.git'
+                    connection 'scm:git:git@github.com:honeybadger-io/honeybadger-jvm-client-v2.git'
+                    developerConnection 'scm:git:git@github.com:honeybadger-io/honeybadger-jvm-client-v2.git'
+                    url 'git@github.com:honeybadger-io/honeybadger-jvm-client-v2.git'
                 }
 
                 licenses {
                     license {
                         name 'MIT License'
-                        url 'https://raw.githubusercontent.com/dekobon/honeybadger-jvm-client-v2/master/LICENSE'
+                        url 'https://raw.githubusercontent.com/honeybadger-io/honeybadger-jvm-client-v2/master/LICENSE'
                     }
                 }
 

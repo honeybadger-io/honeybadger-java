@@ -30,7 +30,7 @@ System Properties:
 A typical stand-alone implementation may look like:
 
 ```java
-import org.dekobon.honeybadger.HoneybadgerUncaughtExceptionHandler;
+import io.honeybadger.reporter.HoneybadgerUncaughtExceptionHandler;
 
 public static void main(String argv[]) {
     HoneybadgerUncaughtExceptionHandler.registerAsUncaughtExceptionHandler();
@@ -45,7 +45,7 @@ In your web.xml file:
     <!-- Send all uncaught servlet exceptions and servlet request details to Honeybadger -->
     <filter>
         <filter-name>HoneybadgerFilter</filter-name>
-        <filter-class>com.github.dekobon.honeybadger.servlet.HoneybadgerFilter</filter-class>
+        <filter-class>io.honeybadger.reporter.servlet.HoneybadgerFilter</filter-class>
         <init-param>
             <param-name>honeybadger.api_key</param-name>
             <param-value>API KEY GOES HERE</param-value>

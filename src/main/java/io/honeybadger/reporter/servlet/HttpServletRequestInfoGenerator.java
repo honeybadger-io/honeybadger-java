@@ -13,7 +13,7 @@ import java.util.Map;
  * Parses the properties of a {@link javax.servlet.http.HttpServletRequest}
  * object and turns it into the Honeybadger JSON format.
  *
- * @author <a href="https://github.com/dekobon">dekobon</a>
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.0
  */
 public class HttpServletRequestInfoGenerator

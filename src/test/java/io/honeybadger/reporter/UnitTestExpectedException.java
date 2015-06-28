@@ -4,7 +4,7 @@ package io.honeybadger.reporter;
  * Exception class used to send exceptions to the remote HoneyBadger API
  * for use with unit tests.
  *
- * @author Elijah Zupancic
+ * @author @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
 public class UnitTestExpectedException extends RuntimeException {

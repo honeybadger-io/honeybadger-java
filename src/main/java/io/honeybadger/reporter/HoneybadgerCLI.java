@@ -6,7 +6,7 @@ import java.util.Scanner;
  * Simple CLI utility that will allow you to post an error message to
  * Honeybadger.
  *
- * @author <a href="https://github.com/dekobon">dekobon</a>
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.0
  */
 public class HoneybadgerCLI {

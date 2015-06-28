@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Exception handler class that sends errors to Honey Badger by default.
  *
- * @author <a href="https://github.com/dekobon">dekobon</a>
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.0
  */
 public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
