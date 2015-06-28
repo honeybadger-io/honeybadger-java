@@ -103,16 +103,65 @@ manually set the system variables as part of the test run configuration.
 
 The following properties are available:
 
-| System Property                        | Sample Value                                       | Required? | Default Value                                                      | Description                                                                                                                                                                                |
-|----------------------------------------|----------------------------------------------------|-----------|--------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ENV                                    | production                                         | No        | development                                                        | Any string value. String sent to Honeybadger indicating running environment (eg development, test, staging, production, etc). This property can also be read from an environment variable. |
-| honeybadger.api_key                    | 29facd41                                           | Yes       | N/A                                                                | The API key found in the settings tab in the Honeybadger UI.                                                                                                                               |
-| honeybadger.url                        | https://alternative.host/v1/notices                | No        | https://api.honeybadger.io/v1/notices                              | URL to the Honeybadger API endpoint. You may want to access it without SSL in order to test with a proxy utility.                                                                          |
-| http.proxyHost                         | localhost                                          | No        |                                                                    | Standard Java system property for specifying the host to proxy all HTTP traffic through.                                                                                                   |
-| http.proxyPort                         | 8888                                               | No        |                                                                    | Standard Java system property for specifying the port to proxy all HTTP traffic through.                                                                                                   |
-| honeybadger.excluded_exception_classes | org.apache.catalina.connector.ClientAbortException | No        |                                                                    | CSV of Java classes in which errors are never sent to Honeybadger. This is useful for errors that are bubbled up from underlying frameworks like Tomcat.                                   |
-| honeybadger.excluded_sys_props         | bonecp.password,bonecp.username                    | No        | honeybadger.api_key,honeybadger.excluded_sys_props,honeybadger.url | CSV of Java system properties to exclude from being logged to Honeybadger. This is useful for excluding authentication information.                                                        |
+```
 
+ENV
+-------------
+Sample Value: production
+Required?: No
+Default Value: development
+Description: Any string value. String sent to Honeybadger indicating running 
+             environment (eg development, test, staging, production, etc). This 
+             property can also be read from an environment variable. 
+
+honeybadger.api_key
+-------------
+Sample Value: 29facd41
+Required?: Yes
+Default Value: N/A 
+Description: The API key found in the settings tab in the Honeybadger UI. 
+
+honeybadger.url
+-------------
+Sample Value: https://alternative.host/v1/notices
+Required?: No
+Default Value: https://api.honeybadger.io/v1/notices
+Description: URL to the Honeybadger API endpoint. You may want to access it 
+             without SSL in order to test with a proxy utility.
+
+http.proxyHost
+-------------
+Sample Value: localhost
+Required?: No
+Default Value: N/A
+Description: Standard Java system property for specifying the host to proxy all 
+             HTTP traffic through.
+
+http.proxyPort
+-------------
+Sample Value: 8888
+Required?: No
+Default Value: N/A 
+Description: Standard Java system property for specifying the port to proxy all 
+             HTTP traffic through.
+
+honeybadger.excluded_exception_classes
+-------------
+Sample Value: org.apache.catalina.connector.ClientAbortException,com.myorg.AnnoyingException
+Required?: No
+Default Value: N/A
+Description: CSV of Java classes in which errors are never sent to Honeybadger. 
+             This is useful for errors that are bubbled up from underlying 
+             frameworks or application servers like Tomcat.
+
+honeybadger.excluded_sys_props
+-------------
+Sample Value: bonecp.password,bonecp.username
+Required?: No
+Default Value: honeybadger.api_key,honeybadger.excluded_sys_props,honeybadger.url
+Description: CSV of Java system properties to exclude from being logged to 
+             Honeybadger. This is useful for excluding authentication information.
+```
 
 ## Honeybadger Resources
 I found this <a href="https://www.honeybadger.io/pages/collector">page</a> very helpful when trying to understand what data the Honeybadger API accepts. In particular, the gist linked to from the page has a solid example of what to send to the API.
