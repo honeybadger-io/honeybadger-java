@@ -18,3 +18,4 @@
         in gradle builds.
       - Changed default package namespace to io.honeybadger.reporter because
         this library is now maintained by honeybadger.
+      - Extracted ErrorReporter interface.
