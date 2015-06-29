@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  * Interface representing error reporting behavior.
  *
- * @author Elijah Zupancic
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
 public interface ErrorReporter {

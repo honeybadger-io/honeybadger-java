@@ -5,6 +5,7 @@ import io.honeybadger.reporter.HoneybadgerReporter;
 
 import javax.servlet.*;
 import java.io.IOException;
+import java.util.Properties;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.*;
 
@@ -16,6 +17,7 @@ import static io.honeybadger.reporter.HoneybadgerReporter.*;
  */
 public class HoneybadgerFilter implements Filter {
     private ErrorReporter reporter;
+    private Properties properties = System.getProperties();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -52,10 +54,26 @@ public class HoneybadgerFilter implements Filter {
         final String val = filterConfig.getInitParameter(param);
 
         // Don't overwrite already set properties
-        if (System.getProperty(param) != null) return;
+        if (properties.getProperty(param) != null) return;
 
         if (val != null && !val.trim().equals("")) {
-            System.setProperty(param, val);
+            properties.setProperty(param, val);
         }
+    }
+
+    ErrorReporter getReporter() {
+        return reporter;
+    }
+
+    void setReporter(ErrorReporter reporter) {
+        this.reporter = reporter;
+    }
+
+    Properties getProperties() {
+        return properties;
+    }
+
+    void setProperties(Properties properties) {
+        this.properties = properties;
     }
 }
