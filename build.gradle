@@ -111,6 +111,8 @@ signing {
     sign configurations.archives
 }
 
+// TODO: Set me up with a new username for honeybadger.io
+/*
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -187,7 +189,7 @@ uploadArchives {
         }
     }
 }
-
+*/
 idea {
     module {
         scopes.PROVIDED.plus += [configurations.providedCompile]

@@ -38,7 +38,6 @@ com_crashlytics_export_strings.xml
 
 
 ### Gradle ###
-.gradle
 build/
 
 # Ignore Gradle GUI config
