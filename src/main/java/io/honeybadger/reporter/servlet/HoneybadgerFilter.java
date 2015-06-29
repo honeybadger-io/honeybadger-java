@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.servlet;
 
+import io.honeybadger.reporter.ErrorReporter;
 import io.honeybadger.reporter.HoneybadgerReporter;
 
 import javax.servlet.*;
@@ -13,8 +14,8 @@ import static io.honeybadger.reporter.HoneybadgerReporter.*;
  * @author Elijah Zupancic
  * @since 1.0.4
  */
-public class HoneybadgerFilter  implements Filter {
-    private HoneybadgerReporter reporter;
+public class HoneybadgerFilter implements Filter {
+    private ErrorReporter reporter;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

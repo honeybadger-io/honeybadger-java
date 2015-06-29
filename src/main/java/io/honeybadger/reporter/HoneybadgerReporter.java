@@ -28,7 +28,7 @@ import java.util.*;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.0
  */
-public class HoneybadgerReporter {
+public class HoneybadgerReporter implements ErrorReporter {
     /** System property key identifying the Honeybadger URL to use. */
     public static final String HONEYBADGER_URL_SYS_PROP_KEY =
             "honeybadger.url";
@@ -67,6 +67,7 @@ public class HoneybadgerReporter {
      * @param error error to report
      * @return UUID of error created, if there was a problem null
      */
+    @Override
     public UUID reportError(Throwable error) {
         return submitError(error, new JsonObject());
     }
@@ -79,9 +80,10 @@ public class HoneybadgerReporter {
      * are supported as request properties.
      *
      * @param error error to report
-     * @param request Object to parse for request properies
+     * @param request Object to parse for request properties
      * @return UUID of error created, if there was a problem or ignored null
      */
+    @Override
     public UUID reportError(Throwable error, Object request) {
         if (error == null) { return null; }
 

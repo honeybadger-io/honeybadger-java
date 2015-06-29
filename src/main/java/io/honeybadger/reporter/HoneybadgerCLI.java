@@ -22,7 +22,7 @@ public class HoneybadgerCLI {
         String message = in.nextLine();
 
         RuntimeException exception = new RuntimeException(message);
-        HoneybadgerReporter reporter = new HoneybadgerReporter();
+        ErrorReporter reporter = new HoneybadgerReporter();
         reporter.reportError(exception);
     }
 }

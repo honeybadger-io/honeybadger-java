@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 public class HoneybadgerReporterTest {
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private final HoneybadgerReporter reporter;
+    private final ErrorReporter reporter;
 
     public HoneybadgerReporterTest() {
         if (System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY) == null) {

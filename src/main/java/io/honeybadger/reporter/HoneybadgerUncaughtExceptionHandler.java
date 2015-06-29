@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
-    protected HoneybadgerReporter reporter = new HoneybadgerReporter();
+    protected ErrorReporter reporter = new HoneybadgerReporter();
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
