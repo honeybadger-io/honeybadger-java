@@ -18,15 +18,6 @@ If you want to send all unhandled errors to Honeybadger and have them logged to 
 the error log level, you will need to set some system properties and add a single line 
 to the thread in which you want to register the error handler.
 
-System Properties:
- - honeybadger.api_key - set this to the (typically 8 character) API key displayed on your Honeybadger interface
- - honeybadger.excluded_sys_props - a comma delinated list of system property
-   keys to exclude from being reported to Honeybadger. This allows you to prevent
-   passwords and other sensitive information from being sent.
- - honeybadger.excluded_exception_classes - a comma delinated list of fully formed
-   class names that will be excluded from error reporting.
- - JAVA_ENV / ENV - set this to configure the application's running environment
-
 A typical stand-alone implementation may look like:
 
 ```java
@@ -80,7 +71,8 @@ run automated tests you will need to specify system properties to Java in order
 configure the remote API key and other settings.
 
 If you are running the tests from gradle, it is easy to specify system properties
-using a gradle.properties file placed in the root of the project.
+using a gradle.properties file placed in the root of the project or in your 
+$HOME/.gradle directory.
 
 A sample gradle.properties file may look like:
 
@@ -99,6 +91,20 @@ version of gradle that is bundled with the project by:
 If you are executing your tests from an IDE like IntelliJ, you may need to
 manually set the system variables as part of the test run configuration.
 
+For developers pushing to Maven repositories, you will need to specify
+the location of your signing keys in gradle.properties. You also shouldn't
+put the file in the project root, but rather store it in your .gradle directory
+within your home directory. Properties for signing look like:
+
+```
+signing.keyId=345A20CE
+signing.password=J6N0phB*f3aRH4bZ
+signing.secretKeyRingFile=/home/user/.gnupg/secring.gpg
+
+ossrhUsername=user
+ossrhPassword=AFbz3BjdE4Q9g2E&
+```
+
 ## System Properties
 
 The following properties are available:
@@ -113,6 +119,17 @@ Default Value: development
 Description: Any string value. String sent to Honeybadger indicating running 
              environment (eg development, test, staging, production, etc). This 
              property can also be read from an environment variable. 
+
+JAVA_ENV
+-------------
+Sample Value: production
+Required?: No
+Default Value: development
+Description: Any string value. String sent to Honeybadger indicating running 
+             environment (eg development, test, staging, production, etc). This 
+             property can also be read from an environment variable. This is the
+             same as ENV, it is only here to provide compability with systems
+             that use it to indicate running environment.
 
 honeybadger.api_key
 -------------
