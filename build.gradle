@@ -107,13 +107,14 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
+// TODO: Set me up with a new username for honeybadger.io
+/*
+publ
 signing {
     sign configurations.archives
 }
 
-// TODO: Set me up with a new username for honeybadger.io
-/*
-publishing {
+ishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
