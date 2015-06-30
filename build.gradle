@@ -109,7 +109,7 @@ artifacts {
 
 // TODO: Set me up with a new username for honeybadger.io
 /*
-publ
+
 signing {
     sign configurations.archives
 }
