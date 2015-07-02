@@ -179,6 +179,6 @@ Description: CSV of Java system properties to exclude from being logged to
 
 ## Credits
 
-Originally forked by [Elijah Zupancic](/dekobon) from
+Originally forked by [Elijah Zupancic](https://github.com/dekobon) from
 [honeybadger-java](https://github.com/styleseek/honeybadger-java) - thanks to
 both of you for doing the hard work of getting this library started.
