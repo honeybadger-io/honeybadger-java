@@ -359,7 +359,7 @@ public class HoneybadgerReporter implements ErrorReporter {
             final String sysProp =
                     System.getProperty(HONEYBADGER_URL_SYS_PROP_KEY);
 
-            if (sysProp != null || sysProp.isEmpty()) {
+            if (sysProp != null && !sysProp.isEmpty()) {
                 url = sysProp;
             } else {
                 url = DEFAULT_API_URI;
