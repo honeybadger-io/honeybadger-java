@@ -1,7 +1,8 @@
-honeybadger-jvm-client-v2
-================
+# honeybadger-java [![Build Status](https://travis-ci.org/honeybadger-io/honeybadger-java.svg)](https://travis-ci.org/honeybadger-io/honeybadger-java)
 
-*Java Client to report exceptions to Honeybadger.io*
+Java client to report exceptions to the :zap: [Honeybadger.io error notification
+service](https://www.honeybadger.io/). Receive instant notification of
+exceptions and errors in your Java applications.
 
 ## Origin
 Forked from <a href="https://github.com/styleseek/honeybadger-java">honeybadger-java</a> - 
