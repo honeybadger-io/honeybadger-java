@@ -336,7 +336,8 @@ public class HoneybadgerReporter implements ErrorReporter {
                .version(HttpVersion.HTTP_1_1)
                .bodyString(jsonError, ContentType.APPLICATION_JSON);
 
-        if (System.getProperty("http.proxyHost") != null) {
+        if (System.getProperty("http.proxyHost") != null &&
+            !System.getProperty("http.proxyHost").isEmpty()) {
             int port = Integer.parseInt(System.getProperty("http.proxyPort"));
             HttpHost proxy = new HttpHost(System.getProperty("http.proxyHost"),
                                           port);
