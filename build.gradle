@@ -88,7 +88,7 @@ tasks.withType(Test) {
     }
 
     // Assume a default environment of test if it isn't specified
-    systemProperty 'ENV', System.getProperty('ENV', 'test')
+    systemProperty 'ENV', System.getProperty('ENV', 'TEST')
 
     def passSysProp = { String prop ->
         systemProperty prop, System.getProperty(prop)
