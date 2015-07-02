@@ -81,7 +81,7 @@ task showSystemProperties << {
 tasks.withType(Test) {
     def apiKeyProp = "honeybadger.api_key"
 
-    if (!System.getProperty(apiKeyProp)) {
+    if (!System.getProperty(apiKeyProp) && !System.getenv("HONEYBADGER_API_KEY")) {
         println 'No API key'
         def msg = "${apiKeyProp} system property must be specified"
         throw new org.gradle.api.InvalidUserDataException(msg)

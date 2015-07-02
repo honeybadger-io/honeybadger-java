@@ -326,12 +326,9 @@ public class HoneybadgerReporter implements ErrorReporter {
      * @return a configured request object
      */
     private Request buildRequest(URI honeybadgerUrl, String jsonError) {
-        final String honeybadgerApiKey =
-                System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
-
         Request request = Request
                .Post(honeybadgerUrl)
-               .addHeader("X-API-Key", honeybadgerApiKey)
+               .addHeader("X-API-Key", apiKey())
                .addHeader("Accept", "application/json")
                .version(HttpVersion.HTTP_1_1)
                .bodyString(jsonError, ContentType.APPLICATION_JSON);
@@ -377,12 +374,30 @@ public class HoneybadgerReporter implements ErrorReporter {
     }
 
     /**
+     * Finds the API key, preferring ENV to system properties.
+     *
+     * @return the API key if found, otherwise null
+     */
+    private String apiKey() {
+      String envKey = System.getenv("HONEYBADGER_API_KEY");
+      if (envKey != null) return envKey;
+
+      String sysPropKey =
+        System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
+
+      return sysPropKey;
+    }
+
+    /**
      * Finds the name of the environment by looking at a few common Java
      * system properties and/or environment variables.
      *
      * @return the name of the environment, otherwise "development"
      */
     private String environment() {
+        String hbEnv = System.getenv("HONEYBADGER_ENV");
+        if (hbEnv != null) return hbEnv;
+
         String sysPropJavaEnv = System.getProperty("JAVA_ENV");
         if (sysPropJavaEnv != null) return sysPropJavaEnv;
 
