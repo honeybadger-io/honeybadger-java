@@ -75,6 +75,8 @@ public class HoneybadgerReporterTest {
 
         UUID id = reporter.reportError(t, request);
 
+        logger.info("Error ID returned from Honeybadger is: {}", id);
+
         assertNotNull("Didn't send error correctly to Honeybadger API", id);
 
         logger.info("Created error with id: {}", id);
