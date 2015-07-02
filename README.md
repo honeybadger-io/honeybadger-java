@@ -4,10 +4,6 @@ Java client to report exceptions to the :zap: [Honeybadger.io error notification
 service](https://www.honeybadger.io/). Receive instant notification of
 exceptions and errors in your Java applications.
 
-## Origin
-Forked from <a href="https://github.com/styleseek/honeybadger-java">honeybadger-java</a> - 
-thanks for doing the hard work for figuring out the API.
-
 ## Description
 This is a library for sending errors that implement ```java.lang.Throwable``` on the JVM to the online error reporting service <a href="https://www.honeybadger.io/">Honeybadger</a>.
 
@@ -181,5 +177,8 @@ Description: CSV of Java system properties to exclude from being logged to
              Honeybadger. This is useful for excluding authentication information.
 ```
 
-## Honeybadger Resources
-I found this <a href="https://www.honeybadger.io/pages/collector">page</a> very helpful when trying to understand what data the Honeybadger API accepts. In particular, the gist linked to from the page has a solid example of what to send to the API.
+## Credits
+
+Originally forked by [Elijah Zupancic](/dekobon) from
+[honeybadger-java](https://github.com/styleseek/honeybadger-java) - thanks to
+both of you for doing the hard work of getting this library started.
