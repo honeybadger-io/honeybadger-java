@@ -24,7 +24,7 @@ public class HttpServletRequestInfoGenerator
 
         jsonRequest.addProperty("url", getFullURL(request));
         jsonRequest.add("cgi_data", cgiData(request));
-        jsonRequest.add("params", params(request));
+        jsonRequest.add("params", requestParams(request));
 
         return jsonRequest;
     }
@@ -95,15 +95,6 @@ public class HttpServletRequestInfoGenerator
         }
 
         return builder.toString();
-    }
-
-    protected JsonObject params(HttpServletRequest request) {
-        JsonObject jsonParams = new JsonObject();
-
-        jsonParams.add("request_headers", httpHeaders(request));
-        jsonParams.add("request_parameters", requestParams(request));
-
-        return jsonParams;
     }
 
     protected JsonObject httpHeaders(HttpServletRequest request) {
