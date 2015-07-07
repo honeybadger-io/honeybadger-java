@@ -86,6 +86,7 @@ public class HoneybadgerReporter implements ErrorReporter {
     @Override
     public UUID reportError(Throwable error, Object request) {
         if (error == null) { return null; }
+        if (request == null) { return submitError(error, null); }
 
         try {
             Class.forName("javax.servlet.http.HttpServletRequest");
