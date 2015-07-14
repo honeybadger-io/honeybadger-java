@@ -231,7 +231,7 @@ public class HoneybadgerReporter implements ErrorReporter {
         JsonObject jsonServer = new JsonObject();
         jsonServer.addProperty("environment_name", environment());
         jsonServer.addProperty("hostname", hostname);
-        jsonServer.addProperty("runtime_root", runtimeRoot);
+        jsonServer.addProperty("project_root", runtimeRoot);
         jsonServer.add("mdc_properties", mdcProperties());
         jsonServer.add("system_properties", systemProperties());
 
