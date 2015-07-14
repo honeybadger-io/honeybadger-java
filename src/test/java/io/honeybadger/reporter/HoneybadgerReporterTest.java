@@ -1,6 +1,7 @@
 package io.honeybadger.reporter;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import io.honeybadger.reporter.servlet.FakeHttpSession;
 import org.apache.http.HttpHeaders;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -8,10 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.UUID;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
@@ -57,6 +57,9 @@ public class HoneybadgerReporterTest {
         when(request.getServerPort()).thenReturn(80);
         when(request.getContentType()).thenReturn("application/json; charset=UTF-8");
 
+        HttpSession session = new FakeHttpSession("session-id", ImmutableMap.of("session_key_1", "session_val_1"));
+        when(request.getSession()).thenReturn(session);
+
         when(request.getHeaderNames()).thenReturn(
                 EnumerationWrapper.of(
                         HttpHeaders.REFERER,
@@ -89,31 +92,5 @@ public class HoneybadgerReporterTest {
         final UUID id = reporter.reportError(error);
 
         assertNull("A suppressed error was actually added", id);
-    }
-
-    static class EnumerationWrapper<E> implements Enumeration<E> {
-        final Iterator<E> itr;
-
-        EnumerationWrapper(Iterator<E> backing) {
-            this.itr = backing;
-        }
-
-        EnumerationWrapper(Iterable<E> backing) {
-            this.itr = backing.iterator();
-        }
-
-        public static <E> EnumerationWrapper<E> of(E... items) {
-            return new EnumerationWrapper<>(ImmutableList.copyOf(items).iterator());
-        }
-
-        @Override
-        public boolean hasMoreElements() {
-            return itr.hasNext();
-        }
-
-        @Override
-        public E nextElement() {
-            return itr.next();
-        }
     }
 }

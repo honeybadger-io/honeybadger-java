@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import org.apache.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -23,9 +24,9 @@ public class HttpServletRequestInfoGenerator
         JsonObject jsonRequest = new JsonObject();
 
         jsonRequest.addProperty("url", getFullURL(request));
-        jsonRequest.add("cgi_data", cgiData(request));
         jsonRequest.add("params", requestParams(request));
-
+        jsonRequest.add("session", session(request));
+        jsonRequest.add("cgi_data", cgiData(request));
         return jsonRequest;
     }
 
@@ -81,6 +82,31 @@ public class HttpServletRequestInfoGenerator
          }
 
         return params;
+    }
+
+    protected JsonObject session(HttpServletRequest request) {
+        final JsonObject jsonSession = new JsonObject();
+        final HttpSession session = request.getSession();
+
+        if (session == null) return jsonSession;
+
+        try {
+            jsonSession.addProperty("session_id", session.getId());
+            jsonSession.addProperty("creation_time", session.getCreationTime());
+
+            final Enumeration<String> attributes = session.getAttributeNames();
+
+            while (attributes.hasMoreElements()) {
+                final String key = attributes.nextElement();
+                final Object value = session.getAttribute(key);
+
+                jsonSession.addProperty(key, String.valueOf(value));
+            }
+        } catch (RuntimeException e) {
+            jsonSession.addProperty("Error getting session", e.getMessage());
+        }
+
+        return jsonSession;
     }
 
     protected String csv(String[] strings) {

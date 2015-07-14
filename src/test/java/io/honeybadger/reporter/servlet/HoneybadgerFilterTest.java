@@ -87,7 +87,7 @@ public class HoneybadgerFilterTest {
         HoneybadgerFilter filter = instance(reporter);
 
         FilterChain chain = mock(FilterChain.class);
-        Exception exception = new UnitTestExpectedException("Servlet Exception");
+        Exception exception = new UnitTestExpectedException("Servlet Filter Exception");
         Mockito.doThrow(exception)
                 .when(chain).doFilter(any(ServletRequest.class),
                                       any(ServletResponse.class));
@@ -113,7 +113,7 @@ public class HoneybadgerFilterTest {
         HoneybadgerFilter filter = instance();
 
         FilterChain chain = mock(FilterChain.class);
-        Exception exception = new UnitTestExpectedException("Servlet Exception");
+        Exception exception = new UnitTestExpectedException("Servlet Filter Exception");
         Mockito.doThrow(exception)
                 .when(chain).doFilter(any(ServletRequest.class),
                                       any(ServletResponse.class));
