@@ -55,18 +55,29 @@ sourceSets {
 }
 
 dependencies {
+    // We compile against the servlet API, but we don't bring it into the dependency graph
+    // because the implementation is typically provided by the application server
     providedCompile group: 'javax.servlet', name: 'javax.servlet-api',
             version: '3.1.0'
 
+    // logging facade that allows users of the library to use their own logging implementations
     compile 'org.slf4j:slf4j-api:1.7.12'
     compile 'com.google.code.gson:gson:2.3.1'
+
+    // HTTP requesting library - used to talk to the Honeybadger API
     compile('org.apache.httpcomponents:fluent-hc:4.5') {
         // we exclude commons logging because we replace it with a shadowed
         // jcl-over-slf4j in order to redirect all logging messages over
         // the slf4j interface
         exclude group: 'commons-logging'
     }
+
+    // Used so we don't have to pull in commons-logging as a dependency
     compile 'org.slf4j:jcl-over-slf4j:1.7.12'
+
+    compile 'com.jcabi:jcabi-manifests:1.1'
+
+    // Utilities for testing below
 
     testCompile ('com.google.guava:guava:18.0') {
         exclude group: 'org.slf4j'
@@ -77,11 +88,26 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.10.19'
 }
 
+jar {
+    doFirst {
+        manifest {
+            attributes("Honeybadger-Java-Version": version)
+        }
+    }
+}
+
 shadowJar {
+    doFirst {
+        manifest {
+            attributes("Honeybadger-Java-Version": version)
+        }
+    }
+
     relocate 'com.google', 'io.honeybadger.com.google'
     relocate 'org.apache.httpcomponents', 'io.honeybadger.org.apache.httpcomponents'
     relocate 'org.apache.commons.codec', 'io.honeybadger.org.apache.commons.codec'
     relocate 'org.apache.commons.logging', 'io.honeybadger.org.apache.commons.logging'
+    relocate 'com.jcabi', 'io.honeybadger.com.jcabi'
 }
 
 jar.dependsOn(shadowJar)
@@ -112,6 +138,7 @@ tasks.withType(Test) {
 
     // Assume a default environment of test if it isn't specified
     systemProperty 'ENV', System.getProperty('ENV', 'TEST')
+    systemProperty 'honeybadger.version', version
 
     def passSysProp = { String prop ->
         systemProperty prop, System.getProperty(prop)

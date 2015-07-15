@@ -3,6 +3,7 @@ package io.honeybadger.reporter;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.jcabi.manifests.Manifests;
 import io.honeybadger.reporter.servlet.HttpServletRequestInfoGenerator;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -47,6 +48,12 @@ public class HoneybadgerReporter implements ErrorReporter {
     public static final String DEFAULT_API_URI =
             "https://api.honeybadger.io/v1/notices";
 
+    public static final String VERSION;
+
+    static {
+        VERSION = findVersion();
+    }
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final String hostname;
     private final String runtimeRoot;
@@ -58,6 +65,26 @@ public class HoneybadgerReporter implements ErrorReporter {
         this.runtimeRoot = runtimeRoot();
         this.excludedSysProps = buildExcludedSysProps();
         this.excludedExceptionClasses = buildExcludedExceptionClasses();
+    }
+
+    /**
+     * Finds the version of the library from the JAR manifest or a system property.
+     * @return Sting containing version number or "unknown" if we can't locate the version
+     */
+    private static String findVersion() {
+        final String sysPropVersion = System.getProperty("honeybadger.version");
+
+        if (sysPropVersion != null && !sysPropVersion.isEmpty()) {
+            return sysPropVersion;
+        }
+
+        final String manifestVersion = Manifests.read("Honeybadger-Java-Version");
+
+        if (manifestVersion != null && !manifestVersion.isEmpty()) {
+            return manifestVersion;
+        }  else {
+            return "unknown";
+        }
     }
 
     /**
@@ -116,6 +143,7 @@ public class HoneybadgerReporter implements ErrorReporter {
         jsonError.add("notifier", makeNotifier());
         jsonError.add("error", makeError(error));
 
+        // Contrary to your static code analysis tools, in some cases this can be null
         if (request != null) {
             jsonError.add("request", request);
         }
@@ -171,7 +199,7 @@ public class HoneybadgerReporter implements ErrorReporter {
     */
     private JsonObject makeNotifier() {
         JsonObject notifier = new JsonObject();
-        notifier.addProperty("name", "honeybadger-jvm-client-v2");
+        notifier.addProperty("name", "io.honeybadger:honeybadger-java");
         notifier.addProperty("version", "1.3.0");
         return notifier;
     }
@@ -281,9 +309,7 @@ public class HoneybadgerReporter implements ErrorReporter {
             return set;
         }
 
-        for (String item : excluded.split(",")) {
-            set.add(item);
-        }
+        Collections.addAll(set, excluded.split(","));
 
         return set;
     }
@@ -296,9 +322,7 @@ public class HoneybadgerReporter implements ErrorReporter {
             return set;
         }
 
-        for (String item : excluded.split(",")) {
-            set.add(item);
-        }
+        Collections.addAll(set, excluded.split(","));
 
         return set;
     }
@@ -397,19 +421,19 @@ public class HoneybadgerReporter implements ErrorReporter {
      */
     private String environment() {
         String hbEnv = System.getenv("HONEYBADGER_ENV");
-        if (hbEnv != null) return hbEnv;
+        if (hbEnv != null && !hbEnv.isEmpty()) return hbEnv;
 
         String sysPropJavaEnv = System.getProperty("JAVA_ENV");
-        if (sysPropJavaEnv != null) return sysPropJavaEnv;
+        if (sysPropJavaEnv != null && !sysPropJavaEnv.isEmpty()) return sysPropJavaEnv;
 
         String javaEnv = System.getenv("JAVA_ENV");
-        if (javaEnv != null) return javaEnv;
+        if (javaEnv != null && !javaEnv.isEmpty()) return javaEnv;
 
         String sysPropEnv = System.getProperty("ENV");
-        if (sysPropEnv != null) return sysPropEnv;
+        if (sysPropEnv != null && !sysPropEnv.isEmpty()) return sysPropEnv;
 
         String env = System.getenv("ENV");
-        if (sysPropEnv != null) return env;
+        if (env != null && !env.isEmpty()) return env;
 
         // If no system property defined, then return development
         return "development";
