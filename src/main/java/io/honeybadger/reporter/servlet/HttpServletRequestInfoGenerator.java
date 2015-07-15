@@ -19,6 +19,10 @@ import java.util.Map;
  */
 public class HttpServletRequestInfoGenerator
         implements RequestInfoGenerator<HttpServletRequest> {
+
+    /** The maximum amount of characters to dump for a session object. **/
+    private static final int MAX_SESSION_OBJ_STRING_SIZE = 4096;
+
     @Override
     public JsonObject generateRequest(HttpServletRequest request) {
         JsonObject jsonRequest = new JsonObject();
@@ -99,8 +103,9 @@ public class HttpServletRequestInfoGenerator
             while (attributes.hasMoreElements()) {
                 final String key = attributes.nextElement();
                 final Object value = session.getAttribute(key);
+                final String valueAsString = String.valueOf(value).substring(0, MAX_SESSION_OBJ_STRING_SIZE);
 
-                jsonSession.addProperty(key, String.valueOf(value));
+                jsonSession.addProperty(key, valueAsString);
             }
         } catch (RuntimeException e) {
             jsonSession.addProperty("Error getting session", e.getMessage());
