@@ -1,9 +1,17 @@
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:+'
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'idea'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.honeybadger'
 version = '1.0.9'
@@ -52,7 +60,13 @@ dependencies {
 
     compile 'org.slf4j:slf4j-api:1.7.12'
     compile 'com.google.code.gson:gson:2.3.1'
-    compile 'org.apache.httpcomponents:fluent-hc:4.5'
+    compile('org.apache.httpcomponents:fluent-hc:4.5') {
+        // we exclude commons logging because we replace it with a shadowed
+        // jcl-over-slf4j in order to redirect all logging messages over
+        // the slf4j interface
+        exclude group: 'commons-logging'
+    }
+    compile 'org.slf4j:jcl-over-slf4j:1.7.12'
 
     testCompile ('com.google.guava:guava:18.0') {
         exclude group: 'org.slf4j'
@@ -62,6 +76,15 @@ dependencies {
     testCompile 'org.slf4j:slf4j-simple:1.7.12'
     testCompile 'org.mockito:mockito-all:1.10.19'
 }
+
+shadowJar {
+    relocate 'com.google', 'io.honeybadger.com.google'
+    relocate 'org.apache.httpcomponents', 'io.honeybadger.org.apache.httpcomponents'
+    relocate 'org.apache.commons.codec', 'io.honeybadger.org.apache.commons.codec'
+    relocate 'org.apache.commons.logging', 'io.honeybadger.org.apache.commons.logging'
+}
+
+jar.dependsOn(shadowJar)
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
