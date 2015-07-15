@@ -1,10 +1,13 @@
 package io.honeybadger.reporter.servlet;
 
+import com.google.common.collect.ImmutableMap;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -27,7 +30,7 @@ public class FakeHttpSession implements HttpSession {
     }
 
     public FakeHttpSession(String id) {
-        this(id, Collections.emptyMap());
+        this(id, new HashMap<String, Object>());
     }
 
     @Override

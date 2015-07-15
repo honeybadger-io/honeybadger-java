@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
@@ -57,7 +58,8 @@ public class HoneybadgerReporterTest {
         when(request.getServerPort()).thenReturn(80);
         when(request.getContentType()).thenReturn("application/json; charset=UTF-8");
 
-        HttpSession session = new FakeHttpSession("session-id", ImmutableMap.of("session_key_1", "session_val_1"));
+        Map<String, Object> sessionContents = ImmutableMap.of("session_key_1", (Object)"session_val_1");
+        HttpSession session = new FakeHttpSession("session-id", sessionContents);
         when(request.getSession()).thenReturn(session);
 
         when(request.getHeaderNames()).thenReturn(
