@@ -62,6 +62,7 @@ dependencies {
 
     // logging facade that allows users of the library to use their own logging implementations
     compile 'org.slf4j:slf4j-api:1.7.12'
+    // JSON processing
     compile 'com.google.code.gson:gson:2.3.1'
 
     // HTTP requesting library - used to talk to the Honeybadger API

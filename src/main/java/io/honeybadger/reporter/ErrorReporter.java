@@ -9,6 +9,24 @@ import java.util.UUID;
  * @since 1.0.9
  */
 public interface ErrorReporter {
+    /** System property key identifying the Honeybadger URL to use. */
+    public static final String HONEYBADGER_URL_SYS_PROP_KEY =
+            "honeybadger.url";
+    /** System property key identifying the Honeybadger API key to use. */
+    public static final String HONEYBADGER_API_KEY_SYS_PROP_KEY =
+            "honeybadger.api_key";
+
+    /** Comma delinated list of system properties to not include. */
+    public static final String HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY =
+            "honeybadger.excluded_sys_props";
+
+    /** Comma delinated list of exception classes to ignore. */
+    public static final String HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY =
+            "honeybadger.excluded_exception_classes";
+
+    public static final String DEFAULT_API_URI =
+            "https://api.honeybadger.io/v1/notices";
+
     /**
      * Send any Java {@link java.lang.Throwable} to the Honeybadger error
      * reporting interface.
