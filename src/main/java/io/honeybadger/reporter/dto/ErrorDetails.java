@@ -9,6 +9,8 @@ import java.util.Set;
 
 /**
  * Details of the error being reported to the Honeybadger API.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class ErrorDetails implements Serializable {
     private static final long serialVersionUID = -3055963787038629496L;

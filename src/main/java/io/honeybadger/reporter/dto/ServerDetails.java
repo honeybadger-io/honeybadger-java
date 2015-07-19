@@ -10,6 +10,8 @@ import java.net.UnknownHostException;
 
 /**
  * Server details at the time an error occurred.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class ServerDetails {
     private static Logger logger = LoggerFactory.getLogger(ServerDetails.class);

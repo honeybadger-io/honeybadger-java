@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 
 /**
  * CGI parameters passed to the server when the error occurred.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class CgiData extends LinkedHashMap<String, Object> 
         implements Serializable {
@@ -16,7 +18,7 @@ public class CgiData extends LinkedHashMap<String, Object>
     public CgiData(HttpServletRequest request) {
         addCgiParams(request);
     }
-    
+
     void addCgiParams(HttpServletRequest request) {
         put("REQUEST_METHOD", request.getMethod());
         put("HTTP_ACCEPT", request.getHeader(HttpHeaders.ACCEPT));

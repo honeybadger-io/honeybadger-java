@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 /**
  * Class representing an ordered collection of back trace elements.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class Backtrace extends ArrayList<BacktraceElement>
         implements Serializable {

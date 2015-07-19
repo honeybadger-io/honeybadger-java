@@ -6,6 +6,8 @@ import java.util.LinkedList;
 
 /**
  * An ordered collection of chained exceptions.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class Causes extends LinkedList<Cause> implements Serializable {
     private static final long serialVersionUID = -5359764114506595006L;

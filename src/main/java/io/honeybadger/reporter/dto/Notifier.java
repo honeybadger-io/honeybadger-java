@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 /**
  * Notifier section of an error reported to the Honeybadger API.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class Notifier implements Serializable {
     public static final String VERSION;

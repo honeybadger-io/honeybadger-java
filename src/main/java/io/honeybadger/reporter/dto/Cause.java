@@ -7,6 +7,8 @@ import java.io.Serializable;
 /**
  * This class represents a single exception in a serious of chained
  * exceptions.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class Cause implements Serializable {
     private static final long serialVersionUID = -6876640270344752492L;

@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 
 /**
  * Session store when error was triggered.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class Session extends LinkedHashMap<String, Object>
         implements Serializable {

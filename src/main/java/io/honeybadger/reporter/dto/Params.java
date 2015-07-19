@@ -7,6 +7,8 @@ import java.util.Map;
 
 /**
  * Class representing parameters requested when an exception occurred.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class Params extends LinkedHashMap<String, String>
         implements Serializable {

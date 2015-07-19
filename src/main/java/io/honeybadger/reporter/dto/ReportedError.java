@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Class representing an error that is reported to the Honeybadger API.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class ReportedError implements Serializable {
     private static final long serialVersionUID = 1661111694538362413L;

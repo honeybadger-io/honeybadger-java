@@ -8,6 +8,8 @@ import java.util.Scanner;
 
 /**
  * Class representing the source of an exception.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class SourceDetails extends LinkedHashMap<String, String>
         implements Serializable {

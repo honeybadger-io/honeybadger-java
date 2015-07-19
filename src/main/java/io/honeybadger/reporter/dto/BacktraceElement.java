@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * One single line on a backtrace.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class BacktraceElement implements Serializable {
     private static final long serialVersionUID = -4455225669072193184L;

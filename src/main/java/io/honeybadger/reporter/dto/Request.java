@@ -6,6 +6,8 @@ import java.io.Serializable;
 /**
  * Class representing the properties of an HTTP request that triggered an
  * error.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class Request implements Serializable {
     private static final long serialVersionUID = 9105532956022860986L;

@@ -9,6 +9,8 @@ import static io.honeybadger.reporter.ErrorReporter.*;
 
 /**
  * Class representing metadata and run-time state.
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class Details extends LinkedHashMap<String, LinkedHashMap<String, String>>
         implements Serializable {
