@@ -11,7 +11,9 @@ public class ReportedError implements Serializable {
     private Notifier notifier = new Notifier();
     private ServerDetails server = new ServerDetails();
     private Details details = new Details();
-    private Request request;
+    // This is defined as serializable so that it can use APIs that the
+    // implementers may not have available like the Servlet API
+    private Serializable request;
     private ErrorDetails error;
 
     public ReportedError() {
@@ -53,11 +55,11 @@ public class ReportedError implements Serializable {
         return this;
     }
 
-    public Request getRequest() {
+    public Serializable getRequest() {
         return request;
     }
 
-    public ReportedError setRequest(Request request) {
+    public ReportedError setRequest(Serializable request) {
         this.request = request;
         return this;
     }

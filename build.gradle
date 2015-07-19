@@ -90,6 +90,7 @@ dependencies {
 }
 
 jar {
+    onlyIf { false }
     doFirst {
         manifest {
             attributes("Honeybadger-Java-Version": version)
@@ -98,6 +99,9 @@ jar {
 }
 
 shadowJar {
+    baseName = "${rootProject.name}"
+    classifier = ''
+
     doFirst {
         manifest {
             attributes("Honeybadger-Java-Version": version)
@@ -109,6 +113,21 @@ shadowJar {
     relocate 'org.apache.commons.codec', 'io.honeybadger.org.apache.commons.codec'
     relocate 'org.apache.commons.logging', 'io.honeybadger.org.apache.commons.logging'
     relocate 'com.jcabi', 'io.honeybadger.com.jcabi'
+}
+
+def installer = install.repositories.mavenInstaller
+
+[installer]*.pom*.whenConfigured {pom ->
+    pom.dependencies.removeAll { it.scope == "compile" }
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) {
+            from components.shadow
+            artifactId = "${rootProject.name}"
+        }
+    }
 }
 
 jar.dependsOn(shadowJar)
@@ -155,7 +174,7 @@ tasks.withType(Test) {
 }
 
 artifacts {
-    archives javadocJar, sourcesJar
+    archives javadocJar, sourcesJar, shadowJar
 }
 
 // TODO: Set me up with a new username for honeybadger.io

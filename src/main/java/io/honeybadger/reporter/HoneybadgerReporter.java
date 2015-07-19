@@ -33,7 +33,8 @@ public class HoneybadgerReporter implements ErrorReporter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Set<String> excludedExceptionClasses;
-    private final Gson gson = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder()
+            .create();
 
     public HoneybadgerReporter() {
         this.excludedExceptionClasses = buildExcludedExceptionClasses();
