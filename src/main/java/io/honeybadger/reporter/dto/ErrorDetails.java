@@ -21,9 +21,12 @@ public class ErrorDetails implements Serializable {
     public final Backtrace backtrace;
     public final Causes causes;
 
+    @SuppressWarnings("unchecked")
     public ErrorDetails(Throwable error) {
+
         this(error, (Set<String>)Collections.EMPTY_SET);
     }
+
     public ErrorDetails(Throwable error, Set<String> tags) {
         if (error == null) {
             throw new IllegalArgumentException("Error can't be null");

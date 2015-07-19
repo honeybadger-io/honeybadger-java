@@ -1,6 +1,5 @@
 package io.honeybadger.reporter.dto;
 
-import com.google.gson.JsonObject;
 import org.slf4j.MDC;
 
 import java.io.Serializable;

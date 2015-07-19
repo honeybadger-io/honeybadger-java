@@ -1,10 +1,9 @@
 package io.honeybadger.reporter;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.jcabi.manifests.Manifests;
-import io.honeybadger.reporter.servlet.HttpServletRequestInfoGenerator;
+import com.google.gson.GsonBuilder;
+import io.honeybadger.reporter.dto.ErrorDetails;
+import io.honeybadger.reporter.dto.ReportedError;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -13,12 +12,13 @@ import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
-import java.io.*;
-import java.net.InetAddress;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.util.*;
 
 /**
@@ -30,43 +30,13 @@ import java.util.*;
  * @since 1.0.0
  */
 public class HoneybadgerReporter implements ErrorReporter {
-    public static final String VERSION;
-
-    static {
-        VERSION = findVersion();
-    }
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final String hostname;
-    private final String runtimeRoot;
-    private final Set<String> excludedSysProps;
     private final Set<String> excludedExceptionClasses;
+    private final Gson gson = new GsonBuilder().create();
 
     public HoneybadgerReporter() {
-        this.hostname = hostname();
-        this.runtimeRoot = runtimeRoot();
-        this.excludedSysProps = buildExcludedSysProps();
         this.excludedExceptionClasses = buildExcludedExceptionClasses();
-    }
-
-    /**
-     * Finds the version of the library from the JAR manifest or a system property.
-     * @return Sting containing version number or "unknown" if we can't locate the version
-     */
-    private static String findVersion() {
-        final String sysPropVersion = System.getProperty("honeybadger.version");
-
-        if (sysPropVersion != null && !sysPropVersion.isEmpty()) {
-            return sysPropVersion;
-        }
-
-        final String manifestVersion = Manifests.read("Honeybadger-Java-Version");
-
-        if (manifestVersion != null && !manifestVersion.isEmpty()) {
-            return manifestVersion;
-        }  else {
-            return "unknown";
-        }
     }
 
     /**
@@ -78,7 +48,7 @@ public class HoneybadgerReporter implements ErrorReporter {
      */
     @Override
     public UUID reportError(Throwable error) {
-        return submitError(error, new JsonObject());
+        return submitError(error, null);
     }
 
     /**
@@ -99,42 +69,39 @@ public class HoneybadgerReporter implements ErrorReporter {
 
         try {
             Class.forName("javax.servlet.http.HttpServletRequest");
-            RequestInfoGenerator<?> generator =
-                    new HttpServletRequestInfoGenerator();
-            JsonObject jsonRequest = generator.routeRequest(request);
-            return submitError(error, jsonRequest);
+
+            if (request instanceof HttpServletRequest) {
+                io.honeybadger.reporter.dto.Request requestDetails =
+                        new io.honeybadger.reporter.dto.Request(
+                                (HttpServletRequest)request);
+                return submitError(error, requestDetails);
+            } else {
+                return submitError(error, null);
+            }
         } catch (ClassNotFoundException e) {
             return submitError(error, null);
         }
     }
 
-    protected UUID submitError(Throwable error, JsonObject request) {
-        JsonObject context = new JsonObject();
-
-        context.addProperty("full_stacktrace", stacktraceAsString(error));
-        request.add("context", context);
-
+    protected UUID submitError(Throwable error,
+                               io.honeybadger.reporter.dto.Request request) {
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
                 excludedExceptionClasses.contains(errorClassName)) {
             return null;
         }
 
-        Gson myGson = new Gson();
-        JsonObject jsonError = new JsonObject();
-        jsonError.add("notifier", makeNotifier());
-        jsonError.add("error", makeError(error));
+        ReportedError reportedError = new ReportedError()
+                .setError(new ErrorDetails(error));
 
-        // Contrary to your static code analysis tools, in some cases this can be null
         if (request != null) {
-            jsonError.add("request", request);
+            reportedError.setRequest(request);
         }
-
-        jsonError.add("server", makeServer());
 
         for (int retries = 0; retries < 3; retries++) {
             try {
-                HttpResponse response = sendToHoneybadger(myGson.toJson(jsonError))
+                String json = gson.toJson(reportedError);
+                HttpResponse response = sendToHoneybadger(json)
                         .returnResponse();
                 int responseCode = response.getStatusLine().getStatusCode();
 
@@ -145,7 +112,7 @@ public class HoneybadgerReporter implements ErrorReporter {
                 else {
                     logger.debug("Honeybadger logged error correctly: {}",
                                  error);
-                    return parseErrorId(response, myGson);
+                    return parseErrorId(response, gson);
                 }
             } catch (IOException e) {
                 String msg = String.format("There was an error when trying " +
@@ -176,126 +143,6 @@ public class HoneybadgerReporter implements ErrorReporter {
         }
     }
 
-    /*
-      Identify the notifier
-    */
-    private JsonObject makeNotifier() {
-        JsonObject notifier = new JsonObject();
-        notifier.addProperty("name", "io.honeybadger:honeybadger-java");
-        notifier.addProperty("version", "1.3.0");
-        return notifier;
-    }
-
-    /*
-      Format the throwable into a json object
-    */
-    private JsonObject makeError(Throwable error) {
-        JsonObject jsonError = new JsonObject();
-        jsonError.addProperty("class", error.getClass().getName());
-        jsonError.addProperty("message", error.getMessage());
-
-        JsonArray backTrace = new JsonArray();
-        for (StackTraceElement trace : error.getStackTrace()) {
-            JsonObject jsonTraceElement = new JsonObject();
-            jsonTraceElement.addProperty("number", trace.getLineNumber());
-            jsonTraceElement.addProperty("file", trace.getFileName());
-            jsonTraceElement.addProperty("method",
-                    String.format("%s.%s",
-                            trace.getClassName(), trace.getMethodName()));
-            backTrace.add(jsonTraceElement);
-        }
-        jsonError.add("backtrace", backTrace);
-
-        JsonObject sourceElement = new JsonObject();
-
-        appendStacktraceToJsonElement(error, sourceElement);
-
-        jsonError.add("source", sourceElement);
-
-        return jsonError;
-    }
-
-    private String stacktraceAsString(Throwable error) {
-        final StringWriter sw = new StringWriter();
-        final PrintWriter pw = new PrintWriter(sw, true);
-        error.printStackTrace(pw);
-        return sw.getBuffer().toString();
-    }
-
-    /**
-     * Created a Honeybadger source blob compatible full stacktrace.
-     */
-    private void appendStacktraceToJsonElement(Throwable error,
-                                               JsonObject json) {
-        String stack = stacktraceAsString(error);
-        Scanner scanner = new Scanner(stack);
-
-        int lineNo = 0;
-
-        while (scanner.hasNext()) {
-            json.addProperty(String.valueOf(++lineNo), scanner.nextLine());
-        }
-    }
-
-    private JsonObject makeServer() {
-        JsonObject jsonServer = new JsonObject();
-        jsonServer.addProperty("environment_name", environment());
-        jsonServer.addProperty("hostname", hostname);
-        jsonServer.addProperty("project_root", runtimeRoot);
-        jsonServer.add("mdc_properties", mdcProperties());
-        jsonServer.add("system_properties", systemProperties());
-
-        return jsonServer;
-    }
-
-    private JsonObject mdcProperties() {
-        JsonObject jsonMdc = new JsonObject();
-
-        @SuppressWarnings("unchecked")
-        Map<String, String> mdc = MDC.getCopyOfContextMap();
-
-        if (mdc != null) {
-            for (Map.Entry<String, String> entry : mdc.entrySet()) {
-                jsonMdc.addProperty(entry.getKey(), entry.getValue());
-            }
-        }
-
-        return jsonMdc;
-    }
-
-    private JsonObject systemProperties() {
-        JsonObject jsonSysProps = new JsonObject();
-
-        for (Map.Entry<Object, Object> entry: System.getProperties().entrySet()) {
-            // We skip all excluded properties
-            if (excludedSysProps.contains(entry.getKey().toString())) {
-                continue;
-            }
-
-            jsonSysProps.addProperty(entry.getKey().toString(),
-                                     entry.getValue().toString());
-        }
-
-        return jsonSysProps;
-    }
-
-    private Set<String> buildExcludedSysProps() {
-        String excluded = System.getProperty(HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
-        HashSet<String> set = new HashSet<>();
-
-        set.add(HONEYBADGER_API_KEY_SYS_PROP_KEY);
-        set.add(HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
-        set.add(HONEYBADGER_URL_SYS_PROP_KEY);
-
-        if (excluded == null || excluded.isEmpty()) {
-            return set;
-        }
-
-        Collections.addAll(set, excluded.split(","));
-
-        return set;
-    }
-
     private Set<String> buildExcludedExceptionClasses() {
         String excluded = System.getProperty(HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY);
         HashSet<String> set = new HashSet<>();
@@ -319,9 +166,7 @@ public class HoneybadgerReporter implements ErrorReporter {
     private Response sendToHoneybadger(String jsonError) throws IOException {
         URI honeybadgerUrl = honeybadgerUrl();
         Request request = buildRequest(honeybadgerUrl, jsonError);
-        Response response = request.execute();
-
-        return response;
+        return request.execute();
     }
 
     /**
@@ -353,9 +198,9 @@ public class HoneybadgerReporter implements ErrorReporter {
     }
 
     /**
-     * Finds the Honeybadger endpoint to send erros to.
+     * Finds the Honeybadger endpoint to send errors to.
      *
-     * @return the default URL unless it is overriden by a system property
+     * @return the default URL unless it is overridden by a system property
      */
     private URI honeybadgerUrl() {
         try {
@@ -389,70 +234,6 @@ public class HoneybadgerReporter implements ErrorReporter {
       String envKey = System.getenv("HONEYBADGER_API_KEY");
       if (envKey != null) return envKey;
 
-      String sysPropKey =
-        System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
-
-      return sysPropKey;
-    }
-
-    /**
-     * Finds the name of the environment by looking at a few common Java
-     * system properties and/or environment variables.
-     *
-     * @return the name of the environment, otherwise "development"
-     */
-    private String environment() {
-        String hbEnv = System.getenv("HONEYBADGER_ENV");
-        if (hbEnv != null && !hbEnv.isEmpty()) return hbEnv;
-
-        String sysPropJavaEnv = System.getProperty("JAVA_ENV");
-        if (sysPropJavaEnv != null && !sysPropJavaEnv.isEmpty()) return sysPropJavaEnv;
-
-        String javaEnv = System.getenv("JAVA_ENV");
-        if (javaEnv != null && !javaEnv.isEmpty()) return javaEnv;
-
-        String sysPropEnv = System.getProperty("ENV");
-        if (sysPropEnv != null && !sysPropEnv.isEmpty()) return sysPropEnv;
-
-        String env = System.getenv("ENV");
-        if (env != null && !env.isEmpty()) return env;
-
-        // If no system property defined, then return development
-        return "development";
-    }
-
-    /**
-     * Attempt to find the hostname of the system reporting the error to
-     * Honeybadger.
-     *
-     * @return the hostname of the system reporting the error, "unknown" if not found
-     */
-    private String hostname() {
-        String host;
-
-        if (System.getenv("HOSTNAME") != null) {
-            host = System.getenv("HOSTNAME");
-        } else if (System.getenv("COMPUTERNAME") != null) {
-            host = System.getenv("COMPUTERNAME");
-        } else {
-            try {
-                host = InetAddress.getLocalHost().getHostName();
-            } catch (UnknownHostException e) {
-                logger.error("Unable to find hostname", e);
-                host = "unknown";
-            }
-
-        }
-
-        return host;
-    }
-
-    private String runtimeRoot() {
-        try {
-            return (new File(".")).getCanonicalPath();
-        } catch (IOException e) {
-            logger.error("Can't get runtime root path", e);
-            return "unknown";
-        }
+      return System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
     }
 }
