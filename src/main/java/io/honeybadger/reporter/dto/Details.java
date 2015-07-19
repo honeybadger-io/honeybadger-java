@@ -19,12 +19,12 @@ public class Details extends LinkedHashMap<String, LinkedHashMap<String, String>
         addDefaultDetails();
     }
 
-    private void addDefaultDetails() {
+    protected void addDefaultDetails() {
         put("System Properties", systemProperties());
         put("MDC Properties", mdcProperties());
     }
 
-    private static LinkedHashMap<String, String> mdcProperties() {
+    protected static LinkedHashMap<String, String> mdcProperties() {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         @SuppressWarnings("unchecked")
@@ -39,7 +39,7 @@ public class Details extends LinkedHashMap<String, LinkedHashMap<String, String>
         return map;
     }
 
-    private static LinkedHashMap<String, String> systemProperties() {
+    protected static LinkedHashMap<String, String> systemProperties() {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         Set<String> excludedSysProps = buildExcludedSysProps();
 
@@ -56,7 +56,7 @@ public class Details extends LinkedHashMap<String, LinkedHashMap<String, String>
         return map;
     }
 
-    private static Set<String> buildExcludedSysProps() {
+    protected static Set<String> buildExcludedSysProps() {
         String excluded = System.getProperty(HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
         HashSet<String> set = new HashSet<>();
 

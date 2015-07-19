@@ -11,7 +11,7 @@ public class ReportedError implements Serializable {
     private Notifier notifier = new Notifier();
     private ServerDetails server = new ServerDetails();
     private Details details = new Details();
-
+    private Request request;
     private ErrorDetails error;
 
     public ReportedError() {
@@ -50,6 +50,15 @@ public class ReportedError implements Serializable {
 
     public ReportedError setDetails(Details details) {
         this.details = details;
+        return this;
+    }
+
+    public Request getRequest() {
+        return request;
+    }
+
+    public ReportedError setRequest(Request request) {
+        this.request = request;
         return this;
     }
 }

@@ -24,7 +24,7 @@ public class ServerDetails {
      *
      * @return the name of the environment, otherwise "development"
      */
-    private static String environment() {
+    protected static String environment() {
         String hbEnv = System.getenv("HONEYBADGER_ENV");
         if (hbEnv != null && !hbEnv.isEmpty()) return hbEnv;
 
@@ -50,7 +50,7 @@ public class ServerDetails {
      *
      * @return the hostname of the system reporting the error, "unknown" if not found
      */
-    private static String hostname() {
+    protected static String hostname() {
         String host;
 
         if (System.getenv("HOSTNAME") != null) {
@@ -75,7 +75,7 @@ public class ServerDetails {
      *
      * @return the filesystem root in which the project is running
      */
-    private static String projectRoot() {
+    protected static String projectRoot() {
         try {
             return (new File(".")).getCanonicalPath();
         } catch (IOException e) {

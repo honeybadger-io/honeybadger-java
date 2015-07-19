@@ -2,11 +2,12 @@ package io.honeybadger.reporter.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * An ordered collection of chained exceptions.
  */
-public class Causes extends ArrayList<Cause> implements Serializable {
+public class Causes extends LinkedList<Cause> implements Serializable {
     private static final long serialVersionUID = -5359764114506595006L;
 
     private static final int MAX_CAUSES = 100;
@@ -31,7 +32,7 @@ public class Causes extends ArrayList<Cause> implements Serializable {
             // If we are in a simple circular reference, exit
             if (lastCause != null && lastCause.equals(nextCause)) break;
 
-            add(new Cause(nextCause));
+            addFirst(new Cause(nextCause));
 
             // Since we could have multi-class circular ref we just check
             // for too big of a cause trace
