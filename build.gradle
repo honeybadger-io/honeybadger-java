@@ -117,8 +117,12 @@ shadowJar {
 
 def installer = install.repositories.mavenInstaller
 
+// TODO: Remove everything but slf4j
 [installer]*.pom*.whenConfigured {pom ->
-    pom.dependencies.removeAll { it.scope == "compile" }
+    pom.dependencies.retainAll {
+        (it.artifactId == 'slf4j-api' && it.groupId == 'org.slf4j') ||
+            it.scope != "compile"
+    }
 }
 
 publishing {
