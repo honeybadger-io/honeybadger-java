@@ -19,7 +19,6 @@ public class ErrorDetails implements Serializable {
     public final String className;
     public final String message;
     public final Set<String> tags;
-    public final SourceDetails source;
     public final Backtrace backtrace;
     public final Causes causes;
 
@@ -37,7 +36,6 @@ public class ErrorDetails implements Serializable {
         this.className = error.getClass().getName();
         this.message = error.getMessage();
         this.tags = tags;
-        this.source = new SourceDetails(error);
         this.backtrace = new Backtrace(error);
         this.causes = new Causes(error);
     }
