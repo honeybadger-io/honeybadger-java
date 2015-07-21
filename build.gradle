@@ -62,6 +62,7 @@ dependencies {
 
     // logging facade that allows users of the library to use their own logging implementations
     compile 'org.slf4j:slf4j-api:1.7.12'
+    // JSON processing
     compile 'com.google.code.gson:gson:2.3.1'
 
     // HTTP requesting library - used to talk to the Honeybadger API
@@ -89,6 +90,7 @@ dependencies {
 }
 
 jar {
+    onlyIf { false }
     doFirst {
         manifest {
             attributes("Honeybadger-Java-Version": version)
@@ -97,6 +99,9 @@ jar {
 }
 
 shadowJar {
+    baseName = "${rootProject.name}"
+    classifier = ''
+
     doFirst {
         manifest {
             attributes("Honeybadger-Java-Version": version)
@@ -108,6 +113,25 @@ shadowJar {
     relocate 'org.apache.commons.codec', 'io.honeybadger.org.apache.commons.codec'
     relocate 'org.apache.commons.logging', 'io.honeybadger.org.apache.commons.logging'
     relocate 'com.jcabi', 'io.honeybadger.com.jcabi'
+}
+
+def installer = install.repositories.mavenInstaller
+
+// TODO: Remove everything but slf4j
+[installer]*.pom*.whenConfigured {pom ->
+    pom.dependencies.retainAll {
+        (it.artifactId == 'slf4j-api' && it.groupId == 'org.slf4j') ||
+            it.scope != "compile"
+    }
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) {
+            from components.shadow
+            artifactId = "${rootProject.name}"
+        }
+    }
 }
 
 jar.dependsOn(shadowJar)
@@ -154,7 +178,7 @@ tasks.withType(Test) {
 }
 
 artifacts {
-    archives javadocJar, sourcesJar
+    archives javadocJar, sourcesJar, shadowJar
 }
 
 // TODO: Set me up with a new username for honeybadger.io

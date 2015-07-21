@@ -57,6 +57,14 @@ If you want to send exceptions to HoneyBadger without having to register an unca
 exception handler, you can create an instance of ```HonebadgerReporter``` and call 
 the ```reportError(Throwable error)``` method directly.
 
+## Runtime Dependencies
+All dependencies needed for running are included in the distributed JAR with one
+exception - slf4j-api. We expect that you are using some logging library and that
+you have imported the sl4j-api in order to provide a common interface for the 
+logger to imported libraries. If you are using Maven, Gralde or Ivy, this should
+happen automatically for you. If you are using Ant, you will need to import
+the slf4j-api jar and an sl4j implementation.
+
 ## Testing
 For the purpose of one off testing, you can use the CLI utility. Just execute it using
 ```./gradlew run``` and you can enter in your API key and message to be sent to
