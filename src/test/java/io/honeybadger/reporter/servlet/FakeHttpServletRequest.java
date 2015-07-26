@@ -99,7 +99,9 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public StringBuffer getRequestURL() {
-        return null;
+        String url = "https://www.youtube.com/watch?v=4r7wHMg5Yjg";
+
+        return new StringBuffer(url);
     }
 
     @Override

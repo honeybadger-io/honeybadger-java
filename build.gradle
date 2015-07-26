@@ -87,6 +87,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.slf4j:slf4j-simple:1.7.12'
     testCompile 'org.mockito:mockito-all:1.10.19'
+    testCompile 'com.github.fge:json-schema-validator:2.2.6'
 }
 
 jar {
