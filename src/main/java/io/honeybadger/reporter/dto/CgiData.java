@@ -1,13 +1,9 @@
 package io.honeybadger.reporter.dto;
 
-import com.sun.deploy.net.HttpUtils;
 import org.apache.http.HttpHeaders;
-import org.apache.http.client.utils.HttpClientUtils;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.net.CookieManager;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 
