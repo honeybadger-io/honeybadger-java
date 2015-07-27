@@ -5,13 +5,29 @@ import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.net.CookieManager;
+import java.net.HttpCookie;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FakeHttpServletRequest implements HttpServletRequest {
+    private Map<String, ArrayList<String>> headers =
+            new ConcurrentHashMap<>();
+
+    public FakeHttpServletRequest() {
+    }
+
+    public FakeHttpServletRequest(Map<String, ArrayList<String>> headers) {
+        Iterator<Map.Entry<String, ArrayList<String>>> itr = headers.entrySet().iterator();
+
+        while (itr.hasNext()) {
+            Map.Entry<String, ArrayList<String>> entry = itr.next();
+            this.headers.put(entry.getKey().toLowerCase(), entry.getValue());
+        }
+    }
+
     @Override
     public String getAuthType() {
         return null;
@@ -19,7 +35,24 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public Cookie[] getCookies() {
-        return new Cookie[0];
+        List<Cookie> cookies = new ArrayList<>();
+        List<String> cookieValues = headers.get("set-cookie");
+        
+        if (cookieValues == null) return new Cookie[] {};
+        
+        for (String c : cookieValues) {;
+            for (HttpCookie httpCookie : HttpCookie.parse(c)) {
+                cookies.add(copyFromHttpCookie(httpCookie));
+            }
+        }
+
+        Cookie[] cookieArray = new Cookie[cookies.size()];
+        cookies.toArray(cookieArray);
+        return cookieArray;
+    }
+    
+    Cookie copyFromHttpCookie(HttpCookie cookie) {
+        return new Cookie(cookie.getName(), cookie.getValue());
     }
 
     @Override
@@ -29,22 +62,37 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getHeader(String name) {
-        return null;
+        ArrayList<String> values = headers.get(name.toLowerCase());
+        if (values == null || values.isEmpty()) return null;
+
+        return values.get(0);
     }
 
     @Override
     public Enumeration<String> getHeaders(String name) {
-        return null;
+        ArrayList<String> values = headers.get(name.toLowerCase());
+        if (values == null || values.isEmpty()) return null;
+
+        return Collections.enumeration(values);
     }
 
     @Override
     public Enumeration<String> getHeaderNames() {
-        return null;
+        if (headers == null || headers.isEmpty()) return null;
+
+        return Collections.enumeration(headers.keySet());
     }
 
     @Override
     public int getIntHeader(String name) {
-        return 0;
+        ArrayList<String> values = headers.get(name.toLowerCase());
+        if (values == null || values.isEmpty()) return 0;
+
+        try {
+            return Integer.parseInt(values.get(0));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     @Override

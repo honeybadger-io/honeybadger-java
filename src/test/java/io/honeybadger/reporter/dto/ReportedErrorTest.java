@@ -21,6 +21,8 @@ import com.github.fge.jsonschema.processors.data.SchemaContext;
 import com.github.fge.jsonschema.processors.data.ValidatorList;
 import com.github.fge.jsonschema.processors.validation.ValidationChain;
 import com.github.fge.jsonschema.processors.validation.ValidationProcessor;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
@@ -30,7 +32,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -66,6 +70,25 @@ public class ReportedErrorTest {
     public void canSerializeReportedErrorWithRequest() throws Exception {
         Exception e = new RuntimeException("Test exception");
         HttpServletRequest request = new FakeHttpServletRequest();
+
+        ReportedError error = new ReportedError()
+                .setError(new ErrorDetails(e))
+                .setRequest(new Request(request));
+        validateReportedErrorJson(error);
+    }
+
+    @Test
+    public void canSerializeReportedErrorWithDetailedRequest() throws Exception {
+        Exception e = new RuntimeException("Test exception");
+        ArrayList<String> cookies = new ArrayList<>(ImmutableList.of(
+                "theme=light",
+                "sessionToken=abc123; Expires=Wed, 09 Jun 2021 10:18:14 GMT",
+                "multi-value=true; lastItem=true"));
+        Map<String, ArrayList<String>> headers = ImmutableMap.of(
+                "set-cookie", cookies
+        );
+
+        HttpServletRequest request = new FakeHttpServletRequest(headers);
 
         ReportedError error = new ReportedError()
                 .setError(new ErrorDetails(e))
