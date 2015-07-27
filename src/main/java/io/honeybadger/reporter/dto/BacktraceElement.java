@@ -10,9 +10,9 @@ import java.io.Serializable;
 public class BacktraceElement implements Serializable {
     private static final long serialVersionUID = -4455225669072193184L;
 
-    public final String number;
     public final String file;
     public final String method;
+    public final String number;
 
     public BacktraceElement(String number, String file, String method) {
         this.number = number;
@@ -22,7 +22,7 @@ public class BacktraceElement implements Serializable {
 
     public BacktraceElement(StackTraceElement element) {
         this.number = String.valueOf(element.getLineNumber());
-        this.file = element.getFileName();
+        this.file = String.valueOf(element.getFileName());
         this.method = formatMethod(element);
     }
 
