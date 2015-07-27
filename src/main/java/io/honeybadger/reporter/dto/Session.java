@@ -35,9 +35,13 @@ public class Session extends LinkedHashMap<String, Object>
             while (attributes.hasMoreElements()) {
                 final String key = attributes.nextElement();
                 final Object value = session.getAttribute(key);
-                final String valueAsString = String.valueOf(value).substring(0, MAX_SESSION_OBJ_STRING_SIZE);
+                if (value == null) continue;
+                final String valueAsString = String.valueOf(value);
+                final String subString = valueAsString.length() > MAX_SESSION_OBJ_STRING_SIZE ?
+                        valueAsString.substring(0, MAX_SESSION_OBJ_STRING_SIZE) :
+                        valueAsString;
 
-                put(key, valueAsString);
+                put(key, subString);
             }
         } catch (RuntimeException e) {
            put("Error getting session", e.getMessage());

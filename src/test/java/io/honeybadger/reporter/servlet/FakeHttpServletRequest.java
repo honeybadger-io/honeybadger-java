@@ -1,5 +1,8 @@
 package io.honeybadger.reporter.servlet;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.BufferedReader;
@@ -16,15 +19,30 @@ public class FakeHttpServletRequest implements HttpServletRequest {
     private Map<String, ArrayList<String>> headers =
             new ConcurrentHashMap<>();
 
+    private String requestUri = "https://www.youtube.com/watch?v=4r7wHMg5Yjg";
+    private String method = "GET";
+    private String serverName = "www.youtube.com";
+    private int serverPort = 80;
+    private String contentType = "text/html; charset=UTF-8";
+    private HttpSession session = new FakeHttpSession("session-id",
+            ImmutableMap.of("session_key_1", (Object) "session_val_1"));
+
+    private Collection<? extends Part> parts = ImmutableList.of(
+        new FakePart("testpart", "value")
+    );
+
+
     public FakeHttpServletRequest() {
     }
 
-    public FakeHttpServletRequest(Map<String, ArrayList<String>> headers) {
-        Iterator<Map.Entry<String, ArrayList<String>>> itr = headers.entrySet().iterator();
+    public FakeHttpServletRequest(Map<String, ? extends List<String>> headers) {
+        Iterator<Map.Entry<String, List<String>>> itr =
+                ((Map<String, List<String>>)headers).entrySet().iterator();
 
         while (itr.hasNext()) {
-            Map.Entry<String, ArrayList<String>> entry = itr.next();
-            this.headers.put(entry.getKey().toLowerCase(), entry.getValue());
+            Map.Entry<String, List<String>> entry = itr.next();
+            this.headers.put(entry.getKey().toLowerCase(),
+                             new ArrayList<String>(entry.getValue()));
         }
     }
 
@@ -97,7 +115,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getMethod() {
-        return null;
+        return method;
     }
 
     @Override
@@ -142,13 +160,12 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getRequestURI() {
-        return null;
+        return requestUri;
     }
 
     @Override
     public StringBuffer getRequestURL() {
-        String url = "https://www.youtube.com/watch?v=4r7wHMg5Yjg";
-
+        String url = getRequestURI();
         return new StringBuffer(url);
     }
 
@@ -159,12 +176,12 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public HttpSession getSession(boolean create) {
-        return null;
+        return session;
     }
 
     @Override
     public HttpSession getSession() {
-        return null;
+        return session;
     }
 
     @Override
@@ -209,7 +226,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public Collection<Part> getParts() throws IOException, ServletException {
-        return null;
+        return (Collection<Part>)parts;
     }
 
     @Override
@@ -254,7 +271,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getContentType() {
-        return null;
+        return contentType;
     }
 
     @Override
@@ -294,12 +311,12 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getServerName() {
-        return null;
+        return serverName;
     }
 
     @Override
     public int getServerPort() {
-        return 0;
+        return serverPort;
     }
 
     @Override

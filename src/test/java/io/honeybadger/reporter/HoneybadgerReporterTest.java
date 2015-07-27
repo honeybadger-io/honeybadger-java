@@ -1,6 +1,8 @@
 package io.honeybadger.reporter;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
 import io.honeybadger.reporter.servlet.FakeHttpSession;
 import org.apache.http.HttpHeaders;
 import org.junit.Test;
@@ -11,9 +13,7 @@ import org.slf4j.MDC;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY;
@@ -48,35 +48,20 @@ public class HoneybadgerReporterTest {
         Throwable cause = new RuntimeException("I'm the cause");
         Throwable t = new UnitTestExpectedException("Test exception " +
                 System.currentTimeMillis(), cause);
-        HashMap<String, String> params = new HashMap<>();
-        params.put("url", "http://foo.com");
 
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getRequestURI()).thenReturn("http://www.foobar.com");
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getServerName()).thenReturn("hostname.imaginary");
-        when(request.getServerPort()).thenReturn(80);
-        when(request.getContentType()).thenReturn("application/json; charset=UTF-8");
+        ArrayList<String> cookies = new ArrayList<>(ImmutableList.of(
+                "theme=light",
+                "sessionToken=abc123; Expires=Wed, 09 Jun 2021 10:18:14 GMT",
+                "multi-value=true; lastItem=true"));
 
-        Map<String, Object> sessionContents = ImmutableMap.of("session_key_1", (Object)"session_val_1");
-        HttpSession session = new FakeHttpSession("session-id", sessionContents);
-        when(request.getSession()).thenReturn(session);
+        Map<String, ? extends List<String>> headers = ImmutableMap.of(
+                HttpHeaders.REFERER, ImmutableList.of("Tester"),
+                HttpHeaders.USER_AGENT, ImmutableList.of("User Agent"),
+                HttpHeaders.ACCEPT, ImmutableList.of("text/html"),
+                "Set-Cookie", cookies
+        );
 
-        when(request.getHeaderNames()).thenReturn(
-                EnumerationWrapper.of(
-                        HttpHeaders.REFERER,
-                        HttpHeaders.USER_AGENT,
-                        HttpHeaders.ACCEPT));
-
-        when(request.getHeader(HttpHeaders.REFERER)).thenReturn("Tester");
-        when(request.getHeader(HttpHeaders.USER_AGENT)).thenReturn("User Agent");
-        when(request.getHeader(HttpHeaders.ACCEPT)).thenReturn("application/json");
-
-        Part part = mock(Part.class);
-        when(part.getName()).thenReturn("testpart");
-        when(part.toString()).thenReturn("value");
-
-        when(request.getParts()).thenReturn(of(part));
+        HttpServletRequest request = new FakeHttpServletRequest(headers);
 
         UUID id = reporter.reportError(t, request);
 
