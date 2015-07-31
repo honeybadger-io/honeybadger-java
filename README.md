@@ -151,6 +151,14 @@ Default Value: https://api.honeybadger.io/v1/notices
 Description: URL to the Honeybadger API endpoint. You may want to access it 
              without SSL in order to test with a proxy utility.
 
+honeybadger.application_package
+-------------
+Sample Value: com.tech.digital.donkey
+Required?: No
+Default Value: N/A
+Description: Java application package name used to indicate to Honeybadger what
+             stacktraces are within the calling application's code bade.
+
 http.proxyHost
 -------------
 Sample Value: localhost

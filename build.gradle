@@ -164,6 +164,7 @@ tasks.withType(Test) {
     // Assume a default environment of test if it isn't specified
     systemProperty 'ENV', System.getProperty('ENV', 'TEST')
     systemProperty 'honeybadger.version', version
+    systemProperty 'honeybadger.application_package', 'io.honeybadger'
 
     def passSysProp = { String prop ->
         systemProperty prop, System.getProperty(prop)

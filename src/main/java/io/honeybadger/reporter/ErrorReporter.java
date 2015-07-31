@@ -24,6 +24,10 @@ public interface ErrorReporter {
     String HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY =
             "honeybadger.excluded_exception_classes";
 
+    /** System property key that maps a package to an application. */
+    String APPLICATION_PACKAGE_PROP_KEY =
+            "honeybadger.application_package";
+
     String DEFAULT_API_URI =
             "https://api.honeybadger.io/v1/notices";
 

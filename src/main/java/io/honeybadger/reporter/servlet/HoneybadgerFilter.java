@@ -25,6 +25,7 @@ public class HoneybadgerFilter implements Filter {
         setSysPropFromfilterConfig(filterConfig, HONEYBADGER_API_KEY_SYS_PROP_KEY);
         setSysPropFromfilterConfig(filterConfig, HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
         setSysPropFromfilterConfig(filterConfig, HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY);
+        setSysPropFromfilterConfig(filterConfig, APPLICATION_PACKAGE_PROP_KEY);
 
         reporter = new HoneybadgerReporter();
     }
