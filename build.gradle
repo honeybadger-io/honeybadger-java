@@ -52,6 +52,16 @@ sourceSets {
         compileClasspath += configurations.providedCompile
         runtimeClasspath += configurations.providedCompile
     }
+
+    integration {
+        java.srcDir file('src/integration/java')
+        resources.srcDir file('src/main/resources')
+        compileClasspath = sourceSets.main.output +
+                           sourceSets.test.output +
+                           configurations.testRuntime +
+                           configurations.providedCompile
+        runtimeClasspath = output + compileClasspath
+    }
 }
 
 dependencies {
@@ -61,7 +71,14 @@ dependencies {
             version: '3.1.0'
 
     // logging facade that allows users of the library to use their own logging implementations
+    // This is the one unshadowed dependency
     compile 'org.slf4j:slf4j-api:1.7.12'
+
+    // ==========================================================================
+    // NOTE: If you are adding a dependency, be sure to shadow it in the settings
+    // below the dependencies section.
+    // ==========================================================================
+
     // JSON processing
     compile 'com.google.code.gson:gson:2.3.1'
 
@@ -76,6 +93,7 @@ dependencies {
     // Used so we don't have to pull in commons-logging as a dependency
     compile 'org.slf4j:jcl-over-slf4j:1.7.12'
 
+    // Used to get the Honeybadger library version from the JAR manifest
     compile 'com.jcabi:jcabi-manifests:1.1'
 
     // Utilities for testing below
@@ -90,6 +108,7 @@ dependencies {
     testCompile 'com.github.fge:json-schema-validator:2.2.6'
 }
 
+// We don't generate an unshadowed jar
 jar {
     onlyIf { false }
     doFirst {
@@ -99,11 +118,16 @@ jar {
     }
 }
 
+// By default we include all (but one) dependencies and remap their packge names
+// so that they won't conflict with other dependencies in the graph.
 shadowJar {
     baseName = "${rootProject.name}"
     classifier = ''
 
     doFirst {
+        // We set the version of the library here so that we can get at it
+        // at runtime and send it to the Honeybadger API as part of its
+        //  diagnostic data.
         manifest {
             attributes("Honeybadger-Java-Version": version)
         }
@@ -135,8 +159,6 @@ publishing {
     }
 }
 
-jar.dependsOn(shadowJar)
-
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allJava
@@ -145,6 +167,13 @@ task sourcesJar(type: Jar) {
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
+}
+
+task integration(type: Test) {
+    group = 'Verification'
+    description = 'Runs the integration tests.'
+    testClassesDir = sourceSets.integration.output.classesDir
+    classpath = sourceSets.integration.runtimeClasspath
 }
 
 // Dumps system properties to STDOUT
@@ -178,6 +207,12 @@ tasks.withType(Test) {
     passSysProp('honeybadger.excluded_exception_classes')
     passSysProp('honeybadger.excluded_sys_props')
 }
+
+//  Task dependency definitions
+jar.dependsOn(shadowJar)
+
+check.dependsOn(integration)
+integration.mustRunAfter test
 
 artifacts {
     archives javadocJar, sourcesJar, shadowJar
