@@ -72,7 +72,7 @@ public class HoneybadgerReporterTest {
         logger.info("Created error with id: {}", id);
 
         // Wait for the Honeybadger API to process the error
-        Thread.sleep(5000);
+        Thread.sleep(10000);
         ReportedError error = loader.findErrorDetails(id);
     }
 
