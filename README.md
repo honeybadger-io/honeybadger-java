@@ -191,6 +191,13 @@ Required?: No
 Default Value: honeybadger.api_key,honeybadger.excluded_sys_props,honeybadger.url
 Description: CSV of Java system properties to exclude from being logged to 
              Honeybadger. This is useful for excluding authentication information.
+             
+honeybadger.read_api_key
+-------------
+Sample Value: qjcp6c7Nv9yR-bsvGZ77
+Required?: Only when running integration tests
+Default Value: N/A
+Description: API key used to access the Read API
 ```
 
 ## Credits

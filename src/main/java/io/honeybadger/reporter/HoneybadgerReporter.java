@@ -238,7 +238,7 @@ public class HoneybadgerReporter implements ErrorReporter {
      */
     private String apiKey() {
       String envKey = System.getenv("HONEYBADGER_API_KEY");
-      if (envKey != null) return envKey;
+      if (envKey != null && !envKey.isEmpty()) return envKey;
 
       return System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
     }

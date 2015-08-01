@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import io.honeybadger.reporter.ErrorReporter;
 import io.honeybadger.reporter.dto.ReportedError;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
@@ -90,7 +91,15 @@ public class HoneybadgerErrorLoader {
     }
 
     String pullFaultJson(URI location) throws IOException {
-        String withAuth = String.format("%s?auth_token=%s", location, "zjfp6cVN3PyR-usvGZ7G");
+        String readApiKey = readApiKey();
+
+        if (readApiKey == null || readApiKey.isEmpty()) {
+            String msg = String.format("Property %s must be set if you are " +
+                    "going to be accessing the Read API", ErrorReporter.READ_API_KEY_PROP_KEY);
+            throw new IllegalArgumentException(msg);
+        }
+
+        String withAuth = String.format("%s?auth_token=%s", location, readApiKey);
 
         logger.debug("Querying for error details: {}", location);
 
@@ -100,6 +109,18 @@ public class HoneybadgerErrorLoader {
                 .execute();
 
         return response.returnContent().asString();
+    }
+
+    /**
+     * Finds the Read API key, preferring ENV to system properties.
+     *
+     * @return the API key if found, otherwise null
+     */
+    private static String readApiKey() {
+        String envKey = System.getenv("HONEYBADGER_READ_API_KEY");
+        if (envKey != null && !envKey.isEmpty()) return envKey;
+
+        return System.getProperty(ErrorReporter.READ_API_KEY_PROP_KEY);
     }
 
     public ReportedError findErrorDetails(UUID faultId) throws IOException {

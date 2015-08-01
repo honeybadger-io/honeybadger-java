@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
@@ -71,14 +72,12 @@ public class HoneybadgerReporterTest {
         logger.info("Created error with id: {}", id);
 
         // Wait for the Honeybadger API to process the error
-        Thread.sleep(3000);
-
+        Thread.sleep(5000);
         ReportedError error = loader.findErrorDetails(id);
-        System.out.println(error);
     }
 
     @Test
-    public void willSuppressExcludedExceptionClasses() {
+    public void willSuppressExcludedExceptionClasses() throws Exception {
         final Exception error = new UnsupportedOperationException(
                 "I should be suppressed");
         final UUID id = reporter.reportError(error);
