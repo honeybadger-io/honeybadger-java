@@ -6,6 +6,7 @@ import io.honeybadger.reporter.HoneybadgerReporter;
 import javax.servlet.*;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.UUID;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.*;
 
@@ -37,7 +38,8 @@ public class HoneybadgerFilter implements Filter {
         try {
             chain.doFilter(request, response);
         } catch (Throwable e) {
-            reporter.reportError(e, request);
+            // TODO: Figure out how I can be displaayed to a user
+            UUID id = reporter.reportError(e, request);
             throw e;
         }
     }

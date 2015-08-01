@@ -14,28 +14,14 @@ public class Params extends LinkedHashMap<String, String>
         implements Serializable {
     private static final long serialVersionUID = -5633548926144410598L;
 
-    public Params(HttpServletRequest request) {
-        addParams(request);
+    public Params() {
     }
 
-    protected void addParams(HttpServletRequest request) {
-        try {
-            Map<String, String[]> paramMap = request.getParameterMap();
-
-            if (paramMap == null || paramMap.isEmpty()) return;
-
-            for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
-                put(entry.getKey(), csv(entry.getValue()));
-            }
-        } catch (RuntimeException e) {
-            /* We really shouldn't ever have an exception here, but we can't
-             * control the underlying implementation, so we just recover by
-             * not displaying any data. */
-
-            put("Error getting parameters", e.getMessage());
-        }
-    }
-
+    /**
+     * Converts multiple HTTP parameters into a CSV format.
+     * @param strings parameters to convert
+     * @return CSV of params, otherwise empty string
+     */
     static String csv(String[] strings) {
         if (strings == null || strings.length == 0) return "";
         if (strings.length == 1) return strings[0];

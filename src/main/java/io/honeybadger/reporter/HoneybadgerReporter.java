@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.honeybadger.reporter.dto.ErrorDetails;
 import io.honeybadger.reporter.dto.ReportedError;
+import io.honeybadger.reporter.dto.HttpServletRequestFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -73,8 +74,7 @@ public class HoneybadgerReporter implements ErrorReporter {
 
             if (request instanceof HttpServletRequest) {
                 io.honeybadger.reporter.dto.Request requestDetails =
-                        new io.honeybadger.reporter.dto.Request(
-                                (HttpServletRequest)request);
+                        HttpServletRequestFactory.create((HttpServletRequest) request);
                 return submitError(error, requestDetails);
             } else {
                 return submitError(error, null);
@@ -82,6 +82,11 @@ public class HoneybadgerReporter implements ErrorReporter {
         } catch (ClassNotFoundException e) {
             return submitError(error, null);
         }
+    }
+
+    @Override
+    public ReportedError findError(UUID errorId) {
+        return null;
     }
 
     protected UUID submitError(Throwable error,
@@ -111,8 +116,8 @@ public class HoneybadgerReporter implements ErrorReporter {
                                  "correct code. Response was [{}]. Retries={}",
                                  responseCode, retries);
                 else {
-                    logger.debug("Honeybadger logged error correctly: {}",
-                                 error);
+                    logger.debug("Honeybadger logged error correctly: [{}]",
+                                 error.getMessage());
                     return parseErrorId(response, gson);
                 }
             } catch (IOException e) {

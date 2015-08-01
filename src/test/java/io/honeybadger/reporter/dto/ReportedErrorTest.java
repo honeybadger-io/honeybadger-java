@@ -1,26 +1,11 @@
 package io.honeybadger.reporter.dto;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
-import com.fasterxml.jackson.databind.node.JsonNodeCreator;
-import com.github.fge.jsonschema.cfg.ValidationConfiguration;
-import com.github.fge.jsonschema.cfg.ValidationConfigurationBuilder;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import com.github.fge.jsonschema.core.load.RefResolver;
-import com.github.fge.jsonschema.core.load.SchemaLoader;
-import com.github.fge.jsonschema.core.processing.CachingProcessor;
 import com.github.fge.jsonschema.core.report.*;
-import com.github.fge.jsonschema.library.DraftV3Library;
-import com.github.fge.jsonschema.library.Library;
-import com.github.fge.jsonschema.library.LibraryBuilder;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
-import com.github.fge.jsonschema.processors.data.SchemaContext;
-import com.github.fge.jsonschema.processors.data.ValidatorList;
-import com.github.fge.jsonschema.processors.validation.ValidationChain;
-import com.github.fge.jsonschema.processors.validation.ValidationProcessor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
@@ -29,7 +14,6 @@ import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -73,7 +57,7 @@ public class ReportedErrorTest {
 
         ReportedError error = new ReportedError()
                 .setError(new ErrorDetails(e))
-                .setRequest(new Request(request));
+                .setRequest(HttpServletRequestFactory.create(request));
         validateReportedErrorJson(error);
     }
 
@@ -92,7 +76,7 @@ public class ReportedErrorTest {
 
         ReportedError error = new ReportedError()
                 .setError(new ErrorDetails(e))
-                .setRequest(new Request(request));
+                .setRequest(HttpServletRequestFactory.create(request));
         validateReportedErrorJson(error);
     }
 
@@ -113,7 +97,7 @@ public class ReportedErrorTest {
 
         ReportedError error = new ReportedError()
                 .setError(new ErrorDetails(e))
-                .setRequest(new Request(request));
+                .setRequest(HttpServletRequestFactory.create(request));
         validateReportedErrorJson(error);
     }
 

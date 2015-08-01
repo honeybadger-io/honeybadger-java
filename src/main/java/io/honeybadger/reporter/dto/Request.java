@@ -18,29 +18,13 @@ public class Request implements Serializable {
     public final Session session;
     public final CgiData cgi_data;
 
-    public Request(HttpServletRequest request) {
-        this.context = new Context(request);
-        this.url = getFullURL(request);
-        this.params = new Params(request);
-        this.session = new Session(request);
-        this.cgi_data = new CgiData(request);
-    }
-
-    /** Gets the fully formed URL for a servlet request.
-     * @see <a href="http://stackoverflow.com/a/2222268/33611">Stack Overflow Answer</a>
-     * @param request Servlet request to parse for URL information
-     * @return fully formed URL as string
-     */
-    protected static String getFullURL(HttpServletRequest request) {
-        StringBuffer requestURL = request.getRequestURL();
-        String queryString = request.getQueryString();
-
-        if (requestURL == null) {
-            return null;
-        } else if (queryString == null) {
-            return requestURL.toString();
-        } else {
-            return requestURL.append('?').append(queryString).toString();
-        }
+    public Request(Context context, String url,
+                   Params params, Session session,
+                   CgiData cgi_data) {
+        this.context = context;
+        this.url = url;
+        this.params = params;
+        this.session = session;
+        this.cgi_data = cgi_data;
     }
 }

@@ -2,8 +2,9 @@ package io.honeybadger.reporter;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import io.honeybadger.loader.HoneybadgerErrorLoader;
+import io.honeybadger.reporter.dto.ReportedError;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
-import io.honeybadger.reporter.servlet.FakeHttpSession;
 import org.apache.http.HttpHeaders;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -11,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 import java.util.*;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
@@ -21,10 +20,10 @@ import static com.google.common.collect.ImmutableList.of;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class HoneybadgerReporterTest {
     private Logger logger = LoggerFactory.getLogger(getClass());
+    private final HoneybadgerErrorLoader loader = new HoneybadgerErrorLoader();
     private final ErrorReporter reporter;
 
     public HoneybadgerReporterTest() {
@@ -70,6 +69,12 @@ public class HoneybadgerReporterTest {
         assertNotNull("Didn't send error correctly to Honeybadger API", id);
 
         logger.info("Created error with id: {}", id);
+
+        // Wait for the Honeybadger API to process the error
+        Thread.sleep(3000);
+
+        ReportedError error = loader.findErrorDetails(id);
+        System.out.println(error);
     }
 
     @Test
