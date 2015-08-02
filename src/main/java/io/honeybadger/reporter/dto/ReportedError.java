@@ -65,4 +65,29 @@ public class ReportedError implements Serializable {
         this.request = request;
         return this;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ReportedError that = (ReportedError) o;
+
+        if (notifier != null ? !notifier.equals(that.notifier) : that.notifier != null) return false;
+        if (server != null ? !server.equals(that.server) : that.server != null) return false;
+        if (details != null ? !details.equals(that.details) : that.details != null) return false;
+        if (request != null ? !request.equals(that.request) : that.request != null) return false;
+        return !(error != null ? !error.equals(that.error) : that.error != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = notifier != null ? notifier.hashCode() : 0;
+        result = 31 * result + (server != null ? server.hashCode() : 0);
+        result = 31 * result + (details != null ? details.hashCode() : 0);
+        result = 31 * result + (request != null ? request.hashCode() : 0);
+        result = 31 * result + (error != null ? error.hashCode() : 0);
+        return result;
+    }
 }

@@ -49,4 +49,25 @@ public class Notifier implements Serializable {
             return "unknown";
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Notifier notifier = (Notifier) o;
+
+        if (name != null ? !name.equals(notifier.name) : notifier.name != null) return false;
+        if (url != null ? !url.equals(notifier.url) : notifier.url != null) return false;
+        return !(version != null ? !version.equals(notifier.version) : notifier.version != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (version != null ? version.hashCode() : 0);
+        return result;
+    }
 }

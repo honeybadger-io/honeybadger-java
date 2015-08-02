@@ -39,4 +39,29 @@ public class ErrorDetails implements Serializable {
         this.backtrace = new Backtrace(error);
         this.causes = new Causes(error);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ErrorDetails that = (ErrorDetails) o;
+
+        if (className != null ? !className.equals(that.className) : that.className != null) return false;
+        if (message != null ? !message.equals(that.message) : that.message != null) return false;
+        if (tags != null ? !tags.equals(that.tags) : that.tags != null) return false;
+        if (backtrace != null ? !backtrace.equals(that.backtrace) : that.backtrace != null) return false;
+        return !(causes != null ? !causes.equals(that.causes) : that.causes != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = className != null ? className.hashCode() : 0;
+        result = 31 * result + (message != null ? message.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (backtrace != null ? backtrace.hashCode() : 0);
+        result = 31 * result + (causes != null ? causes.hashCode() : 0);
+        return result;
+    }
 }

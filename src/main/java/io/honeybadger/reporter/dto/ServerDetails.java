@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -13,12 +14,25 @@ import java.net.UnknownHostException;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
-public class ServerDetails {
+public class ServerDetails implements Serializable {
+    private static final long serialVersionUID = 4689643321013504425L;
     private static Logger logger = LoggerFactory.getLogger(ServerDetails.class);
 
-    public final String environment_name = environment();
-    public final String hostname = hostname();
-    public final String project_root = projectRoot();
+    public final String environment_name;
+    public final String hostname;
+    public final String project_root;
+
+    public ServerDetails() {
+        this.environment_name = environment();
+        this.hostname = hostname();
+        this.project_root = projectRoot();
+    }
+
+    public ServerDetails(String environment_name, String hostname, String project_root) {
+        this.environment_name = environment_name;
+        this.hostname = hostname;
+        this.project_root = project_root;
+    }
 
     /**
      * Finds the name of the environment by looking at a few common Java
@@ -84,5 +98,27 @@ public class ServerDetails {
             logger.error("Can't get runtime root path", e);
             return "unknown";
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ServerDetails that = (ServerDetails) o;
+
+        if (environment_name != null ? !environment_name.equals(that.environment_name) : that.environment_name != null)
+            return false;
+        if (hostname != null ? !hostname.equals(that.hostname) : that.hostname != null) return false;
+        return !(project_root != null ? !project_root.equals(that.project_root) : that.project_root != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = environment_name != null ? environment_name.hashCode() : 0;
+        result = 31 * result + (hostname != null ? hostname.hashCode() : 0);
+        result = 31 * result + (project_root != null ? project_root.hashCode() : 0);
+        return result;
     }
 }
