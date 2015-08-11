@@ -1,9 +1,5 @@
 package io.honeybadger.reporter;
 
-import io.honeybadger.reporter.dto.ReportedError;
-
-import java.util.UUID;
-
 /**
  * Interface representing error reporting behavior.
  *
@@ -44,7 +40,7 @@ public interface ErrorReporter {
      * @param error error to report
      * @return UUID of error created, if there was a problem null
      */
-    UUID reportError(Throwable error);
+    ErrorReportResult reportError(Throwable error);
 
     /**
      * Send any Java {@link java.lang.Throwable} to the Honeybadger error
@@ -54,12 +50,5 @@ public interface ErrorReporter {
      * @param request Object to parse for request properties
      * @return UUID of error created, if there was a problem or ignored null
      */
-    UUID reportError(Throwable error, Object request);
-
-    /**
-     *  Query the Honeybadger API for the error information for a given id.
-     * @param errorId idd of error
-     * @return populated DTO of error, otherwise null
-     */
-    ReportedError findError(UUID errorId);
+    ErrorReportResult reportError(Throwable error, Object request);
 }

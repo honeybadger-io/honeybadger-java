@@ -38,8 +38,8 @@ public class HoneybadgerFilter implements Filter {
         try {
             chain.doFilter(request, response);
         } catch (Throwable e) {
-            // TODO: Figure out how I can be displaayed to a user
-            UUID id = reporter.reportError(e, request);
+            // TODO: Figure out how I can be displayed to a user
+            reporter.reportError(e, request);
             throw e;
         }
     }

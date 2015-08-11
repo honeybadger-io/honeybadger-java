@@ -3,7 +3,9 @@ package io.honeybadger.reporter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.honeybadger.loader.HoneybadgerErrorLoader;
+import io.honeybadger.reporter.dto.CgiData;
 import io.honeybadger.reporter.dto.ReportedError;
+import io.honeybadger.reporter.dto.Request;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
 import org.apache.http.HttpHeaders;
 import org.junit.Test;
@@ -12,15 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY;
-import static com.google.common.collect.ImmutableList.of;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.*;
 
 public class HoneybadgerReporterTest {
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -63,7 +64,8 @@ public class HoneybadgerReporterTest {
 
         HttpServletRequest request = new FakeHttpServletRequest(headers);
 
-        UUID id = reporter.reportError(t, request);
+        ErrorReportResult result = reporter.reportError(t, request);
+        UUID id = result.getId();
 
         logger.info("Error ID returned from Honeybadger is: {}", id);
 
@@ -74,14 +76,66 @@ public class HoneybadgerReporterTest {
         // Wait for the Honeybadger API to process the error
         Thread.sleep(10000);
         ReportedError error = loader.findErrorDetails(id);
+        assertReportedErrorIsSame(result.getReportedError(), error);
     }
 
     @Test
     public void willSuppressExcludedExceptionClasses() throws Exception {
         final Exception error = new UnsupportedOperationException(
                 "I should be suppressed");
-        final UUID id = reporter.reportError(error);
+        final ErrorReportResult result = reporter.reportError(error);
 
-        assertNull("A suppressed error was actually added", id);
+        assertNull("A suppressed error was actually added", result);
+    }
+
+    static void assertReportedErrorIsSame(ReportedError expected,
+                                          ReportedError actual) {
+        assertEquals(expected.getDetails(), actual.getDetails());
+        assertEquals(expected.getNotifier(), actual.getNotifier());
+        assertEquals(expected.getServer(), actual.getServer());
+
+        Request expectedRequest = expected.getRequest();
+        Request actualRequest = actual.getRequest();
+
+        assertEquals(expectedRequest.context, actualRequest.context);
+        assertEquals(expectedRequest.params, actualRequest.params);
+        assertEquals(expectedRequest.session, actualRequest.session);
+
+        CgiData expectedCgi = expectedRequest.cgi_data;
+        CgiData actualCgi = actualRequest.cgi_data;
+
+        assertEquals(expectedCgi.getAsInteger(HttpHeaders.CONTENT_LENGTH.toUpperCase()),
+                     actualCgi.getAsInteger(HttpHeaders.CONTENT_LENGTH.toUpperCase()));
+
+        assertEquals(expectedCgi.getAsInteger("SERVER_PORT"),
+                actualCgi.getAsInteger("SERVER_PORT"));
+
+        assertEquals(expectedCgi.getAsInteger("REMOTE_PORT"),
+                actualCgi.getAsInteger("REMOTE_PORT"));
+
+        assertEquals(expectedCgi.get(HttpHeaders.CONTENT_TYPE.toUpperCase()),
+                     actualCgi.get(HttpHeaders.CONTENT_TYPE.toUpperCase()));
+
+        assertEquals(expectedCgi.get(HttpHeaders.ACCEPT.toUpperCase()),
+                actualCgi.get(HttpHeaders.ACCEPT.toUpperCase()));
+
+        assertEquals(expectedCgi.get("REQUEST_METHOD"),
+                actualCgi.get("REQUEST_METHOD"));
+
+        assertEquals(expectedCgi.get(HttpHeaders.USER_AGENT.toUpperCase()),
+                actualCgi.get(HttpHeaders.USER_AGENT.toUpperCase()));
+
+        assertEquals(expectedCgi.get("HTTP_COOKIE"),
+                actualCgi.get("HTTP_COOKIE"));
+
+        assertEquals(expectedCgi.get("SERVER_NAME"),
+                actualCgi.get("SERVER_NAME"));
+
+//        Note: We are waiting on an API that returns everything in order
+//              for us to test this properly
+//        ErrorDetails expectedError = expected.getError();
+//        ErrorDetails actualError = actual.getError();
+//
+//        assertEquals(expectedError, actualError);
     }
 }

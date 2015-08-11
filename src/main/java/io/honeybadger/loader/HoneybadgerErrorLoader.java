@@ -2,9 +2,9 @@ package io.honeybadger.loader;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import io.honeybadger.reporter.ErrorReporter;
+import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.dto.ReportedError;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Iterator;
 import java.util.UUID;
 
 /**
@@ -29,7 +28,8 @@ import java.util.UUID;
 public class HoneybadgerErrorLoader {
     private static final String BASE_ID_QUERY_URI = "https://app.honeybadger.io/notice/";
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final Gson gson = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder()
+            .create();
 
     URI findFaultUri(UUID faultId) throws IOException {
         if (faultId == null) throw new IllegalArgumentException("Null id not accepted");
@@ -90,7 +90,7 @@ public class HoneybadgerErrorLoader {
         return URI.create(faultDetailsLocation);
     }
 
-    String pullFaultJson(URI location) throws IOException {
+    String pullFaultJson(UUID faultId) throws IOException {
         String readApiKey = readApiKey();
 
         if (readApiKey == null || readApiKey.isEmpty()) {
@@ -99,9 +99,13 @@ public class HoneybadgerErrorLoader {
             throw new IllegalArgumentException(msg);
         }
 
-        String withAuth = String.format("%s?auth_token=%s", location, readApiKey);
+        final URI baseURI = URI.create(String.format("%s/%s",
+                HoneybadgerReporter.honeybadgerUrl(), faultId));
 
-        logger.debug("Querying for error details: {}", location);
+        String withAuth = String.format("%s/?auth_token=%s",
+                baseURI, readApiKey);
+
+        logger.debug("Querying for error details: {}", baseURI);
 
         Response response = Request
                 .Get(withAuth)
@@ -124,20 +128,15 @@ public class HoneybadgerErrorLoader {
     }
 
     public ReportedError findErrorDetails(UUID faultId) throws IOException {
-        URI location = findFaultUri(faultId);
+        String json = pullFaultJson(faultId);
 
-        if (location == null) return null;
+        // HACK: Since our API is not symmetric, we do this in order to rename fields
+        // and get *some* of the data that we sent.
+        JsonObject originalJson = gson.fromJson(json, JsonObject.class).getAsJsonObject();
+        JsonObject cgiData = originalJson.get("web_environment").getAsJsonObject();
+        originalJson.get("request").getAsJsonObject().add("cgi_data", cgiData);
 
-        String json = pullFaultJson(location);
-
-        Iterator<JsonElement> itr = gson.fromJson(json, JsonArray.class).iterator();
-
-        if (itr.hasNext()) {
-            String firstElement = itr.next().toString();
-            ReportedError error = gson.fromJson(firstElement, ReportedError.class);
-            return error;
-        }
-
-        throw new IOException("Error details not available yet");
+        ReportedError error = gson.fromJson(originalJson, ReportedError.class);
+        return error;
     }
 }

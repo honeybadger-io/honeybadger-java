@@ -3,6 +3,7 @@ package io.honeybadger.reporter.dto;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 
@@ -18,5 +19,18 @@ public class Session extends LinkedHashMap<String, Object>
     public static final int MAX_SESSION_OBJ_STRING_SIZE = 4096;
 
     public Session() {
+    }
+
+    @Override
+    public Object put(String key, Object value) {
+        if (key.equals("creation_time")) {
+            if (value instanceof CharSequence) {
+                return super.put(key, Long.parseLong(value.toString()));
+            } else if (value instanceof Number) {
+                return super.put(key, ((Number)value).longValue());
+            }
+        }
+
+        return super.put(key, value);
     }
 }

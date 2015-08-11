@@ -49,7 +49,7 @@ public class HoneybadgerReporter implements ErrorReporter {
      * @return UUID of error created, if there was a problem null
      */
     @Override
-    public UUID reportError(Throwable error) {
+    public ErrorReportResult reportError(Throwable error) {
         return submitError(error, null);
     }
 
@@ -65,7 +65,7 @@ public class HoneybadgerReporter implements ErrorReporter {
      * @return UUID of error created, if there was a problem or ignored null
      */
     @Override
-    public UUID reportError(Throwable error, Object request) {
+    public ErrorReportResult reportError(Throwable error, Object request) {
         if (error == null) { return null; }
         if (request == null) { return submitError(error, null); }
 
@@ -84,12 +84,7 @@ public class HoneybadgerReporter implements ErrorReporter {
         }
     }
 
-    @Override
-    public ReportedError findError(UUID errorId) {
-        return null;
-    }
-
-    protected UUID submitError(Throwable error,
+    protected ErrorReportResult submitError(Throwable error,
                                io.honeybadger.reporter.dto.Request request) {
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
@@ -118,7 +113,9 @@ public class HoneybadgerReporter implements ErrorReporter {
                 else {
                     logger.debug("Honeybadger logged error correctly: [{}]",
                                  error.getMessage());
-                    return parseErrorId(response, gson);
+                    UUID id = parseErrorId(response, gson); 
+
+                    return new ErrorReportResult(id, reportedError, error);
                 }
             } catch (IOException e) {
                 String msg = String.format("There was an error when trying " +
@@ -208,7 +205,7 @@ public class HoneybadgerReporter implements ErrorReporter {
      *
      * @return the default URL unless it is overridden by a system property
      */
-    private URI honeybadgerUrl() {
+    public static URI honeybadgerUrl() {
         try {
             final String url;
             final String sysProp =

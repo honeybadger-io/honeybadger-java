@@ -57,7 +57,7 @@ public class ReportedError implements Serializable {
         return this;
     }
 
-    public Serializable getRequest() {
+    public Request getRequest() {
         return request;
     }
 
