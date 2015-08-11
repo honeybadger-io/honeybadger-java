@@ -24,3 +24,5 @@
         external dependencies. All dependencies have had their package names
         changed and are bundled as part of the jar.
       - Refactored to use DTOs for mapping to the JSON Honeybadger API.
+      - Added integration tests.
+      - Added cookie support.
