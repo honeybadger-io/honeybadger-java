@@ -2,9 +2,9 @@ package io.honeybadger.reporter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.honeybadger.reporter.dto.NoticeDetails;
-import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.HttpServletRequestFactory;
+import io.honeybadger.reporter.dto.Notice;
+import io.honeybadger.reporter.dto.NoticeDetails;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -14,7 +14,6 @@ import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,18 +68,34 @@ public class HoneybadgerReporter implements NoticeReporter {
         if (error == null) { return null; }
         if (request == null) { return submitError(error, null); }
 
+        if (supportsHttpServletRequest() && request instanceof javax.servlet.http.HttpServletRequest) {
+            io.honeybadger.reporter.dto.Request requestDetails =
+                    HttpServletRequestFactory.create((javax.servlet.http.HttpServletRequest) request);
+            logger.debug("Reporting from a servlet context");
+            return submitError(error, requestDetails);
+        } else if (supportsPlayHttpRequest() && request instanceof play.mvc.Http.Request) {
+            logger.debug("Reporting from the Play Framework");
+            return submitError(error, null);
+        }
+
+        return submitError(error, null);
+    }
+
+    protected boolean supportsHttpServletRequest() {
         try {
             Class.forName("javax.servlet.http.HttpServletRequest");
-
-            if (request instanceof HttpServletRequest) {
-                io.honeybadger.reporter.dto.Request requestDetails =
-                        HttpServletRequestFactory.create((HttpServletRequest) request);
-                return submitError(error, requestDetails);
-            } else {
-                return submitError(error, null);
-            }
+            return true;
         } catch (ClassNotFoundException e) {
-            return submitError(error, null);
+            return false;
+        }
+    }
+
+    protected boolean supportsPlayHttpRequest() {
+        try {
+            Class.forName("play.mvc.Http.Request");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
         }
     }
 
