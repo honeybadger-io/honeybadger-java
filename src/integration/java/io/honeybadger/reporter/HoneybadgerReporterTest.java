@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.honeybadger.loader.HoneybadgerErrorLoader;
 import io.honeybadger.reporter.dto.CgiData;
-import io.honeybadger.reporter.dto.ReportedError;
+import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.Request;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
 import org.apache.http.HttpHeaders;
@@ -75,8 +75,8 @@ public class HoneybadgerReporterTest {
 
         // Wait for the Honeybadger API to process the error
         Thread.sleep(10000);
-        ReportedError error = loader.findErrorDetails(id);
-        assertReportedErrorIsSame(result.getReportedError(), error);
+        Notice error = loader.findErrorDetails(id);
+        assertReportedErrorIsSame(result.getNotice(), error);
     }
 
     @Test
@@ -88,8 +88,8 @@ public class HoneybadgerReporterTest {
         assertNull("A suppressed error was actually added", result);
     }
 
-    static void assertReportedErrorIsSame(ReportedError expected,
-                                          ReportedError actual) {
+    static void assertReportedErrorIsSame(Notice expected,
+                                          Notice actual) {
         assertEquals(expected.getDetails(), actual.getDetails());
         assertEquals(expected.getNotifier(), actual.getNotifier());
         assertEquals(expected.getServer(), actual.getServer());

@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Set;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
-public class ErrorDetails implements Serializable {
+public class NoticeDetails implements Serializable {
     private static final long serialVersionUID = -3055963787038629496L;
 
     @SerializedName("class")
@@ -23,12 +22,12 @@ public class ErrorDetails implements Serializable {
     public final Causes causes;
 
     @SuppressWarnings("unchecked")
-    public ErrorDetails(Throwable error) {
+    public NoticeDetails(Throwable error) {
 
         this(error, (Set<String>)Collections.EMPTY_SET);
     }
 
-    public ErrorDetails(Throwable error, Set<String> tags) {
+    public NoticeDetails(Throwable error, Set<String> tags) {
         if (error == null) {
             throw new IllegalArgumentException("Error can't be null");
         }
@@ -45,7 +44,7 @@ public class ErrorDetails implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ErrorDetails that = (ErrorDetails) o;
+        NoticeDetails that = (NoticeDetails) o;
 
         if (className != null ? !className.equals(that.className) : that.className != null) return false;
         if (message != null ? !message.equals(that.message) : that.message != null) return false;

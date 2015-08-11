@@ -23,7 +23,7 @@ import java.util.Map;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class ReportedErrorTest {
+public class NoticeTest {
     private static final String JSON_SCHEMA_URL =
             "https://gist.githubusercontent.com/joshuap/94901ba378fd09a783be/raw/b632ff0a6b1ec82ced73735a321f1e44e94669d2/notices.json";
 
@@ -45,8 +45,8 @@ public class ReportedErrorTest {
     @Test
     public void canSerializeReportedErrorWithoutRequest() throws Exception {
         Exception e = new RuntimeException("Test exception");
-        ReportedError error = new ReportedError()
-                .setError(new ErrorDetails(e));
+        Notice error = new Notice()
+                .setError(new NoticeDetails(e));
         validateReportedErrorJson(error);
     }
 
@@ -55,8 +55,8 @@ public class ReportedErrorTest {
         Exception e = new RuntimeException("Test exception");
         HttpServletRequest request = new FakeHttpServletRequest();
 
-        ReportedError error = new ReportedError()
-                .setError(new ErrorDetails(e))
+        Notice error = new Notice()
+                .setError(new NoticeDetails(e))
                 .setRequest(HttpServletRequestFactory.create(request));
         validateReportedErrorJson(error);
     }
@@ -74,8 +74,8 @@ public class ReportedErrorTest {
 
         HttpServletRequest request = new FakeHttpServletRequest(headers);
 
-        ReportedError error = new ReportedError()
-                .setError(new ErrorDetails(e))
+        Notice error = new Notice()
+                .setError(new NoticeDetails(e))
                 .setRequest(HttpServletRequestFactory.create(request));
         validateReportedErrorJson(error);
     }
@@ -84,8 +84,8 @@ public class ReportedErrorTest {
     public void canSerializeChainedReportedErrorWithoutRequest() throws Exception {
         Exception origin = new RuntimeException("This is the cause");
         Exception e = new RuntimeException("Test exception", origin);
-        ReportedError error = new ReportedError()
-                .setError(new ErrorDetails(e));
+        Notice error = new Notice()
+                .setError(new NoticeDetails(e));
         validateReportedErrorJson(error);
     }
 
@@ -95,13 +95,13 @@ public class ReportedErrorTest {
         Exception e = new RuntimeException("Test exception", origin);
         HttpServletRequest request = new FakeHttpServletRequest();
 
-        ReportedError error = new ReportedError()
-                .setError(new ErrorDetails(e))
+        Notice error = new Notice()
+                .setError(new NoticeDetails(e))
                 .setRequest(HttpServletRequestFactory.create(request));
         validateReportedErrorJson(error);
     }
 
-    private void validateReportedErrorJson(ReportedError error)
+    private void validateReportedErrorJson(Notice error)
             throws ProcessingException, IOException {
         String jsonText = gson.toJson(error).toString();
 

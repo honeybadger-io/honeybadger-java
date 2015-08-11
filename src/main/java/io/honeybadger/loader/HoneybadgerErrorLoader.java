@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import io.honeybadger.reporter.NoticeReporter;
 import io.honeybadger.reporter.HoneybadgerReporter;
-import io.honeybadger.reporter.dto.ReportedError;
+import io.honeybadger.reporter.dto.Notice;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.client.fluent.Request;
@@ -127,7 +127,7 @@ public class HoneybadgerErrorLoader {
         return System.getProperty(NoticeReporter.READ_API_KEY_PROP_KEY);
     }
 
-    public ReportedError findErrorDetails(UUID faultId) throws IOException {
+    public Notice findErrorDetails(UUID faultId) throws IOException {
         String json = pullFaultJson(faultId);
 
         // HACK: Since our API is not symmetric, we do this in order to rename fields
@@ -136,7 +136,7 @@ public class HoneybadgerErrorLoader {
         JsonObject cgiData = originalJson.get("web_environment").getAsJsonObject();
         originalJson.get("request").getAsJsonObject().add("cgi_data", cgiData);
 
-        ReportedError error = gson.fromJson(originalJson, ReportedError.class);
+        Notice error = gson.fromJson(originalJson, Notice.class);
         return error;
     }
 }

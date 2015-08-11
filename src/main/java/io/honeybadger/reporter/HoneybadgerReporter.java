@@ -2,8 +2,8 @@ package io.honeybadger.reporter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.honeybadger.reporter.dto.ErrorDetails;
-import io.honeybadger.reporter.dto.ReportedError;
+import io.honeybadger.reporter.dto.NoticeDetails;
+import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.HttpServletRequestFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -92,16 +92,16 @@ public class HoneybadgerReporter implements NoticeReporter {
             return null;
         }
 
-        ReportedError reportedError = new ReportedError()
-                .setError(new ErrorDetails(error));
+        Notice notice = new Notice()
+                .setError(new NoticeDetails(error));
 
         if (request != null) {
-            reportedError.setRequest(request);
+            notice.setRequest(request);
         }
 
         for (int retries = 0; retries < 3; retries++) {
             try {
-                String json = gson.toJson(reportedError);
+                String json = gson.toJson(notice);
                 HttpResponse response = sendToHoneybadger(json)
                         .returnResponse();
                 int responseCode = response.getStatusLine().getStatusCode();
@@ -115,7 +115,7 @@ public class HoneybadgerReporter implements NoticeReporter {
                                  error.getMessage());
                     UUID id = parseErrorId(response, gson);
 
-                    return new ErrorReportResult(id, reportedError, error);
+                    return new ErrorReportResult(id, notice, error);
                 }
             } catch (IOException e) {
                 String msg = String.format("There was an error when trying " +

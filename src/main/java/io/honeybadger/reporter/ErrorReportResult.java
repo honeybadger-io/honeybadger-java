@@ -1,6 +1,6 @@
 package io.honeybadger.reporter;
 
-import io.honeybadger.reporter.dto.ReportedError;
+import io.honeybadger.reporter.dto.Notice;
 
 import java.util.UUID;
 
@@ -10,12 +10,12 @@ import java.util.UUID;
  */
 public class ErrorReportResult {
     private final UUID id;
-    private final ReportedError reportedError;
+    private final Notice notice;
     private final Throwable error;
 
-    public ErrorReportResult(UUID id, ReportedError reportedError, Throwable error) {
+    public ErrorReportResult(UUID id, Notice notice, Throwable error) {
         this.id = id;
-        this.reportedError = reportedError;
+        this.notice = notice;
         this.error = error;
     }
 
@@ -29,8 +29,8 @@ public class ErrorReportResult {
     /**
      * @return Error DTO sent to the Honeybadger API
      */
-    public ReportedError getReportedError() {
-        return reportedError;
+    public Notice getNotice() {
+        return notice;
     }
 
     /**

@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
-public class ReportedError implements Serializable {
+public class Notice implements Serializable {
     private static final long serialVersionUID = 1661111694538362413L;
 
     private Notifier notifier = new Notifier();
@@ -16,30 +16,30 @@ public class ReportedError implements Serializable {
     // This is defined as serializable so that it can use APIs that the
     // implementers may not have available like the Servlet API
     private Request request;
-    private ErrorDetails error;
+    private NoticeDetails error;
 
-    public ReportedError() {
+    public Notice() {
     }
 
     public Notifier getNotifier() {
         return notifier;
     }
 
-    public ReportedError setNotifier(Notifier notifier) {
+    public Notice setNotifier(Notifier notifier) {
         this.notifier = notifier;
         return this;
     }
 
-    public ErrorDetails getError() {
+    public NoticeDetails getError() {
         return error;
     }
 
-    public ReportedError setError(ErrorDetails error) {
+    public Notice setError(NoticeDetails error) {
         this.error = error;
         return this;
     }
 
-    public ReportedError setServer(ServerDetails server) {
+    public Notice setServer(ServerDetails server) {
         this.server = server;
         return this;
     }
@@ -52,7 +52,7 @@ public class ReportedError implements Serializable {
         return details;
     }
 
-    public ReportedError setDetails(Details details) {
+    public Notice setDetails(Details details) {
         this.details = details;
         return this;
     }
@@ -61,7 +61,7 @@ public class ReportedError implements Serializable {
         return request;
     }
 
-    public ReportedError setRequest(Request request) {
+    public Notice setRequest(Request request) {
         this.request = request;
         return this;
     }
@@ -71,7 +71,7 @@ public class ReportedError implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ReportedError that = (ReportedError) o;
+        Notice that = (Notice) o;
 
         if (notifier != null ? !notifier.equals(that.notifier) : that.notifier != null) return false;
         if (server != null ? !server.equals(that.server) : that.server != null) return false;
