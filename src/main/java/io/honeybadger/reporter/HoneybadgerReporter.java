@@ -49,7 +49,7 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @return UUID of error created, if there was a problem null
      */
     @Override
-    public ErrorReportResult reportError(Throwable error) {
+    public NoticeReportResult reportError(Throwable error) {
         return submitError(error, null);
     }
 
@@ -65,7 +65,7 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @return UUID of error created, if there was a problem or ignored null
      */
     @Override
-    public ErrorReportResult reportError(Throwable error, Object request) {
+    public NoticeReportResult reportError(Throwable error, Object request) {
         if (error == null) { return null; }
         if (request == null) { return submitError(error, null); }
 
@@ -84,7 +84,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
     }
 
-    protected ErrorReportResult submitError(Throwable error,
+    protected NoticeReportResult submitError(Throwable error,
                                io.honeybadger.reporter.dto.Request request) {
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
@@ -115,7 +115,7 @@ public class HoneybadgerReporter implements NoticeReporter {
                                  error.getMessage());
                     UUID id = parseErrorId(response, gson);
 
-                    return new ErrorReportResult(id, notice, error);
+                    return new NoticeReportResult(id, notice, error);
                 }
             } catch (IOException e) {
                 String msg = String.format("There was an error when trying " +

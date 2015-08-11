@@ -40,7 +40,7 @@ public interface NoticeReporter {
      * @param error error to report
      * @return UUID of error created, if there was a problem null
      */
-    ErrorReportResult reportError(Throwable error);
+    NoticeReportResult reportError(Throwable error);
 
     /**
      * Send any Java {@link java.lang.Throwable} to the Honeybadger error
@@ -50,5 +50,5 @@ public interface NoticeReporter {
      * @param request Object to parse for request properties
      * @return UUID of error created, if there was a problem or ignored null
      */
-    ErrorReportResult reportError(Throwable error, Object request);
+    NoticeReportResult reportError(Throwable error, Object request);
 }

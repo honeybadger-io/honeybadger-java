@@ -8,12 +8,12 @@ import java.util.UUID;
  * Data object representing that results of an error submission to the
  * Honeybadger API.
  */
-public class ErrorReportResult {
+public class NoticeReportResult {
     private final UUID id;
     private final Notice notice;
     private final Throwable error;
 
-    public ErrorReportResult(UUID id, Notice notice, Throwable error) {
+    public NoticeReportResult(UUID id, Notice notice, Throwable error) {
         this.id = id;
         this.notice = notice;
         this.error = error;

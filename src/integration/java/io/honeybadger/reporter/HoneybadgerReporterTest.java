@@ -2,7 +2,7 @@ package io.honeybadger.reporter;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.honeybadger.loader.HoneybadgerErrorLoader;
+import io.honeybadger.loader.HoneybadgerNoticeLoader;
 import io.honeybadger.reporter.dto.CgiData;
 import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.Request;
@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 public class HoneybadgerReporterTest {
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private final HoneybadgerErrorLoader loader = new HoneybadgerErrorLoader();
+    private final HoneybadgerNoticeLoader loader = new HoneybadgerNoticeLoader();
     private final NoticeReporter reporter;
 
     public HoneybadgerReporterTest() {
@@ -64,7 +64,7 @@ public class HoneybadgerReporterTest {
 
         HttpServletRequest request = new FakeHttpServletRequest(headers);
 
-        ErrorReportResult result = reporter.reportError(t, request);
+        NoticeReportResult result = reporter.reportError(t, request);
         UUID id = result.getId();
 
         logger.info("Error ID returned from Honeybadger is: {}", id);
@@ -83,7 +83,7 @@ public class HoneybadgerReporterTest {
     public void willSuppressExcludedExceptionClasses() throws Exception {
         final Exception error = new UnsupportedOperationException(
                 "I should be suppressed");
-        final ErrorReportResult result = reporter.reportError(error);
+        final NoticeReportResult result = reporter.reportError(error);
 
         assertNull("A suppressed error was actually added", result);
     }
