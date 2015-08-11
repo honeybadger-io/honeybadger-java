@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 public class HoneybadgerReporterTest {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private final HoneybadgerErrorLoader loader = new HoneybadgerErrorLoader();
-    private final ErrorReporter reporter;
+    private final NoticeReporter reporter;
 
     public HoneybadgerReporterTest() {
         if (System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY) == null) {

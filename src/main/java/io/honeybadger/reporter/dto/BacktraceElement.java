@@ -2,7 +2,7 @@ package io.honeybadger.reporter.dto;
 
 import java.io.Serializable;
 
-import static io.honeybadger.reporter.ErrorReporter.APPLICATION_PACKAGE_PROP_KEY;
+import static io.honeybadger.reporter.NoticeReporter.APPLICATION_PACKAGE_PROP_KEY;
 
 /**
  * One single line on a backtrace.

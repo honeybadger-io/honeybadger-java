@@ -30,7 +30,7 @@ import java.util.*;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.0
  */
-public class HoneybadgerReporter implements ErrorReporter {
+public class HoneybadgerReporter implements NoticeReporter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Set<String> excludedExceptionClasses;
@@ -113,7 +113,7 @@ public class HoneybadgerReporter implements ErrorReporter {
                 else {
                     logger.debug("Honeybadger logged error correctly: [{}]",
                                  error.getMessage());
-                    UUID id = parseErrorId(response, gson); 
+                    UUID id = parseErrorId(response, gson);
 
                     return new ErrorReportResult(id, reportedError, error);
                 }

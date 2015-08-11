@@ -1,7 +1,7 @@
 package io.honeybadger.reporter.servlet;
 
 import com.google.common.collect.ImmutableMap;
-import io.honeybadger.reporter.ErrorReporter;
+import io.honeybadger.reporter.NoticeReporter;
 import io.honeybadger.reporter.UnitTestExpectedException;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -47,7 +47,7 @@ public class HoneybadgerFilterTest {
      * Generates a fake instance of a {@link HoneybadgerFilter} for testing.
      * @param reporter reporter instance to use for testing
      */
-    private HoneybadgerFilter instance(ErrorReporter reporter)
+    private HoneybadgerFilter instance(NoticeReporter reporter)
             throws ServletException {
         if (reporter == null) {
             throw new IllegalArgumentException("Reporter must not be null");
@@ -83,7 +83,7 @@ public class HoneybadgerFilterTest {
 
     @Test
     public void filterCanThrowAnError() throws Exception {
-        ErrorReporter reporter = mock(ErrorReporter.class);
+        NoticeReporter reporter = mock(NoticeReporter.class);
         HoneybadgerFilter filter = instance(reporter);
 
         FilterChain chain = mock(FilterChain.class);

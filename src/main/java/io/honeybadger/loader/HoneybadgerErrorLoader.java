@@ -3,7 +3,7 @@ package io.honeybadger.loader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import io.honeybadger.reporter.ErrorReporter;
+import io.honeybadger.reporter.NoticeReporter;
 import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.dto.ReportedError;
 import org.apache.http.Header;
@@ -95,7 +95,7 @@ public class HoneybadgerErrorLoader {
 
         if (readApiKey == null || readApiKey.isEmpty()) {
             String msg = String.format("Property %s must be set if you are " +
-                    "going to be accessing the Read API", ErrorReporter.READ_API_KEY_PROP_KEY);
+                    "going to be accessing the Read API", NoticeReporter.READ_API_KEY_PROP_KEY);
             throw new IllegalArgumentException(msg);
         }
 
@@ -124,7 +124,7 @@ public class HoneybadgerErrorLoader {
         String envKey = System.getenv("HONEYBADGER_READ_API_KEY");
         if (envKey != null && !envKey.isEmpty()) return envKey;
 
-        return System.getProperty(ErrorReporter.READ_API_KEY_PROP_KEY);
+        return System.getProperty(NoticeReporter.READ_API_KEY_PROP_KEY);
     }
 
     public ReportedError findErrorDetails(UUID faultId) throws IOException {

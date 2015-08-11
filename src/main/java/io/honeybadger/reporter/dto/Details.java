@@ -5,7 +5,7 @@ import org.slf4j.MDC;
 import java.io.Serializable;
 import java.util.*;
 
-import static io.honeybadger.reporter.ErrorReporter.*;
+import static io.honeybadger.reporter.NoticeReporter.*;
 
 /**
  * Class representing metadata and run-time state.

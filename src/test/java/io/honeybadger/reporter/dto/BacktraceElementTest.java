@@ -1,6 +1,6 @@
 package io.honeybadger.reporter.dto;
 
-import io.honeybadger.reporter.ErrorReporter;
+import io.honeybadger.reporter.NoticeReporter;
 import org.junit.Test;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -15,7 +15,7 @@ public class BacktraceElementTest {
 
     @Test
     public void canCalculateContextWhenNoAppPackageIsSet() {
-        System.setProperty(ErrorReporter.APPLICATION_PACKAGE_PROP_KEY, "");
+        System.setProperty(NoticeReporter.APPLICATION_PACKAGE_PROP_KEY, "");
         BacktraceElement.Context context = calculateContext(METHOD_NAME);
         assertEquals("Context should be ALL because we haven't set a package",
                      BacktraceElement.Context.ALL, context);
@@ -23,7 +23,7 @@ public class BacktraceElementTest {
 
     @Test
     public void canCalculateContextFromMatchingPackage() {
-        System.setProperty(ErrorReporter.APPLICATION_PACKAGE_PROP_KEY, APP_PACKAGE);
+        System.setProperty(NoticeReporter.APPLICATION_PACKAGE_PROP_KEY, APP_PACKAGE);
         BacktraceElement.Context context = calculateContext(METHOD_NAME);
         assertEquals("Context should be APP because we have set a package and it matches",
                 BacktraceElement.Context.APP, context);
@@ -31,7 +31,7 @@ public class BacktraceElementTest {
 
     @Test
     public void canCalculateContextFromNotMatchingPackage() {
-        System.setProperty(ErrorReporter.APPLICATION_PACKAGE_PROP_KEY, APP_PACKAGE);
+        System.setProperty(NoticeReporter.APPLICATION_PACKAGE_PROP_KEY, APP_PACKAGE);
         BacktraceElement.Context context = calculateContext("com.derp.herp.ClassName.methodName");
         assertEquals("Context should be ALL because we have set a package and it doesn't match",
                 BacktraceElement.Context.ALL, context);
@@ -39,7 +39,7 @@ public class BacktraceElementTest {
 
     @Test
     public void canCalculateContextFromNullMethod() {
-        System.setProperty(ErrorReporter.APPLICATION_PACKAGE_PROP_KEY, APP_PACKAGE);
+        System.setProperty(NoticeReporter.APPLICATION_PACKAGE_PROP_KEY, APP_PACKAGE);
         BacktraceElement.Context context = calculateContext(null);
         assertEquals("Context should be ALL because we have a null method",
                 BacktraceElement.Context.ALL, context);
@@ -47,7 +47,7 @@ public class BacktraceElementTest {
 
     @Test
     public void canCalculateContextFromEmptyMethod() {
-        System.setProperty(ErrorReporter.APPLICATION_PACKAGE_PROP_KEY, APP_PACKAGE);
+        System.setProperty(NoticeReporter.APPLICATION_PACKAGE_PROP_KEY, APP_PACKAGE);
         BacktraceElement.Context context = calculateContext("");
         assertEquals("Context should be ALL because we have an empty method",
                 BacktraceElement.Context.ALL, context);

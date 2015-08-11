@@ -6,7 +6,7 @@ package io.honeybadger.reporter;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
-public interface ErrorReporter {
+public interface NoticeReporter {
     /** System property key identifying the Honeybadger URL to use. */
     String HONEYBADGER_URL_SYS_PROP_KEY =
             "honeybadger.url";

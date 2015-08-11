@@ -1,12 +1,11 @@
 package io.honeybadger.reporter.servlet;
 
-import io.honeybadger.reporter.ErrorReporter;
+import io.honeybadger.reporter.NoticeReporter;
 import io.honeybadger.reporter.HoneybadgerReporter;
 
 import javax.servlet.*;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.UUID;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.*;
 
@@ -17,7 +16,7 @@ import static io.honeybadger.reporter.HoneybadgerReporter.*;
  * @since 1.0.4
  */
 public class HoneybadgerFilter implements Filter {
-    private ErrorReporter reporter;
+    private NoticeReporter reporter;
     private Properties properties = System.getProperties();
 
     @Override
@@ -64,11 +63,11 @@ public class HoneybadgerFilter implements Filter {
         }
     }
 
-    ErrorReporter getReporter() {
+    NoticeReporter getReporter() {
         return reporter;
     }
 
-    void setReporter(ErrorReporter reporter) {
+    void setReporter(NoticeReporter reporter) {
         this.reporter = reporter;
     }
 
