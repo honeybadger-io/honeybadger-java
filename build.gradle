@@ -274,21 +274,21 @@ uploadArchives {
             }
 
             pom.project {
-                name 'Honeybadger JVM Client'
+                name 'Honeybadger Java Client'
                 packaging 'jar'
                 description 'Library that sends exceptions to the online error management service Honeybadger.'
-                url 'https://github.com/honeybadger-io/honeybadger-jvm-client-v2'
+                url 'https://github.com/honeybadger-io/honeybadger-java'
 
                 scm {
                     connection 'scm:git:git@github.com:honeybadger-io/honeybadger-jvm-client-v2.git'
-                    developerConnection 'scm:git:git@github.com:honeybadger-io/honeybadger-jvm-client-v2.git'
-                    url 'git@github.com:honeybadger-io/honeybadger-jvm-client-v2.git'
+                    developerConnection 'scm:git:git@github.com:honeybadger-io/honeybadger-java.git'
+                    url 'git@github.com:honeybadger-io/honeybadger-java.git'
                 }
 
                 licenses {
                     license {
                         name 'MIT License'
-                        url 'https://raw.githubusercontent.com/honeybadger-io/honeybadger-jvm-client-v2/master/LICENSE'
+                        url 'https://raw.githubusercontent.com/honeybadger-io/honeybadger-java/master/LICENSE'
                     }
                 }
 
