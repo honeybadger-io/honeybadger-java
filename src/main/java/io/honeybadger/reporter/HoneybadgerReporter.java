@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import io.honeybadger.reporter.dto.HttpServletRequestFactory;
 import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.NoticeDetails;
+import io.honeybadger.reporter.dto.PlayHttpRequestFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -68,17 +69,29 @@ public class HoneybadgerReporter implements NoticeReporter {
         if (error == null) { return null; }
         if (request == null) { return submitError(error, null); }
 
-        if (supportsHttpServletRequest() && request instanceof javax.servlet.http.HttpServletRequest) {
-            io.honeybadger.reporter.dto.Request requestDetails =
-                    HttpServletRequestFactory.create((javax.servlet.http.HttpServletRequest) request);
+        final io.honeybadger.reporter.dto.Request requestDetails;
+
+        // CUSTOM USAGE OF REQUEST DTO
+        if (request instanceof io.honeybadger.reporter.dto.Request) {
+            logger.debug("Reporting using a request DTO");
+            requestDetails = (io.honeybadger.reporter.dto.Request)request;
+
+        // SERVLET REQUEST
+        } else if (supportsHttpServletRequest() && request instanceof javax.servlet.http.HttpServletRequest)  {
             logger.debug("Reporting from a servlet context");
-            return submitError(error, requestDetails);
+            requestDetails =  HttpServletRequestFactory.create((javax.servlet.http.HttpServletRequest) request);
+
+        // PLAY FRAMEWORK REQUEST
         } else if (supportsPlayHttpRequest() && request instanceof play.mvc.Http.Request) {
             logger.debug("Reporting from the Play Framework");
-            return submitError(error, null);
+            requestDetails = PlayHttpRequestFactory.create((play.mvc.Http.Request)request);
+
+        } else {
+            logger.debug("No request object available");
+            requestDetails = null;
         }
 
-        return submitError(error, null);
+        return submitError(error, requestDetails);
     }
 
     protected boolean supportsHttpServletRequest() {

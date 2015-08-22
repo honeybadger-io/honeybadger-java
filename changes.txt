@@ -26,3 +26,4 @@
       - Refactored to use DTOs for mapping to the JSON Honeybadger API.
       - Added integration tests.
       - Added cookie support.
+      - Added HTTP GET/POST parameter exclusion.
