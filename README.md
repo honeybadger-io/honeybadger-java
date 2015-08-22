@@ -192,6 +192,16 @@ Default Value: honeybadger.api_key,honeybadger.excluded_sys_props,honeybadger.ur
 Description: CSV of Java system properties to exclude from being logged to 
              Honeybadger. This is useful for excluding authentication information.
              
+honeybadger.excluded_params
+-------------
+Sample Value: auth_token,session_data,credit_card_number
+Required?: No
+Default Value: N/A
+Description: CSV of HTTP GET/POST query parameter values that will be excluded 
+             from the data sent to Honeybadger. This is useful for excluding
+             authentication information, parameters that are too long or 
+             sensitive.
+             
 honeybadger.read_api_key
 -------------
 Sample Value: qjcp6c7Nv9yR-bsvGZ77

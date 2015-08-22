@@ -18,6 +18,10 @@ public interface NoticeReporter {
     String HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY =
             "honeybadger.excluded_sys_props";
 
+    /** CSV list of parameters to not include. */
+    String HONEYBADGER_EXCLUDED_PARAMS_SYS_PROP_KEY =
+            "honeybadger.excluded_params";
+
     /** CSV list of exception classes to ignore. */
     String HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY =
             "honeybadger.excluded_exception_classes";

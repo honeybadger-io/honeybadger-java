@@ -1,9 +1,9 @@
 package io.honeybadger.reporter.dto;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+
+import static io.honeybadger.reporter.NoticeReporter.*;
 
 /**
  * Class representing parameters requested when an exception occurred.
@@ -13,8 +13,23 @@ import java.util.Map;
 public class Params extends LinkedHashMap<String, String>
         implements Serializable {
     private static final long serialVersionUID = -5633548926144410598L;
+    private final Set<String> excludedValues;
 
     public Params() {
+        this.excludedValues = buildExcludedProps();
+    }
+
+    protected static Set<String> buildExcludedProps() {
+        String excluded = System.getProperty(HONEYBADGER_EXCLUDED_PARAMS_SYS_PROP_KEY);
+        HashSet<String> set = new HashSet<>();
+
+        if (excluded == null || excluded.isEmpty()) {
+            return set;
+        }
+
+        Collections.addAll(set, excluded.split(","));
+
+        return set;
     }
 
     /**
@@ -34,5 +49,14 @@ public class Params extends LinkedHashMap<String, String>
         }
 
         return builder.toString();
+    }
+
+    @Override
+    public String put(String key, String value) {
+        if (excludedValues.contains(key)) {
+            return null;
+        }
+
+        return super.put(key, value);
     }
 }
