@@ -69,14 +69,18 @@ public class PlayHttpRequestFactory {
         cgiData.put("HTTP_ACCEPT_LANGUAGE", httpRequest.getHeader(HttpHeaders.ACCEPT_LANGUAGE));
         cgiData.put("HTTP_ACCEPT_CHARSET", httpRequest.getHeader(HttpHeaders.ACCEPT_CHARSET));
         cgiData.put("HTTP_COOKIE", parseCookies(httpRequest));
-        cgiData.put("SERVER_NAME", httpRequest.host());
-//        cgiData.put("SERVER_PORT", httpRequest.);
         cgiData.put("CONTENT_TYPE", httpRequest.getHeader(HttpHeaders.CONTENT_TYPE));
         cgiData.put("CONTENT_LENGTH", httpRequest.getHeader(HttpHeaders.CONTENT_LENGTH));
         cgiData.put("REMOTE_ADDR", httpRequest.remoteAddress());
-//        cgiData.put("REMOTE_PORT", httpRequest);
         cgiData.put("QUERY_STRING", httpRequest.queryString());
         cgiData.put("PATH_INFO", httpRequest.path());
+
+        if (httpRequest.host() != null && !httpRequest.host().isEmpty()) {
+            String[] hostParts = httpRequest.host().split(":");
+
+            if (hostParts.length > 0)  cgiData.put("SERVER_NAME", hostParts[0]);
+            if (hostParts.length > 1)  cgiData.put("SERVER_PORT", hostParts[1]);
+        }
 
         return cgiData;
     }
@@ -91,8 +95,8 @@ public class PlayHttpRequestFactory {
         StringBuilder builder = new StringBuilder();
 
         while (itr.hasNext()) {
-            String c = itr.next().value();
-            if (c == null) continue;
+            Http.Cookie next = itr.next();
+            String c = String.format("%s=%s", next.name(), next.value());
 
             builder.append(c.trim());
 

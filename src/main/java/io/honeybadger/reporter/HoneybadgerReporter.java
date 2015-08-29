@@ -105,7 +105,7 @@ public class HoneybadgerReporter implements NoticeReporter {
 
     protected boolean supportsPlayHttpRequest() {
         try {
-            Class.forName("play.mvc.Http.Request");
+            Class.forName("play.mvc.Http", false, this.getClass().getClassLoader());
             return true;
         } catch (ClassNotFoundException e) {
             return false;
