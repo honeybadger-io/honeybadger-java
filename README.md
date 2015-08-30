@@ -164,9 +164,9 @@ Description: The API key found in the settings tab in the Honeybadger UI.
 
 honeybadger.url
 -------------
-Sample Value: https://alternative.host/v1/notices
+Sample Value: https://alternative.host
 Required?: No
-Default Value: https://api.honeybadger.io/v1/notices
+Default Value: https://api.honeybadger.io
 Description: URL to the Honeybadger API endpoint. You may want to access it 
              without SSL in order to test with a proxy utility.
 

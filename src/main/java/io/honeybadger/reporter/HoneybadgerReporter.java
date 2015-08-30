@@ -195,7 +195,8 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @throws IOException thrown when a network was encountered
      */
     private Response sendToHoneybadger(String jsonError) throws IOException {
-        URI honeybadgerUrl = honeybadgerUrl();
+        URI honeybadgerUrl = URI.create(
+                String.format("%s/%s", honeybadgerUrl(), "v1/notices"));
         Request request = buildRequest(honeybadgerUrl, jsonError);
         return request.execute();
     }
@@ -242,7 +243,8 @@ public class HoneybadgerReporter implements NoticeReporter {
             if (sysProp != null && !sysProp.isEmpty()) {
                 url = sysProp;
             } else {
-                url = DEFAULT_API_URI;
+                url = String.format("%s://%s",
+                        DEFAULT_API_PROTO, DEFAULT_API_HOST);
             }
 
             return URI.create(url);

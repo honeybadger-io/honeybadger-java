@@ -33,8 +33,8 @@ public class HoneybadgerNoticeLoader {
             throw new IllegalArgumentException(msg);
         }
 
-        final URI baseURI = URI.create(String.format("%s/%s",
-                HoneybadgerReporter.honeybadgerUrl(), faultId));
+        final URI baseURI = URI.create(String.format("%s/%s/%s",
+                HoneybadgerReporter.honeybadgerUrl(), "v1/notices", faultId));
 
         String withAuth = String.format("%s/?auth_token=%s",
                 baseURI, readApiKey);

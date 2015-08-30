@@ -10,6 +10,7 @@ public interface NoticeReporter {
     /** System property key identifying the Honeybadger URL to use. */
     String HONEYBADGER_URL_SYS_PROP_KEY =
             "honeybadger.url";
+
     /** System property key identifying the Honeybadger API key to use. */
     String HONEYBADGER_API_KEY_SYS_PROP_KEY =
             "honeybadger.api_key";
@@ -34,8 +35,9 @@ public interface NoticeReporter {
     String READ_API_KEY_PROP_KEY =
             "honeybadger.read_api_key";
 
-    String DEFAULT_API_URI =
-            "https://api.honeybadger.io/v1/notices";
+    String DEFAULT_API_PROTO = "https";
+
+    String DEFAULT_API_HOST = "api.honeybadger.io";
 
     /**
      * Send any Java {@link java.lang.Throwable} to the Honeybadger error
