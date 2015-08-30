@@ -144,7 +144,7 @@ shadowJar {
 
 def installer = install.repositories.mavenInstaller
 
-// TODO: Remove everything but slf4j
+// Remove everything but slf4j
 [installer]*.pom*.whenConfigured {pom ->
     pom.dependencies.retainAll {
         (it.artifactId == 'slf4j-api' && it.groupId == 'org.slf4j') ||
@@ -222,7 +222,6 @@ artifacts {
     archives javadocJar, sourcesJar, shadowJar
 }
 
-// TODO: Set me up with a new username for honeybadger.io
 /*
 
 signing {
