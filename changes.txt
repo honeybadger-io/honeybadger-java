@@ -27,3 +27,4 @@
       - Added integration tests.
       - Added cookie support.
       - Added HTTP GET/POST parameter exclusion.
+      - Added Play Framework support.
