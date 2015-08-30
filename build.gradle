@@ -140,6 +140,7 @@ shadowJar {
     relocate 'org.apache.commons.codec', 'io.honeybadger.org.apache.commons.codec'
     relocate 'org.apache.commons.logging', 'io.honeybadger.org.apache.commons.logging'
     relocate 'com.jcabi', 'io.honeybadger.com.jcabi'
+    exclude  'org/slf4j/**'
 }
 
 def installer = install.repositories.mavenInstaller
