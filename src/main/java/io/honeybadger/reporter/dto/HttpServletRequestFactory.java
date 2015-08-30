@@ -8,9 +8,14 @@ import java.security.Principal;
 import java.util.Enumeration;
 import java.util.Map;
 
+import static io.honeybadger.reporter.dto.RequestParsingUtils.parseParamsFromMap;
+
 /**
  * Factory class that creates a {@link Request} based on a 
  * {@link javax.servlet.http.HttpServletRequest}.
+ *
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class HttpServletRequestFactory {
     public static Request create(HttpServletRequest httpRequest) {
@@ -36,25 +41,7 @@ public class HttpServletRequestFactory {
     }
     
     protected static Params createParams(HttpServletRequest httpRequest) {
-        Params params = new Params();
-
-        try {
-            Map<String, String[]> paramMap = httpRequest.getParameterMap();
-
-            if (paramMap == null || paramMap.isEmpty()) return params;
-
-            for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
-                params.put(entry.getKey(), Params.csv(entry.getValue()));
-            }
-        } catch (RuntimeException e) {
-            /* We really shouldn't ever have an exception here, but we can't
-             * control the underlying implementation, so we just recover by
-             * not displaying any data. */
-
-            params.put("Error getting parameters", e.getMessage());
-        }
-        
-        return params;
+        return parseParamsFromMap(httpRequest.getParameterMap());
     }
     
     protected static Session createSession(HttpServletRequest httpRequest) {

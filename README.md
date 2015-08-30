@@ -10,7 +10,7 @@ This is a library for sending errors that implement ```java.lang.Throwable``` on
 ## Download / Maven Repository
 You can find the library on <a href="http://search.maven.org/#browse%7C-1627719036">Maven Central</a> or you can always clone this github repository.
 
-## Implementation
+## Stand-alone Usage
 If you want to send all unhandled errors to Honeybadger and have them logged to slf4j via 
 the error log level, you will need to set some system properties and add a single line 
 to the thread in which you want to register the error handler.
@@ -26,7 +26,8 @@ public static void main(String argv[]) {
 }
 ```
 
-A servlet based implemantion may look like:
+## Servlet Usage
+A servlet based implementation may look like:
 
 In your web.xml file:
 ```xml
@@ -53,6 +54,24 @@ In your web.xml file:
     </filter-mapping>
 ```
 
+## Play Framework Usage
+This library has been tested against Play 2.4.2. You can add Honeybadger as an error
+handler by adding the library to your SBT build file:
+ 
+```
+libraryDependencies += "io.honeybadger" % "honeybadger-java" % "<<VERSION NUMBER>>"
+```
+ 
+And then by adding the following line to your conf/application.conf file:
+
+```
+play.http.errorHandler=io.honeybadger.reporter.play.HoneybadgerErrorHandler
+```
+
+This will allow the library to wrap the default error handler implementation and
+pass around Honeybadger error ids instead of the default Play error ids.
+
+## API Only Usage
 If you want to send exceptions to HoneyBadger without having to register an uncaught 
 exception handler, you can create an instance of ```HonebadgerReporter``` and call 
 the ```reportError(Throwable error)``` method directly.

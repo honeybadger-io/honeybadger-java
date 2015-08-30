@@ -135,6 +135,7 @@ shadowJar {
     }
 
     relocate 'com.google', 'io.honeybadger.com.google'
+    relocate 'org.apache.http', 'io.honeybadger.org.apache.http'
     relocate 'org.apache.httpcomponents', 'io.honeybadger.org.apache.httpcomponents'
     relocate 'org.apache.commons.codec', 'io.honeybadger.org.apache.commons.codec'
     relocate 'org.apache.commons.logging', 'io.honeybadger.org.apache.commons.logging'

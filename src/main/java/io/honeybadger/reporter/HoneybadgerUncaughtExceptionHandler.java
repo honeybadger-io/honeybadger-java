@@ -15,8 +15,10 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
+        NoticeReportResult errorResult = null;
+
         try {
-            reporter.reportError(e);
+            errorResult = reporter.reportError(e);
         } catch (RuntimeException re) {
             if (logger.isErrorEnabled()) {
                 logger.error("An error occurred when sending data to the " +
@@ -24,7 +26,10 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
             }
         } finally {
             if (logger.isErrorEnabled()) {
-                logger.error("An unhandled exception has occurred", e);
+                String msg = "An unhandled exception has occurred [%s]";
+                String id = (errorResult == null) ?
+                        "no-id" : errorResult.getId().toString();
+                logger.error(String.format(msg, id), e);
             }
         }
     }
