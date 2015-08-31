@@ -29,3 +29,4 @@
       - Added HTTP GET/POST parameter exclusion.
       - Added Play Framework support.
       - Changed honeybadger.url to refer to the base URL of the API.
+      - Added Honeybadger error form to servlet filter.
