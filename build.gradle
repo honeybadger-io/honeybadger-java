@@ -97,6 +97,9 @@ dependencies {
     // Used to get the Honeybadger library version from the JAR manifest
     compile 'com.jcabi:jcabi-manifests:1.1'
 
+    // Used for rendering HTML error page templates
+    compile 'com.github.spullara.mustache.java:compiler:0.8.18'
+
     // Utilities for testing below
 
     testCompile ('com.google.guava:guava:18.0') {
@@ -135,11 +138,9 @@ shadowJar {
     }
 
     relocate 'com.google', 'io.honeybadger.com.google'
-    relocate 'org.apache.http', 'io.honeybadger.org.apache.http'
-    relocate 'org.apache.httpcomponents', 'io.honeybadger.org.apache.httpcomponents'
-    relocate 'org.apache.commons.codec', 'io.honeybadger.org.apache.commons.codec'
-    relocate 'org.apache.commons.logging', 'io.honeybadger.org.apache.commons.logging'
+    relocate 'org.apache', 'io.honeybadger.org.apache'
     relocate 'com.jcabi', 'io.honeybadger.com.jcabi'
+    relocate 'com.github', 'io.honeybadger.com.github'
     exclude  'org/slf4j/**'
 }
 

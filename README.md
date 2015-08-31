@@ -47,6 +47,12 @@ In your web.xml file:
             <param-name>honeybadger.excluded_exception_classes</param-name>
             <param-value>org.apache.catalina.connector.ClientAbortException</param-value>
         </init-param>
+        <!-- By default this is true. Toggle to false if you don't want users to be able
+             to send feedback. -->
+        <init-param>
+            <param-name>honeybadger.display_feedback_form</param-name>
+            <param-value>false</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>HoneybadgerFilter</filter-name>
@@ -227,6 +233,22 @@ Sample Value: qjcp6c7Nv9yR-bsvGZ77
 Required?: Only when running integration tests
 Default Value: N/A
 Description: API key used to access the Read API
+
+honeybadger.display_feedback_form
+-------------
+Sample Value: false
+Required?: No
+Default Value: true
+Description: Displays the feedback form or JSON output when an error is thrown
+             via a servlet call.
+             
+honeybadger.feedback_form_template_path
+-------------
+Sample Value: templates/my-company.mustache
+Required?: No
+Default Value: templates/feedback-form.mustache
+Description: Path within the class path to the mustache template that is displayed
+             when an error occurs in a servlet request.
 ```
 
 ## Credits

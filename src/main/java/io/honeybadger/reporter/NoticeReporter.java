@@ -35,8 +35,21 @@ public interface NoticeReporter {
     String READ_API_KEY_PROP_KEY =
             "honeybadger.read_api_key";
 
+    /** System property key indicating if we display the feedback form. */
+    String DISPLAY_FEEDBACK_FORM_KEY =
+            "honeybadger.display_feedback_form";
+
+    /** System property key indicating the path to the feedback form template. */
+    String FEEDBACK_FORM_TEMPLATE_PATH_KEY =
+            "honeybadger.feedback_form_template_path";
+
+    /** Default feedback form template path. */
+    String DEFAULT_FEEDBACK_FORM_TEMPLATE_PATH = "templates/feedback-form.mustache";
+
+    /** Default protocol for connecting to the Honeybadger API. */
     String DEFAULT_API_PROTO = "https";
 
+    /** Default host to connect to for the Honeybadger API. */
     String DEFAULT_API_HOST = "api.honeybadger.io";
 
     /**

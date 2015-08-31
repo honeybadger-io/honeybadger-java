@@ -1,6 +1,7 @@
 package io.honeybadger.reporter.servlet;
 
 import com.google.common.collect.ImmutableMap;
+import io.honeybadger.reporter.FeedbackForm;
 import io.honeybadger.reporter.NoticeReporter;
 import io.honeybadger.reporter.UnitTestExpectedException;
 import org.junit.Test;
@@ -9,16 +10,19 @@ import org.mockito.Mockito;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Properties;
 
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
 import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY;
+import static io.honeybadger.reporter.NoticeReporter.DISPLAY_FEEDBACK_FORM_KEY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class HoneybadgerFilterTest {
@@ -55,6 +59,7 @@ public class HoneybadgerFilterTest {
 
         final HoneybadgerFilter filter = new HoneybadgerFilter();
         filter.setReporter(reporter);
+        filter.setFeedbackForm(new FeedbackForm(HoneybadgerFilter.feedbackFormTemplatePath()));
 
         return filter;
     }
@@ -94,12 +99,15 @@ public class HoneybadgerFilterTest {
 
         ServletRequest request = mock(ServletRequest.class);
         ServletResponse response = mock(ServletResponse.class);
+        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
 
         boolean thrown = false;
 
         try {
+            System.setProperty(DISPLAY_FEEDBACK_FORM_KEY, "false");
             filter.doFilter(request, response, chain);
         } catch (UnitTestExpectedException e) {
+            System.clearProperty(DISPLAY_FEEDBACK_FORM_KEY);
             thrown = true;
         }
 
@@ -120,12 +128,15 @@ public class HoneybadgerFilterTest {
 
         ServletRequest request = mock(HttpServletRequest.class);
         ServletResponse response = mock(HttpServletResponse.class);
+        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
 
         boolean thrown = false;
 
         try {
+            System.setProperty(DISPLAY_FEEDBACK_FORM_KEY, "false");
             filter.doFilter(request, response, chain);
         } catch (UnitTestExpectedException e) {
+            System.clearProperty(DISPLAY_FEEDBACK_FORM_KEY);
             thrown = true;
         }
 
