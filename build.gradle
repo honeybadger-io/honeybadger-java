@@ -224,8 +224,6 @@ artifacts {
     archives javadocJar, sourcesJar, shadowJar
 }
 
-/*
-
 signing {
     sign configurations.archives
 }
@@ -306,7 +304,7 @@ uploadArchives {
         }
     }
 }
-*/
+
 idea {
     module {
         scopes.PROVIDED.plus += [configurations.providedCompile]
