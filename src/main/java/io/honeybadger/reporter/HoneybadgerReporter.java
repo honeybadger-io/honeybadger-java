@@ -36,8 +36,15 @@ public class HoneybadgerReporter implements NoticeReporter {
     private final Set<String> excludedExceptionClasses;
     private final Gson gson = new GsonBuilder()
             .create();
+    private final String apiKey;
 
     public HoneybadgerReporter() {
+        // no apikey provided, must look in environment or properties for it.
+        this(null);
+    }
+
+    public HoneybadgerReporter(String apiKey){
+        this.apiKey = apiKey;
         this.excludedExceptionClasses = buildExcludedExceptionClasses();
     }
 
@@ -212,7 +219,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     private Request buildRequest(URI honeybadgerUrl, String jsonError) {
         Request request = Request
                .Post(honeybadgerUrl)
-               .addHeader("X-API-Key", apiKey())
+               .addHeader("X-API-Key", getAPIKey())
                .addHeader("Accept", "application/json")
                .version(HttpVersion.HTTP_1_1)
                .bodyString(jsonError, ContentType.APPLICATION_JSON);
@@ -259,14 +266,17 @@ public class HoneybadgerReporter implements NoticeReporter {
     }
 
     /**
-     * Finds the API key, preferring ENV to system properties.
+     * Finds the API key, searching in this order:
+     *   - The apiKey instance variable
+     *   - ENV
+     *   - system properties.
      *
      * @return the API key if found, otherwise null
      */
-    private String apiKey() {
+    private String getAPIKey() {
+      if(apiKey != null) return apiKey;
       String envKey = System.getenv("HONEYBADGER_API_KEY");
       if (envKey != null && !envKey.isEmpty()) return envKey;
-
       return System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
     }
 }
