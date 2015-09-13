@@ -1,32 +1,33 @@
-1.0.3 - Initial public release.
-1.0.4 - Fixed issue with full URL not being reported.
-      - Added support for servlet filters.
-1.0.5 - Added support for excluding specific exception classes from being reported.
-      - Added *very* basic test class.
-      - Changed class name for exception to use actual class
-      - Added more stack trace dumps to exception output
-1.0.6 - Changed class name for exception to use actual class. Added more stack
-        trace dumps.
-      - Removed multi-part query parameter parsing because in some servlet
-        environments it causes errors.
-1.0.7 - Added capture of POST/GET parameters.
-1.0.8 - We now output the original error when in addition to the connection
-        error when we are having connectivity problems with Honeybadger.
-1.0.9 - Changed namespace to io.honeybadger.honeybadger-java
-      - Added additional check for Honeybadger API system property in gradle.
-      - Improved hostname look up method to support common environment variables.
-      - Added support for gradle.properties file for specifying system properties
-        in gradle builds.
-      - Changed default package namespace to io.honeybadger.reporter because
-        this library is now maintained by Honeybadger Inc.
-      - Extracted ErrorReporter interface.
-      - Library is shaded by default - that means it doesn't expose any
-        external dependencies. All dependencies have had their package names
-        changed and are bundled as part of the jar.
-      - Refactored to use DTOs for mapping to the JSON Honeybadger API.
-      - Added integration tests.
-      - Added cookie support.
-      - Added HTTP GET/POST parameter exclusion.
-      - Added Play Framework support.
-      - Changed honeybadger.url to refer to the base URL of the API.
-      - Added Honeybadger error form to servlet filter.
+1.0.3  - Initial public release.
+1.0.4  - Fixed issue with full URL not being reported.
+       - Added support for servlet filters.
+1.0.5  - Added support for excluding specific exception classes from being reported.
+       - Added *very* basic test class.
+       - Changed class name for exception to use actual class
+       - Added more stack trace dumps to exception output
+1.0.6  - Changed class name for exception to use actual class. Added more stack
+         trace dumps.
+       - Removed multi-part query parameter parsing because in some servlet
+         environments it causes errors.
+1.0.7  - Added capture of POST/GET parameters.
+1.0.8  - We now output the original error when in addition to the connection
+         error when we are having connectivity problems with Honeybadger.
+1.0.9  - Changed namespace to io.honeybadger.honeybadger-java
+       - Added additional check for Honeybadger API system property in gradle.
+       - Improved hostname look up method to support common environment variables.
+       - Added support for gradle.properties file for specifying system properties
+         in gradle builds.
+       - Changed default package namespace to io.honeybadger.reporter because
+         this library is now maintained by Honeybadger Inc.
+       - Extracted ErrorReporter interface.
+       - Library is shaded by default - that means it doesn't expose any
+         external dependencies. All dependencies have had their package names
+         changed and are bundled as part of the jar.
+       - Refactored to use DTOs for mapping to the JSON Honeybadger API.
+       - Added integration tests.
+       - Added cookie support.
+       - Added HTTP GET/POST parameter exclusion.
+       - Added Play Framework support.
+       - Changed honeybadger.url to refer to the base URL of the API.
+       - Added Honeybadger error form to servlet filter.
+1.0.10 - Fixed pom.xml so it isn't listing dependencies that are actually shadowed.

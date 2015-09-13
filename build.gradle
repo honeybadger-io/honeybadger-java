@@ -14,11 +14,17 @@ apply plugin: 'idea'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.honeybadger'
-version = '1.0.9'
+version = '1.0.10'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 archivesBaseName = rootProject.name
 mainClassName = "io.honeybadger.reporter.HoneybadgerCLI"
+
+ext {
+    slf4jVersion = "1.7.12"
+    servletApiVersion = "3.1.0"
+    playVersion = "2.4.2"
+}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
@@ -67,13 +73,13 @@ sourceSets {
 dependencies {
     // We compile against the servlet API, but we don't bring it into the dependency graph
     // because the implementation is typically provided by the application server
-    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    providedCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
 
-    providedCompile 'com.typesafe.play:play_2.10:2.4.2'
+    providedCompile "com.typesafe.play:play_2.10:${playVersion}"
 
     // logging facade that allows users of the library to use their own logging implementations
     // This is the one unshadowed dependency
-    compile 'org.slf4j:slf4j-api:1.7.12'
+    compile "org.slf4j:slf4j-api:${slf4jVersion}"
 
     // ==========================================================================
     // NOTE: If you are adding a dependency, be sure to shadow it in the settings
@@ -230,11 +236,34 @@ signing {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            from components.java
+        maven(MavenPublication) {
+            from components.shadow
 
             artifact sourcesJar {
                 classifier "sources"
+            }
+
+            // I really hate that I have to redefine my dependencies here again
+            // for Maven compatibility when I publish to Maven Central. :(
+            pom.withXml {
+                def parent = asNode().appendNode("dependencies")
+                def slf4j = parent.appendNode("dependency")
+                slf4j.appendNode("groupId", "org.slf4j")
+                slf4j.appendNode("artifactId", "slf4j-api")
+                slf4j.appendNode("version", slf4jVersion)
+                slf4j.appendNode("scope", "compile")
+
+                def servlet = parent.appendNode("dependency")
+                servlet.appendNode("groupId", "javax.servlet")
+                servlet.appendNode("artifactId", "javax.servlet-api")
+                servlet.appendNode("version", servletApiVersion)
+                servlet.appendNode("scope", "provided")
+
+                def play = parent.appendNode("dependency")
+                play.appendNode("groupId", "com.typesafe.play")
+                play.appendNode("artifactId", "play_2.10")
+                play.appendNode("version", playVersion)
+                play.appendNode("scope", "provided")
             }
 
             // This messy thing is here to add proper exclusions to
@@ -246,13 +275,17 @@ publishing {
                     def xmlDep = asNode().dependencies.dependency.find {
                         it.groupId[0].text() == dep.group && it.artifactId[0].text() == dep.name
                     }
-                    def xmlExclusions = xmlDep.exclusions[0]
-                    if (!xmlExclusions) xmlExclusions = xmlDep.appendNode('exclusions')
 
-                    dep.excludeRules.each { ExcludeRule rule ->
-                        def xmlExclusion = xmlExclusions.appendNode('exclusion')
-                        xmlExclusion.appendNode('groupId', rule.group)
-                        xmlExclusion.appendNode('artifactId', rule.module)
+                    if (xmlDep) {
+                        def xmlExclusions = xmlDep?.exclusions[0]
+
+                        if (!xmlExclusions) xmlExclusions = xmlDep.appendNode('exclusions')
+
+                        dep.excludeRules.each { ExcludeRule rule ->
+                            def xmlExclusion = xmlExclusions.appendNode('exclusion')
+                            xmlExclusion.appendNode('groupId', rule.group)
+                            xmlExclusion.appendNode('artifactId', rule.module)
+                        }
                     }
                 }
             }
