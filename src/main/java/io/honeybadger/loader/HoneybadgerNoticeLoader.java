@@ -18,6 +18,9 @@ import java.util.UUID;
 /**
  * Utility class used to load a fault's details into a readable object
  * structure.
+ *
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
+ * @since 1.0.9
  */
 public class HoneybadgerNoticeLoader {
     private final Logger logger = LoggerFactory.getLogger(getClass());
