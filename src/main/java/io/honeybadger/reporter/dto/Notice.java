@@ -1,5 +1,7 @@
 package io.honeybadger.reporter.dto;
 
+import io.honeybadger.reporter.config.ConfigContext;
+
 import java.io.Serializable;
 
 /**
@@ -10,15 +12,19 @@ import java.io.Serializable;
 public class Notice implements Serializable {
     private static final long serialVersionUID = 1661111694538362413L;
 
+    private final ConfigContext config;
+
     private Notifier notifier = new Notifier();
     private ServerDetails server = new ServerDetails();
-    private Details details = new Details();
+    private Details details;
     // This is defined as serializable so that it can use APIs that the
     // implementers may not have available like the Servlet API
     private Request request;
     private NoticeDetails error;
 
-    public Notice() {
+    public Notice(ConfigContext config) {
+        this.config = config;
+        new Details(this.config);
     }
 
     public Notifier getNotifier() {

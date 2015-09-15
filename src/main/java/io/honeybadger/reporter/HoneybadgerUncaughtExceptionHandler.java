@@ -1,5 +1,7 @@
 package io.honeybadger.reporter;
 
+import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,8 +12,18 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
-    protected NoticeReporter reporter = new HoneybadgerReporter();
+    protected ConfigContext config;
+    protected NoticeReporter reporter;
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
+    public HoneybadgerUncaughtExceptionHandler() {
+        this(new SystemSettingsConfigContext());
+    }
+
+    public HoneybadgerUncaughtExceptionHandler(ConfigContext config) {
+        this.config = config;
+        this.reporter = new HoneybadgerReporter(config);
+    }
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {

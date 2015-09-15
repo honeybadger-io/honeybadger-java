@@ -3,6 +3,7 @@ package io.honeybadger.reporter.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.util.*;
 
 /**
@@ -13,6 +14,14 @@ import java.util.*;
  * @since 1.0.10
  */
 public class MapConfigContext implements ConfigContext {
+    /** System property key identifying the runtime environment. */
+    public static final String ENVIRONMENT_KEY =
+            "ENV";
+
+    /** System property key identifying the runtime environment. */
+    public static final String JAVA_ENVIRONMENT_KEY =
+            "JAVA_ENV";
+
     /** System property key identifying the Honeybadger URL to use. */
     public static final String HONEYBADGER_URL_KEY =
             "honeybadger.url";
@@ -20,6 +29,10 @@ public class MapConfigContext implements ConfigContext {
     /** System property key identifying the Honeybadger API key to use. */
     public static final String HONEYBADGER_API_KEY =
             "honeybadger.api_key";
+
+    /** System property key identifying the Honeybadger API key to use. */
+    public static final String HONEYBADGER_API_KEY_ENV =
+            "HONEYBADGER_API_KEY";
 
     /** CSV list of system properties to not include. */
     public static final String HONEYBADGER_EXCLUDED_PROPS_KEY =
@@ -49,6 +62,14 @@ public class MapConfigContext implements ConfigContext {
     public static final String FEEDBACK_FORM_TEMPLATE_PATH_KEY =
             "honeybadger.feedback_form_template_path";
 
+    /** System property key indicating the proxy server. */
+    public static final String HTTP_PROXY_HOST_KEY =
+            "http.proxyHost";
+
+    /** System property key indicating the proxy port. */
+    public static final String HTTP_PROXY_PORT_KEY =
+            "http.proxyPort";
+
     private final Map<?, ?> backingMap;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -58,13 +79,48 @@ public class MapConfigContext implements ConfigContext {
     }
 
     @Override
-    public String getHoneybadgerUrl() {
-        return normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_URL_KEY);
+    public String getEnvironment() {
+        String env = normalizeEmptyAndNullAndDefaultToStringValue(ENVIRONMENT_KEY);
+
+        if (env == null) {
+            return normalizeEmptyAndNullAndDefaultToStringValue(JAVA_ENVIRONMENT_KEY);
+        } else {
+            return env;
+        }
+    }
+
+    @Override
+    public URI getHoneybadgerUrl() {
+        Object value = backingMap.get(HONEYBADGER_API_KEY);
+
+        if (value == null) return null;
+        if (value instanceof URI) return (URI)value;
+
+        if (value instanceof String) {
+            String uri = normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_URL_KEY);
+
+            try {
+                return URI.create(uri);
+            } catch (IllegalArgumentException e) {
+                logger.warn("Honeybadger URL was not correctly formed. " +
+                            "Property: {}", HONEYBADGER_API_KEY);
+                return null;
+            }
+        }
+
+        return null;
     }
 
     @Override
     public String getApiKey() {
-        return normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_API_KEY);
+        String env = normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_API_KEY_ENV);
+
+        // Use either HONEYBADGER_API_KEY or the standard system property
+        if (env == null) {
+            return normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_API_KEY);
+        } else {
+            return env;
+        }
     }
 
     @Override
@@ -79,7 +135,7 @@ public class MapConfigContext implements ConfigContext {
 
     @Override
     public Set<String> getExcludedClasses() {
-        return parseCsvStringSetOrPassOnObject(HONEYBADGER_EXCLUDED_PARAMS_KEY);
+        return parseCsvStringSetOrPassOnObject(HONEYBADGER_EXCLUDED_CLASSES_KEY);
     }
 
     @Override
@@ -100,6 +156,29 @@ public class MapConfigContext implements ConfigContext {
     @Override
     public String getFeedbackFormPath() {
         return normalizeEmptyAndNullAndDefaultToStringValue(FEEDBACK_FORM_TEMPLATE_PATH_KEY);
+    }
+
+    @Override
+    public String getHttpProxyHost() {
+        return normalizeEmptyAndNullAndDefaultToStringValue(HTTP_PROXY_HOST_KEY);
+    }
+
+    @Override
+    public Integer getHttpProxyPort() {
+        Object value = backingMap.get(HTTP_PROXY_PORT_KEY);
+
+        if (value == null) return null;
+        if (value instanceof Number) return ((Number)value).intValue();
+
+        String port = normalizeEmptyAndNullAndDefaultToStringValue(HTTP_PROXY_PORT_KEY);
+
+        try {
+            return Integer.parseInt(port);
+        } catch (NumberFormatException e) {
+            logger.warn("Error converting system property to integer. Property: {}",
+                    HTTP_PROXY_PORT_KEY);
+            return null;
+        }
     }
 
     private String normalizeEmptyAndNullAndDefaultToStringValue(Object key) {

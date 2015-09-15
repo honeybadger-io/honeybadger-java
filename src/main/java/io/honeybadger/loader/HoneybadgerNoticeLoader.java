@@ -3,8 +3,7 @@ package io.honeybadger.loader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import io.honeybadger.reporter.HoneybadgerReporter;
-import io.honeybadger.reporter.NoticeReporter;
+import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.dto.Notice;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
@@ -26,18 +25,22 @@ public class HoneybadgerNoticeLoader {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson = new GsonBuilder()
             .create();
+    private ConfigContext config;
+
+    public HoneybadgerNoticeLoader(ConfigContext config) {
+        this.config = config;
+    }
 
     String pullFaultJson(UUID faultId) throws IOException {
-        String readApiKey = readApiKey();
+        String readApiKey = config.getHoneybadgerReadApiKey();
 
-        if (readApiKey == null || readApiKey.isEmpty()) {
-            String msg = String.format("Property %s must be set if you are " +
-                    "going to be accessing the Read API", NoticeReporter.READ_API_KEY_PROP_KEY);
+        if (readApiKey == null) {
+            String msg = "Read API key must be set";
             throw new IllegalArgumentException(msg);
         }
 
         final URI baseURI = URI.create(String.format("%s/%s/%s",
-                HoneybadgerReporter.honeybadgerUrl(), "v1/notices", faultId));
+                config.getHoneybadgerUrl(), "v1/notices", faultId));
 
         String withAuth = String.format("%s/?auth_token=%s",
                 baseURI, readApiKey);
@@ -50,18 +53,6 @@ public class HoneybadgerNoticeLoader {
                 .execute();
 
         return response.returnContent().asString();
-    }
-
-    /**
-     * Finds the Read API key, preferring ENV to system properties.
-     *
-     * @return the API key if found, otherwise null
-     */
-    private static String readApiKey() {
-        String envKey = System.getenv("HONEYBADGER_READ_API_KEY");
-        if (envKey != null && !envKey.isEmpty()) return envKey;
-
-        return System.getProperty(NoticeReporter.READ_API_KEY_PROP_KEY);
     }
 
     public Notice findErrorDetails(UUID faultId) throws IOException {

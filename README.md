@@ -161,12 +161,12 @@ Description: Any string value. String sent to Honeybadger indicating running
              same as ENV, it is only here to provide compability with systems
              that use it to indicate running environment.
 
-honeybadger.api_key
+honeybadger.api_key or HONEYBADGER_API_KEY
 -------------
 Sample Value: 29facd41
 Required?: Yes
 Default Value: N/A 
-Description: The API key found in the settings tab in the Honeybadger UI. 
+Description: The API key found in the settings tab in the Honeybadger UI.
 
 honeybadger.url
 -------------

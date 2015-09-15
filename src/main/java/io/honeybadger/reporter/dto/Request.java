@@ -1,6 +1,5 @@
 package io.honeybadger.reporter.dto;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 /**

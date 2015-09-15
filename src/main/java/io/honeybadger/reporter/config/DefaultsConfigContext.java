@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.config;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,9 @@ public class DefaultsConfigContext implements ConfigContext {
     /** Default host to connect to for the Honeybadger API. */
     public static String DEFAULT_API_HOST = "api.honeybadger.io";
 
+    /** Default environment name. */
+    public static String DEFAULT_ENVIRONMENT = "unknown";
+
     /** Default Honeybadger URL. */
     private static String DEFAULT_API_URL =
             String.format("%s://%s", DEFAULT_API_PROTO, DEFAULT_API_HOST);
@@ -30,12 +34,17 @@ public class DefaultsConfigContext implements ConfigContext {
     public DefaultsConfigContext() {
     }
 
+    @Override
+    public String getEnvironment() {
+        return DEFAULT_ENVIRONMENT;
+    }
+
     /**
      * @return the default URL unless
      */
     @Override
-    public String getHoneybadgerUrl() {
-        return DEFAULT_API_URL;
+    public URI getHoneybadgerUrl() {
+        return URI.create(DEFAULT_API_URL);
     }
 
     @Override
@@ -82,5 +91,15 @@ public class DefaultsConfigContext implements ConfigContext {
     @Override
     public String getFeedbackFormPath() {
         return DEFAULT_FEEDBACK_FORM_TEMPLATE_PATH;
+    }
+
+    @Override
+    public String getHttpProxyHost() {
+        return null;
+    }
+
+    @Override
+    public Integer getHttpProxyPort() {
+        return null;
     }
 }

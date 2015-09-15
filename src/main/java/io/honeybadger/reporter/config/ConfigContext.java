@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.config;
 
+import java.net.URI;
 import java.util.Set;
 
 /**
@@ -10,8 +11,11 @@ import java.util.Set;
  * @since 1.0.10
  */
 public interface ConfigContext {
+    /** @return name of environment */
+    String getEnvironment();
+
     /** @return Honeybadger URL to use */
-    String getHoneybadgerUrl();
+    URI getHoneybadgerUrl();
 
     /** @return Honeybadger API key to use */
     String getApiKey();
@@ -36,4 +40,10 @@ public interface ConfigContext {
 
     /** @return The path to the feedback form template */
     String getFeedbackFormPath();
+
+    /** @return Host of proxy server to send traffic through */
+    String getHttpProxyHost();
+
+    /** @return Port of proxy server to send traffic through */
+    Integer getHttpProxyPort();
 }

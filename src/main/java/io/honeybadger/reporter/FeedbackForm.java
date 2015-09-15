@@ -3,6 +3,7 @@ package io.honeybadger.reporter;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -15,22 +16,24 @@ import java.util.*;
  * @since 1.0.9
  */
 public class FeedbackForm {
+    private final ConfigContext config;
+
     protected final MustacheFactory mf = new DefaultMustacheFactory();
     protected final Locale defaultLocale = new Locale("en", "US");
     protected final Mustache mustache;
     protected final String actionURI;
 
-    public FeedbackForm(String templatePath) {
+    public FeedbackForm(ConfigContext config, String templatePath) {
         if (templatePath == null)
             throw new IllegalArgumentException("template path must not be null");
 
+        this.config = config;
         this.mustache = mf.compile(templatePath);
         this.actionURI = actionURI();
     }
 
     protected String actionURI() {
-        return String.format("%s/%s",
-                HoneybadgerReporter.honeybadgerUrl(), "v1/feedback/");
+        return String.format("%s/%s", config.getHoneybadgerUrl(), "v1/feedback/");
     }
 
     public void renderHtml(Object errorId, Writer writer) throws IOException {

@@ -1,5 +1,7 @@
 package io.honeybadger.reporter;
 
+import io.honeybadger.reporter.config.StandardConfigContext;
+
 import java.util.Scanner;
 
 /**
@@ -14,15 +16,16 @@ public class HoneybadgerCLI {
         Scanner in = new Scanner(System.in);
 
         System.out.print("What is your Honeybadger API key: ");
-        System.setProperty(HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY,
-                in.nextLine());
+
+        StandardConfigContext config = new StandardConfigContext();
+        config.setApiKey(in.nextLine());
         System.out.print("\n");
 
         System.out.print("What message do you want to send: ");
         String message = in.nextLine();
 
         RuntimeException exception = new RuntimeException(message);
-        NoticeReporter reporter = new HoneybadgerReporter();
+        NoticeReporter reporter = new HoneybadgerReporter(config);
         reporter.reportError(exception);
     }
 }

@@ -1,8 +1,8 @@
 package io.honeybadger.reporter.dto;
 
-import java.io.Serializable;
+import io.honeybadger.reporter.config.ConfigContext;
 
-import static io.honeybadger.reporter.NoticeReporter.APPLICATION_PACKAGE_PROP_KEY;
+import java.io.Serializable;
 
 /**
  * One single line on a backtrace.
@@ -31,20 +31,23 @@ public class BacktraceElement implements Serializable {
             return this.name;
         }
     }
-
+    private final ConfigContext config;
     public final String file;
     public final String method;
     public final String number;
     public final String context;
 
-    public BacktraceElement(String number, String file, String method) {
+    public BacktraceElement(ConfigContext config, String number, String file,
+                            String method) {
+        this.config = config;
         this.number = number;
         this.file = file;
         this.method = method;
         this.context = calculateContext(method).getName();
     }
 
-    public BacktraceElement(StackTraceElement element) {
+    public BacktraceElement(ConfigContext config, StackTraceElement element) {
+        this.config = config;
         this.number = String.valueOf(element.getLineNumber());
         this.file = String.valueOf(element.getFileName());
         this.method = formatMethod(element);
@@ -56,8 +59,8 @@ public class BacktraceElement implements Serializable {
                 element.getClassName(), element.getMethodName());
     }
 
-    static Context calculateContext(String method) {
-        final String appPackage = System.getProperty(APPLICATION_PACKAGE_PROP_KEY);
+    Context calculateContext(String method) {
+        final String appPackage = config.getApplicationPackage();
         final Context methodContext;
 
         if (appPackage == null || appPackage.isEmpty()) {
