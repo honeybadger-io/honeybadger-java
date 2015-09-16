@@ -8,7 +8,7 @@ exceptions and errors in your Java applications.
 This is a library for sending errors that implement ```java.lang.Throwable``` on the JVM to the online error reporting service <a href="https://www.honeybadger.io/">Honeybadger</a>.
 
 ## Download / Maven Repository
-You can find the library on <a href="http://search.maven.org/#browse%7C-1627719036">Maven Central</a> or you can always clone this github repository.
+You can find the library on <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.honeybadger%22">Maven Central</a> or you can always clone this github repository.
 
 ## Stand-alone Usage
 If you want to send all unhandled errors to Honeybadger and have them logged to slf4j via 
