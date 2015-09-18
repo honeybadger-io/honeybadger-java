@@ -71,6 +71,8 @@ dependencies {
 
     providedCompile 'com.typesafe.play:play_2.10:2.4.2'
 
+    providedCompile 'org.springframework:spring-webmvc:4.1.7.RELEASE'
+
     // logging facade that allows users of the library to use their own logging implementations
     // This is the one unshadowed dependency
     compile 'org.slf4j:slf4j-api:1.7.12'

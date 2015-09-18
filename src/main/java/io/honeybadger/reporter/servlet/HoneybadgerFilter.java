@@ -18,7 +18,7 @@ import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 /**
  * Servlet filter that reports all unhandled servlet errors to Honeybadger.
  *
- * @author Elijah Zupancic
+ * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.4
  */
 public class HoneybadgerFilter implements Filter {
