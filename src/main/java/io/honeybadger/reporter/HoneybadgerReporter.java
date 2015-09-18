@@ -36,8 +36,25 @@ public class HoneybadgerReporter implements NoticeReporter {
     private final Set<String> excludedExceptionClasses;
     private final Gson gson = new GsonBuilder()
             .create();
+    private final String apiKey;
 
+    /**
+     * Create an instance with no API key explicitly set.
+     * This will require you to have either the HONEYBADGER_API_KEY environment variable set,
+     * or the honeybadger.api_key system property set.
+     */
     public HoneybadgerReporter() {
+        this(null);
+    }
+
+    /**
+     * Create an instance using the given api key.
+     * This will still allow hot-swapping, because the env variable
+     * and system property take precedence over the instance variable.
+     * @param apiKey
+     */
+    public HoneybadgerReporter(String apiKey){
+        this.apiKey = apiKey;
         this.excludedExceptionClasses = buildExcludedExceptionClasses();
     }
 
@@ -212,7 +229,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     private Request buildRequest(URI honeybadgerUrl, String jsonError) {
         Request request = Request
                .Post(honeybadgerUrl)
-               .addHeader("X-API-Key", apiKey())
+               .addHeader("X-API-Key", getAPIKey())
                .addHeader("Accept", "application/json")
                .version(HttpVersion.HTTP_1_1)
                .bodyString(jsonError, ContentType.APPLICATION_JSON);
@@ -259,14 +276,29 @@ public class HoneybadgerReporter implements NoticeReporter {
     }
 
     /**
-     * Finds the API key, preferring ENV to system properties.
+     * Finds the API key, searching in this order:
+     *   - ENV
+     *   - system properties.
+     *   - The apiKey instance variable
+     *
+     * This order allows for easy hot-swapping.
      *
      * @return the API key if found, otherwise null
      */
-    private String apiKey() {
-      String envKey = System.getenv("HONEYBADGER_API_KEY");
+    private String getAPIKey() {
+      String envKey = System.getenv(HONEYBADGER_API_KEY);
       if (envKey != null && !envKey.isEmpty()) return envKey;
-
-      return System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
+      String propKey = System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
+      if (propKey != null && !propKey.isEmpty()) return envKey;
+      if(apiKey != null) return apiKey;
+      else {
+        String format =
+          "Honeybadger API key is missing. " +
+          "Double check either the [%s] environment variable is set, " +
+          "or the [%s] system property is set, " +
+          "or provide it in the constructor.";
+        String msg = String.format(format, HONEYBADGER_API_KEY, HONEYBADGER_URL_SYS_PROP_KEY);
+        throw new HoneybadgerException(msg);
+      }
     }
 }

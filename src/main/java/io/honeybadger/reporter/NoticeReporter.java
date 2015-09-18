@@ -15,6 +15,9 @@ public interface NoticeReporter {
     String HONEYBADGER_API_KEY_SYS_PROP_KEY =
             "honeybadger.api_key";
 
+    /** Environment variable identifying Honeybadger API key to use. */
+    String HONEYBADGER_API_KEY = "HONEYBADGER_API_KEY";
+
     /** CSV list of system properties to not include. */
     String HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY =
             "honeybadger.excluded_sys_props";
