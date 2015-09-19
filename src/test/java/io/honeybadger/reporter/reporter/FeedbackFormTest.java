@@ -1,6 +1,8 @@
 package io.honeybadger.reporter.reporter;
 
 import io.honeybadger.reporter.FeedbackForm;
+import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.StandardConfigContext;
 import org.junit.Test;
 
 import java.io.StringWriter;
@@ -14,7 +16,9 @@ public class FeedbackFormTest {
     public void feedbackFormRendersTemplate() throws Exception {
         StringWriter writer = new StringWriter();
         String id = (new UUID(12L, 36L)).toString();
-        FeedbackForm instance = new FeedbackForm("templates/feedback-form.mustache");
+        StandardConfigContext config = new StandardConfigContext();
+        config.setFeedbackFormPath("templates/feedback-form.mustache");
+        FeedbackForm instance = new FeedbackForm(config);
 
         instance.renderHtml(id, writer);
 

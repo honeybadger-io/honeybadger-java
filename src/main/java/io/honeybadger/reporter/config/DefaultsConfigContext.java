@@ -28,7 +28,7 @@ public class DefaultsConfigContext implements ConfigContext {
             String.format("%s://%s", DEFAULT_API_PROTO, DEFAULT_API_HOST);
 
     /** Default feedback form template path. */
-    private static String DEFAULT_FEEDBACK_FORM_TEMPLATE_PATH =
+    public static String DEFAULT_FEEDBACK_FORM_TEMPLATE_PATH =
             "templates/feedback-form.mustache";
 
     public DefaultsConfigContext() {

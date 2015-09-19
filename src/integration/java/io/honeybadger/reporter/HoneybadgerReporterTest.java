@@ -3,6 +3,8 @@ package io.honeybadger.reporter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.honeybadger.loader.HoneybadgerNoticeLoader;
+import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.dto.CgiData;
 import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.Request;
@@ -19,27 +21,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
-import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY;
 import static org.junit.Assert.*;
 
 public class HoneybadgerReporterTest {
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private final HoneybadgerNoticeLoader loader = new HoneybadgerNoticeLoader();
+    private final HoneybadgerNoticeLoader loader;
     private final NoticeReporter reporter;
+    private ConfigContext config = new SystemSettingsConfigContext();
 
     public HoneybadgerReporterTest() {
-        if (System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY) == null) {
-            throw new IllegalArgumentException(HONEYBADGER_API_KEY_SYS_PROP_KEY +
-            " system property must be specified");
+        if (this.config.getApiKey() == null) {
+            throw new IllegalArgumentException("API key must be specified");
         }
 
-        System.setProperty(HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY,
-                String.format("%s,%s",
-                    UnsupportedOperationException.class.getName(),
-                    IllegalArgumentException.class.getName()));
+        this.config.getExcludedClasses().add(UnsupportedOperationException.class.getName());
+        this.config.getExcludedClasses().add(IllegalArgumentException.class.getName());
 
-        reporter = new HoneybadgerReporter();
+        this.loader = new HoneybadgerNoticeLoader(this.config);
+        this.reporter = new HoneybadgerReporter(this.config);
     }
 
     @Test

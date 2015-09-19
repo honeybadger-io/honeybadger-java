@@ -48,9 +48,10 @@ public class PlayHttpRequestFactory {
                                          Http.Request httpRequest) {
         Http.RequestBody body = httpRequest.body();
 
-        if (body == null) return new Params(config);
+        if (body == null) return new Params(config.getExcludedParams());
 
-        return parseParamsFromMap(body.asFormUrlEncoded());
+        return parseParamsFromMap(config.getExcludedParams(),
+                                  body.asFormUrlEncoded());
     }
 
     protected static Session createSession(Http.Request httpRequest) {

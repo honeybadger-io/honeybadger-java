@@ -130,7 +130,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
 
         Notice notice = new Notice(config)
-                .setError(new NoticeDetails(error));
+                .setError(new NoticeDetails(config, error));
 
         if (request != null) {
             notice.setRequest(request);

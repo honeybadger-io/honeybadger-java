@@ -19,9 +19,9 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     protected String environment;
     protected URI honeybadgerUrl;
     protected String apiKey;
-    protected Set<String> excludedSysProps;
-    protected Set<String> excludedParams;
-    protected Set<String> excludedClasses;
+    protected Set<String> excludedSysProps = new HashSet<>();
+    protected Set<String> excludedParams = new HashSet<>();
+    protected Set<String> excludedClasses = new HashSet<>();
     protected String applicationPackage;
     protected String honeybadgerReadApiKey;
     protected Boolean feedbackFormDisplayed;

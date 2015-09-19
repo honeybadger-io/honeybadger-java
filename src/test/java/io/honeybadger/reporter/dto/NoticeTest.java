@@ -10,6 +10,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
 import org.junit.Test;
 
@@ -38,6 +40,8 @@ public class NoticeTest {
         }
     }
 
+    private ConfigContext config = new SystemSettingsConfigContext();
+
     Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .create();
@@ -45,8 +49,8 @@ public class NoticeTest {
     @Test
     public void canSerializeReportedErrorWithoutRequest() throws Exception {
         Exception e = new RuntimeException("Test exception");
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e));
         validateReportedErrorJson(error);
     }
 
@@ -55,9 +59,9 @@ public class NoticeTest {
         Exception e = new RuntimeException("Test exception");
         HttpServletRequest request = new FakeHttpServletRequest();
 
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e))
-                .setRequest(HttpServletRequestFactory.create(request));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e))
+                .setRequest(HttpServletRequestFactory.create(config, request));
         validateReportedErrorJson(error);
     }
 
@@ -74,9 +78,9 @@ public class NoticeTest {
 
         HttpServletRequest request = new FakeHttpServletRequest(headers);
 
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e))
-                .setRequest(HttpServletRequestFactory.create(request));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e))
+                .setRequest(HttpServletRequestFactory.create(config, request));
         validateReportedErrorJson(error);
     }
 
@@ -84,8 +88,8 @@ public class NoticeTest {
     public void canSerializeChainedReportedErrorWithoutRequest() throws Exception {
         Exception origin = new RuntimeException("This is the cause");
         Exception e = new RuntimeException("Test exception", origin);
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e));
         validateReportedErrorJson(error);
     }
 
@@ -95,9 +99,9 @@ public class NoticeTest {
         Exception e = new RuntimeException("Test exception", origin);
         HttpServletRequest request = new FakeHttpServletRequest();
 
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e))
-                .setRequest(HttpServletRequestFactory.create(request));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e))
+                .setRequest(HttpServletRequestFactory.create(config, request));
         validateReportedErrorJson(error);
     }
 

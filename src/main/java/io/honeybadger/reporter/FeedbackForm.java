@@ -23,7 +23,8 @@ public class FeedbackForm {
     protected final Mustache mustache;
     protected final String actionURI;
 
-    public FeedbackForm(ConfigContext config, String templatePath) {
+    public FeedbackForm(ConfigContext config) {
+        String templatePath = config.getFeedbackFormPath();
         if (templatePath == null)
             throw new IllegalArgumentException("template path must not be null");
 

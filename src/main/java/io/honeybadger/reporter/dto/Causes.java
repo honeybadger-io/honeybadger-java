@@ -1,5 +1,7 @@
 package io.honeybadger.reporter.dto;
 
+import io.honeybadger.reporter.config.ConfigContext;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -14,15 +16,14 @@ public class Causes extends LinkedList<Cause> implements Serializable {
 
     private static final int MAX_CAUSES = 100;
 
-    public Causes(Throwable rootError) {
+    public Causes(ConfigContext config, Throwable rootError) {
         if (rootError == null) {
             throw new IllegalArgumentException("Error can't be null");
         }
-
-        addCauses(rootError);
+        addCauses(config, rootError);
     }
 
-    void addCauses(Throwable rootError) {
+    void addCauses(ConfigContext config, Throwable rootError) {
         if (rootError.getCause() == null) return;
 
         Throwable lastCause = null;
@@ -34,7 +35,7 @@ public class Causes extends LinkedList<Cause> implements Serializable {
             // If we are in a simple circular reference, exit
             if (lastCause != null && lastCause.equals(nextCause)) break;
 
-            addFirst(new Cause(nextCause));
+            addFirst(new Cause(config, nextCause));
 
             // Since we could have multi-class circular ref we just check
             // for too big of a cause trace
