@@ -98,6 +98,7 @@ public class MapConfigContext implements ConfigContext {
 
         if (value instanceof String) {
             String uri = normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_URL_KEY);
+            if (uri == null) return null;
 
             try {
                 return URI.create(uri);
@@ -219,6 +220,8 @@ public class MapConfigContext implements ConfigContext {
     private Set<String> parseCsvStringSetOrPassOnObject(Object key) {
         Object value = backingMap.get(key);
 
+        if (value == null) return null;
+
         if (value instanceof Collection) {
             @SuppressWarnings("unchecked")
             Collection<String> collection = (Collection<String>)Collections.checkedCollection(
@@ -237,7 +240,9 @@ public class MapConfigContext implements ConfigContext {
             return set;
         }
 
-        logger.warn("Unknown object value for property: {}", key);
+        logger.warn("Unknown object value for property: [key={}, value={}]",
+                key, value);
+
         return null;
     }
 }

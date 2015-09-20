@@ -1,5 +1,7 @@
 package io.honeybadger.reporter.dto;
 
+import io.honeybadger.reporter.config.ConfigContext;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -16,6 +18,14 @@ public class Params extends LinkedHashMap<String, String>
 
     public Params(Set<String> excludedValues) {
         this.excludedValues = excludedValues;
+    }
+
+    public Params() {
+        ConfigContext config = ConfigContext.threadLocal.get();
+        if (config == null) throw new NullPointerException(
+                "Unable to get the expected ConfigContext from ThreadLocal");
+
+        this.excludedValues = config.getExcludedParams();
     }
 
     /**

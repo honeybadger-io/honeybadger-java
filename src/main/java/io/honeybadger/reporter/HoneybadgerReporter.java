@@ -34,7 +34,9 @@ import java.util.*;
 public class HoneybadgerReporter implements NoticeReporter {
     protected ConfigContext config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final Gson gson = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder()
+            .setExclusionStrategies(new ConfigContextExclusionStrategy())
+            .create();
 
     public HoneybadgerReporter(ConfigContext config) {
         this.config = config;
@@ -194,6 +196,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         URI honeybadgerUrl = URI.create(
                 String.format("%s/%s", config.getHoneybadgerUrl(), "v1/notices"));
         Request request = buildRequest(honeybadgerUrl, jsonError);
+
         return request.execute();
     }
 

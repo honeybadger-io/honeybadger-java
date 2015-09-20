@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.google.gson.annotations.Expose;
 import io.honeybadger.reporter.config.ConfigContext;
 import org.slf4j.MDC;
 
@@ -21,6 +22,15 @@ public class Details extends LinkedHashMap<String, LinkedHashMap<String, String>
 
     public Details(ConfigContext config) {
         this.config = config;
+        addDefaultDetails();
+    }
+
+    public Details() {
+        ConfigContext config = ConfigContext.threadLocal.get();
+        if (config == null) throw new NullPointerException(
+                "Unable to get the expected ConfigContext from ThreadLocal");
+        this.config = config;
+
         addDefaultDetails();
     }
 

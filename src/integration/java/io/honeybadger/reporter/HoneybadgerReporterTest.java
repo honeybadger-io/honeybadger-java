@@ -64,6 +64,8 @@ public class HoneybadgerReporterTest {
         HttpServletRequest request = new FakeHttpServletRequest(headers);
 
         NoticeReportResult result = reporter.reportError(t, request);
+        assertNotNull("Result of error report should never be null", result);
+
         UUID id = result.getId();
 
         logger.info("Error ID returned from Honeybadger is: {}", id);
@@ -89,7 +91,13 @@ public class HoneybadgerReporterTest {
 
     static void assertReportedErrorIsSame(Notice expected,
                                           Notice actual) {
-        assertEquals(expected.getDetails(), actual.getDetails());
+        if (!expected.getDetails().equals(actual.getDetails())) {
+            fail(String.format("Details were not equal.\n" +
+                    "Expected: %s\n" +
+                    "Actual:   %s",
+                    expected.getDetails(), actual.getDetails()));
+        }
+
         assertEquals(expected.getNotifier(), actual.getNotifier());
         assertEquals(expected.getServer(), actual.getServer());
 

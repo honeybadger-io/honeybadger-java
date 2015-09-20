@@ -174,7 +174,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     }
 
     protected boolean isPresent(CharSequence charSequence) {
-        if (charSequence != null) return true;
+        if (charSequence == null) return false;
         if (charSequence.length() > 0) return true;
 
         return false;

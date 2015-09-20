@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.google.gson.annotations.Expose;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -31,6 +32,7 @@ public class BacktraceElement implements Serializable {
             return this.name;
         }
     }
+
     private final ConfigContext config;
     public final String file;
     public final String method;

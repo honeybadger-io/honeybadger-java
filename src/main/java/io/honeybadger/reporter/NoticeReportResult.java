@@ -33,10 +33,33 @@ public class NoticeReportResult {
         return notice;
     }
 
-    /**
-     * @return Throwable that was used to create error DTO
-     */
-    public Throwable getError() {
-        return error;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NoticeReportResult that = (NoticeReportResult) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (notice != null ? !notice.equals(that.notice) : that.notice != null) return false;
+        return !(error != null ? !error.equals(that.error) : that.error != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (notice != null ? notice.hashCode() : 0);
+        result = 31 * result + (error != null ? error.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "NoticeReportResult{" +
+                "id=" + id +
+                ", notice=" + notice +
+                ", error=" + error +
+                '}';
     }
 }

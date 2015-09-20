@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.google.gson.annotations.Expose;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -24,7 +25,15 @@ public class Notice implements Serializable {
 
     public Notice(ConfigContext config) {
         this.config = config;
-        new Details(this.config);
+        this.details = new Details(this.config);
+    }
+
+    public Notice() {
+        ConfigContext config = ConfigContext.threadLocal.get();
+        if (config == null) throw new NullPointerException(
+                "Unable to get the expected ConfigContext from ThreadLocal");
+
+        this.config = config;
     }
 
     public Notifier getNotifier() {
