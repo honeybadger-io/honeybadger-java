@@ -1,6 +1,5 @@
 package io.honeybadger.reporter.dto;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import io.honeybadger.reporter.config.ConfigContext;
 
@@ -16,7 +15,6 @@ import java.util.Set;
 public class NoticeDetails implements Serializable {
     private static final long serialVersionUID = -3055963787038629496L;
 
-    private final ConfigContext config;
     @SerializedName("class")
     public final String className;
     public final String message;
@@ -34,7 +32,6 @@ public class NoticeDetails implements Serializable {
             throw new IllegalArgumentException("Error can't be null");
         }
 
-        this.config = config;
         this.className = error.getClass().getName();
         this.message = error.getMessage();
         this.tags = tags;
