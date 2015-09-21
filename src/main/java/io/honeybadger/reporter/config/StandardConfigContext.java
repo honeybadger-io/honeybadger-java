@@ -3,7 +3,7 @@ package io.honeybadger.reporter.config;
 import java.util.Map;
 
 /**
- * @{link ConfigContext} implementation that is used for programmatic
+ * {@link ConfigContext} implementation that is used for programmatic
  * configuration. This implementation completely ignores all environment
  * variables and system parameters.
  *
