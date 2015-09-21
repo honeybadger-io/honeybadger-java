@@ -82,6 +82,30 @@ If you want to send exceptions to HoneyBadger without having to register an unca
 exception handler, you can create an instance of ```HonebadgerReporter``` and call 
 the ```reportError(Throwable error)``` method directly.
 
+This is an example of calling how you might configure the Honeybadger
+library and use it to send an error to the API programmatically.
+
+```java
+package com.myapp;
+
+import io.honeybadger.reporter.HoneybadgerReporter;
+import io.honeybadger.reporter.NoticeReporter;
+import io.honeybadger.reporter.config.StandardConfigContext;
+
+public class ApiUsage {
+    public static void main(String[] argv) {
+        StandardConfigContext config = new StandardConfigContext();
+        config.setApiKey("ab3fg93xs")
+              .setEnvironment("staging")
+              .setApplicationPackage("com.myapp");
+        
+        NoticeReporter reporter = new HoneybadgerReporter();
+        Throwable t = new RuntimeException("I'm a custom error");
+        reporter.reportError(t);
+    }
+}
+```
+
 ## Runtime Dependencies
 All dependencies needed for running are included in the distributed JAR with one
 exception - slf4j-api. We expect that you are using some logging library and that
