@@ -1,7 +1,5 @@
 package io.honeybadger.reporter.servlet;
 
-import com.google.common.collect.ImmutableMap;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
@@ -10,7 +8,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Fake implementation of {@link javax.servlet.http.HttpSession} for testing.

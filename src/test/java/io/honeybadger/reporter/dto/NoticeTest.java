@@ -109,10 +109,10 @@ public class NoticeTest {
 
     private void validateReportedErrorJson(Notice error)
             throws ProcessingException, IOException {
-        String jsonText = gson.toJson(error).toString();
+        String jsonText = gson.toJson(error);
 
         JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
-        JsonValidator validator = factory.byDefault().getValidator();
+        JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
 
         JsonNode jsonNode = mapper.readTree(jsonText);
 

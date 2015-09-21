@@ -167,17 +167,11 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     }
 
     protected boolean isPresent(Collection<?> collection) {
-        if (collection == null) return false;
-        if (collection.isEmpty()) return false;
-
-        return true;
+        return collection != null && !collection.isEmpty();
     }
 
     protected boolean isPresent(CharSequence charSequence) {
-        if (charSequence == null) return false;
-        if (charSequence.length() > 0) return true;
-
-        return false;
+        return charSequence != null && charSequence.length() > 0;
     }
 
     public BaseChainedConfigContext setEnvironment(String environment) {

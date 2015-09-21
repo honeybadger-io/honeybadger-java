@@ -1,11 +1,8 @@
 package io.honeybadger.reporter.servlet;
 
 import com.google.common.collect.ImmutableMap;
-import io.honeybadger.reporter.FeedbackForm;
 import io.honeybadger.reporter.NoticeReporter;
 import io.honeybadger.reporter.UnitTestExpectedException;
-import io.honeybadger.reporter.config.ConfigContext;
-import io.honeybadger.reporter.config.DefaultsConfigContext;
 import io.honeybadger.reporter.config.MapConfigContext;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;

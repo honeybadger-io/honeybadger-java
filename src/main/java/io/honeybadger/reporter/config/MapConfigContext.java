@@ -226,8 +226,7 @@ public class MapConfigContext implements ConfigContext {
             @SuppressWarnings("unchecked")
             Collection<String> collection = (Collection<String>)Collections.checkedCollection(
                     (Collection)value, String.class);
-            Set<String> set = new HashSet<>(collection);
-            return set;
+            return new HashSet<>(collection);
         }
 
         if (value instanceof String) {

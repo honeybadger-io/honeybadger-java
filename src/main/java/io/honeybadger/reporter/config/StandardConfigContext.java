@@ -1,6 +1,5 @@
 package io.honeybadger.reporter.config;
 
-import java.util.HashSet;
 import java.util.Map;
 
 /**

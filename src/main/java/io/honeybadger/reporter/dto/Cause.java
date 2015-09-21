@@ -1,6 +1,5 @@
 package io.honeybadger.reporter.dto;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import io.honeybadger.reporter.config.ConfigContext;
 
@@ -15,14 +14,12 @@ import java.io.Serializable;
 public class Cause implements Serializable {
     private static final long serialVersionUID = -6876640270344752492L;
 
-    private final ConfigContext config;
     @SerializedName("class")
     public final String className;
     public final String message;
     public final Backtrace backtrace;
 
     public Cause(ConfigContext config, Throwable error) {
-        this.config = config;
         this.className = error.getClass().getName();
         this.message = error.getMessage();
         this.backtrace = new Backtrace(config, error);

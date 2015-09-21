@@ -1,7 +1,6 @@
 package io.honeybadger.reporter.reporter;
 
 import io.honeybadger.reporter.FeedbackForm;
-import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.StandardConfigContext;
 import org.junit.Test;
 

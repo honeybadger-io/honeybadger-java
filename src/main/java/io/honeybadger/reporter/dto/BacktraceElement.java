@@ -1,6 +1,5 @@
 package io.honeybadger.reporter.dto;
 
-import com.google.gson.annotations.Expose;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -16,7 +15,7 @@ public class BacktraceElement implements Serializable {
     /**
      * Enum representing all of the valid context values on the Honeybadger API.
      */
-    static enum Context {
+    enum Context {
         /** Backtrace not-belonging to the calling application. **/
         ALL("all"),
         /** Backtrace belonging to the calling application. **/

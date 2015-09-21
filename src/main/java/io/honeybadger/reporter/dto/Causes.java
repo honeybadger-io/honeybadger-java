@@ -3,7 +3,6 @@ package io.honeybadger.reporter.dto;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**

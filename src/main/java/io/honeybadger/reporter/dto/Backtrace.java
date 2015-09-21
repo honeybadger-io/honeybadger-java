@@ -1,6 +1,5 @@
 package io.honeybadger.reporter.dto;
 
-import com.google.gson.annotations.Expose;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;

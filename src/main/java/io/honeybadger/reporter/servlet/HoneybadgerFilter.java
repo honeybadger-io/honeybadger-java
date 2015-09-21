@@ -7,7 +7,6 @@ import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.ServletFilterConfigContext;
 import io.honeybadger.reporter.config.SystemSettingsConfigContext;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import org.apache.http.entity.ContentType;
 
 import javax.servlet.*;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static io.honeybadger.reporter.HoneybadgerReporter.*;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 /**

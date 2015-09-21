@@ -1,11 +1,9 @@
 package io.honeybadger.reporter.config;
 
 import javax.servlet.FilterConfig;
-import java.net.URI;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * {@link ConfigContext} implementation that reads its configuration from
