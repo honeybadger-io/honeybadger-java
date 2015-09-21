@@ -27,18 +27,18 @@ public class HoneybadgerReporterTest {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private final HoneybadgerNoticeLoader loader;
     private final NoticeReporter reporter;
-    private ConfigContext config = new SystemSettingsConfigContext();
 
     public HoneybadgerReporterTest() {
-        if (this.config.getApiKey() == null) {
+        ConfigContext config = new SystemSettingsConfigContext();
+        if (config.getApiKey() == null) {
             throw new IllegalArgumentException("API key must be specified");
         }
 
-        this.config.getExcludedClasses().add(UnsupportedOperationException.class.getName());
-        this.config.getExcludedClasses().add(IllegalArgumentException.class.getName());
+        config.getExcludedClasses().add(UnsupportedOperationException.class.getName());
+        config.getExcludedClasses().add(IllegalArgumentException.class.getName());
 
-        this.loader = new HoneybadgerNoticeLoader(this.config);
-        this.reporter = new HoneybadgerReporter(this.config);
+        this.loader = new HoneybadgerNoticeLoader(config);
+        this.reporter = new HoneybadgerReporter(config);
     }
 
     @Test

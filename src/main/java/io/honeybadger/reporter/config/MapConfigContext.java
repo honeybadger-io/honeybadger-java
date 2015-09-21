@@ -54,6 +54,10 @@ public class MapConfigContext implements ConfigContext {
     public static final String READ_API_KEY_PROP_KEY =
             "honeybadger.read_api_key";
 
+    /** Environment variable identifying the Honeybadger Read API key. */
+    public static final String READ_API_KEY_ENV =
+            "HONEYBADGER_READ_API_KEY";
+
     /** System property key indicating if we display the feedback form. */
     public static final String DISPLAY_FEEDBACK_FORM_KEY =
             "honeybadger.display_feedback_form";
@@ -146,7 +150,14 @@ public class MapConfigContext implements ConfigContext {
 
     @Override
     public String getHoneybadgerReadApiKey() {
-        return normalizeEmptyAndNullAndDefaultToStringValue(READ_API_KEY_PROP_KEY);
+        String env = normalizeEmptyAndNullAndDefaultToStringValue(READ_API_KEY_ENV);
+
+        // Use either HONEYBADGER_API_KEY or the standard system property
+        if (env == null) {
+            return normalizeEmptyAndNullAndDefaultToStringValue(READ_API_KEY_PROP_KEY);
+        } else {
+            return env;
+        }
     }
 
     @Override
