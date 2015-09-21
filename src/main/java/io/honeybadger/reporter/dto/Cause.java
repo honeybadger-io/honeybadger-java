@@ -1,6 +1,7 @@
 package io.honeybadger.reporter.dto;
 
 import com.google.gson.annotations.SerializedName;
+import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
 
@@ -18,10 +19,10 @@ public class Cause implements Serializable {
     public final String message;
     public final Backtrace backtrace;
 
-    public Cause(Throwable error) {
+    public Cause(ConfigContext config, Throwable error) {
         this.className = error.getClass().getName();
         this.message = error.getMessage();
-        this.backtrace = new Backtrace(error);
+        this.backtrace = new Backtrace(config, error);
     }
 
     @Override

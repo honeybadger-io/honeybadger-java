@@ -1,8 +1,6 @@
 package io.honeybadger.reporter.dto;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.LinkedHashMap;
 
 /**

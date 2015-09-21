@@ -1,16 +1,23 @@
 package io.honeybadger.reporter.dto;
 
+import io.honeybadger.reporter.config.ConfigContext;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class CausesTest {
+    private final ConfigContext config;
+
+    public CausesTest() {
+        this.config = mock(ConfigContext.class);
+    }
 
     @Test
     public void noCauseStoresNothing() {
         Throwable e = new RuntimeException("No cause");
-        Causes causes = new Causes(e);
+        Causes causes = new Causes(config, e);
 
         assertTrue("There should be no causes stored because the exception had no chained exceptions",
                    causes.isEmpty());
@@ -21,7 +28,7 @@ public class CausesTest {
         Throwable cause = new RuntimeException("Cause");
         Throwable e = new RuntimeException("Highest level", cause);
 
-        Causes causes = new Causes(e);
+        Causes causes = new Causes(config, e);
 
         assertEquals("There should only be a single cause",
                 1, causes.size());
@@ -38,7 +45,7 @@ public class CausesTest {
 
         Throwable e = new RuntimeException("Highest level", cause1);
 
-        Causes causes = new Causes(e);
+        Causes causes = new Causes(config, e);
 
         assertEquals("There should be 4 causes chained",
                 4, causes.size());
@@ -50,6 +57,5 @@ public class CausesTest {
                 cause3.getMessage(), causes.get(1).message);
         assertEquals("The fourth cause class should be stored first",
                 cause4.getMessage(), causes.get(0).message);
-
     }
 }

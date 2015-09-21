@@ -1,9 +1,10 @@
 package io.honeybadger.reporter.dto;
 
-import java.io.Serializable;
-import java.util.*;
+import io.honeybadger.reporter.config.ConfigContext;
 
-import static io.honeybadger.reporter.NoticeReporter.*;
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 /**
  * Class representing parameters requested when an exception occurred.
@@ -15,21 +16,16 @@ public class Params extends LinkedHashMap<String, String>
     private static final long serialVersionUID = -5633548926144410598L;
     private final Set<String> excludedValues;
 
-    public Params() {
-        this.excludedValues = buildExcludedProps();
+    public Params(Set<String> excludedValues) {
+        this.excludedValues = excludedValues;
     }
 
-    protected static Set<String> buildExcludedProps() {
-        String excluded = System.getProperty(HONEYBADGER_EXCLUDED_PARAMS_SYS_PROP_KEY);
-        HashSet<String> set = new HashSet<>();
+    public Params() {
+        ConfigContext config = ConfigContext.threadLocal.get();
+        if (config == null) throw new NullPointerException(
+                "Unable to get the expected ConfigContext from ThreadLocal");
 
-        if (excluded == null || excluded.isEmpty()) {
-            return set;
-        }
-
-        Collections.addAll(set, excluded.split(","));
-
-        return set;
+        this.excludedValues = config.getExcludedParams();
     }
 
     /**

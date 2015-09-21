@@ -1,6 +1,7 @@
 package io.honeybadger.reporter.dto;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Common utilities used for parsing HTTP request data.
@@ -8,8 +9,9 @@ import java.util.Map;
  * @since 1.0.9
  */
 class RequestParsingUtils {
-    static Params parseParamsFromMap(Map<String, String[]> paramMap) {
-        Params params = new Params();
+    static Params parseParamsFromMap(Set<String> excludedValues,
+                                     Map<String, String[]> paramMap) {
+        Params params = new Params(excludedValues);
 
         try {
             if (paramMap == null || paramMap.isEmpty()) return params;

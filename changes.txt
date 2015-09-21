@@ -31,3 +31,4 @@
        - Changed honeybadger.url to refer to the base URL of the API.
        - Added Honeybadger error form to servlet filter.
 1.0.10 - Fixed pom.xml so it isn't listing dependencies that are actually shadowed.
+1.0.11 - Refactored configuration settings to use context-based pattern.

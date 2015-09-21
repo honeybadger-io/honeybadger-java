@@ -1,9 +1,9 @@
 package io.honeybadger.reporter.servlet;
 
 import com.google.common.collect.ImmutableMap;
-import io.honeybadger.reporter.FeedbackForm;
 import io.honeybadger.reporter.NoticeReporter;
 import io.honeybadger.reporter.UnitTestExpectedException;
+import io.honeybadger.reporter.config.MapConfigContext;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -12,12 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Map;
-import java.util.Properties;
 
-import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_API_KEY_SYS_PROP_KEY;
-import static io.honeybadger.reporter.HoneybadgerReporter.HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY;
-import static io.honeybadger.reporter.NoticeReporter.DISPLAY_FEEDBACK_FORM_KEY;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -26,23 +21,15 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class HoneybadgerFilterTest {
-
     /**
      * Generates a fake instance of a {@link HoneybadgerFilter} for testing.
      */
-    private HoneybadgerFilter instance() throws ServletException {
-        ImmutableMap.Builder<String, String> mapBuilder = ImmutableMap.builder();
-
-        for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
-            if (entry.getKey() == null) continue;
-
-            mapBuilder.put(String.valueOf(entry.getKey()),
-                    String.valueOf(entry.getValue()));
-        }
-
-        final FilterConfig config = new FakeFilterConfig(mapBuilder.build());
+    private HoneybadgerFilter instance(boolean displayForm) throws ServletException {
+        Map<String, String> props = ImmutableMap.of(MapConfigContext.DISPLAY_FEEDBACK_FORM_KEY,
+                String.valueOf(displayForm));
+        FilterConfig filterConfig = new FakeFilterConfig(props);
         final HoneybadgerFilter filter = new HoneybadgerFilter();
-        filter.init(config);
+        filter.init(filterConfig);
 
         return filter;
     }
@@ -51,45 +38,27 @@ public class HoneybadgerFilterTest {
      * Generates a fake instance of a {@link HoneybadgerFilter} for testing.
      * @param reporter reporter instance to use for testing
      */
-    private HoneybadgerFilter instance(NoticeReporter reporter)
+    private HoneybadgerFilter instance(NoticeReporter reporter, boolean displayForm)
             throws ServletException {
         if (reporter == null) {
             throw new IllegalArgumentException("Reporter must not be null");
         }
 
+        Map<String, String> props = ImmutableMap.of(MapConfigContext.DISPLAY_FEEDBACK_FORM_KEY,
+                String.valueOf(displayForm));
+        FilterConfig filterConfig = new FakeFilterConfig(props);
         final HoneybadgerFilter filter = new HoneybadgerFilter();
+        filter.init(filterConfig);
         filter.setReporter(reporter);
-        filter.setFeedbackForm(new FeedbackForm(HoneybadgerFilter.feedbackFormTemplatePath()));
 
         return filter;
     }
 
-    @Test
-    public void canSetPropertiesFromFilter() throws ServletException {
-        Map<String, String> filterParams = ImmutableMap.of(
-                HONEYBADGER_API_KEY_SYS_PROP_KEY, "ffffffff",
-                HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY, "doober.main"
-        );
-
-        final FilterConfig config = new FakeFilterConfig(filterParams);
-        final HoneybadgerFilter filter = new HoneybadgerFilter();
-        filter.setProperties(new Properties());
-
-        filter.init(config);
-
-        assertEquals("Filter configuration was not imported into properties",
-                filterParams.get(HONEYBADGER_API_KEY_SYS_PROP_KEY),
-                filter.getProperties().getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY));
-
-        assertEquals("Filter configuration was not imported into properties",
-                filterParams.get(HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY),
-                filter.getProperties().getProperty(HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY));
-    }
 
     @Test
     public void filterCanThrowAnError() throws Exception {
         NoticeReporter reporter = mock(NoticeReporter.class);
-        HoneybadgerFilter filter = instance(reporter);
+        HoneybadgerFilter filter = instance(reporter, false);
 
         FilterChain chain = mock(FilterChain.class);
         Exception exception = new UnitTestExpectedException("Servlet Filter Exception");
@@ -104,10 +73,8 @@ public class HoneybadgerFilterTest {
         boolean thrown = false;
 
         try {
-            System.setProperty(DISPLAY_FEEDBACK_FORM_KEY, "false");
             filter.doFilter(request, response, chain);
         } catch (UnitTestExpectedException e) {
-            System.clearProperty(DISPLAY_FEEDBACK_FORM_KEY);
             thrown = true;
         }
 
@@ -118,7 +85,7 @@ public class HoneybadgerFilterTest {
 
     @Test
     public void filterCanThrowAnErrorToTheHoneybadgerAPI() throws Exception {
-        HoneybadgerFilter filter = instance();
+        HoneybadgerFilter filter = instance(false);
 
         FilterChain chain = mock(FilterChain.class);
         Exception exception = new UnitTestExpectedException("Servlet Filter Exception");
@@ -133,10 +100,8 @@ public class HoneybadgerFilterTest {
         boolean thrown = false;
 
         try {
-            System.setProperty(DISPLAY_FEEDBACK_FORM_KEY, "false");
             filter.doFilter(request, response, chain);
         } catch (UnitTestExpectedException e) {
-            System.clearProperty(DISPLAY_FEEDBACK_FORM_KEY);
             thrown = true;
         }
 
