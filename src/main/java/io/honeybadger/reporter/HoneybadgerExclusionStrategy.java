@@ -10,10 +10,10 @@ import io.honeybadger.reporter.config.ConfigContext;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.10
  */
-public class ConfigContextExclusionStrategy implements ExclusionStrategy {
+public class HoneybadgerExclusionStrategy implements ExclusionStrategy {
     @Override
     public boolean shouldSkipField(FieldAttributes f) {
-        return false;
+        return f.getName().equals("excludedValues");
     }
 
     @Override

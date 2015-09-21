@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.honeybadger.reporter.ConfigContextExclusionStrategy;
+import io.honeybadger.reporter.HoneybadgerExclusionStrategy;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
@@ -44,7 +44,7 @@ public class NoticeTest {
     private ConfigContext config = new SystemSettingsConfigContext();
 
     Gson gson = new GsonBuilder()
-            .setExclusionStrategies(new ConfigContextExclusionStrategy())
+            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
             .setPrettyPrinting()
             .create();
 

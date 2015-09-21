@@ -35,7 +35,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     protected ConfigContext config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson = new GsonBuilder()
-            .setExclusionStrategies(new ConfigContextExclusionStrategy())
+            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
             .create();
 
     public HoneybadgerReporter(ConfigContext config) {

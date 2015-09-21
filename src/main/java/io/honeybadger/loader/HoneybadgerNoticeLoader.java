@@ -3,7 +3,7 @@ package io.honeybadger.loader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import io.honeybadger.reporter.ConfigContextExclusionStrategy;
+import io.honeybadger.reporter.HoneybadgerExclusionStrategy;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.dto.Notice;
 import org.apache.http.client.fluent.Request;
@@ -25,7 +25,7 @@ import java.util.UUID;
 public class HoneybadgerNoticeLoader {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson = new GsonBuilder()
-            .setExclusionStrategies(new ConfigContextExclusionStrategy())
+            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
             .create();
     private ConfigContext config;
 
