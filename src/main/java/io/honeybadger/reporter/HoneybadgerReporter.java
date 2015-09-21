@@ -3,6 +3,7 @@ package io.honeybadger.reporter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.dto.HttpServletRequestFactory;
 import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.NoticeDetails;
@@ -37,6 +38,10 @@ public class HoneybadgerReporter implements NoticeReporter {
     private final Gson gson = new GsonBuilder()
             .setExclusionStrategies(new HoneybadgerExclusionStrategy())
             .create();
+
+    public HoneybadgerReporter() {
+        this(new SystemSettingsConfigContext());
+    }
 
     public HoneybadgerReporter(ConfigContext config) {
         this.config = config;

@@ -21,7 +21,6 @@ public class Details extends LinkedHashMap<String, LinkedHashMap<String, String>
 
     public Details(ConfigContext config) {
         this.config = config;
-        addDefaultDetails();
     }
 
     public Details() {
@@ -29,11 +28,9 @@ public class Details extends LinkedHashMap<String, LinkedHashMap<String, String>
         if (config == null) throw new NullPointerException(
                 "Unable to get the expected ConfigContext from ThreadLocal");
         this.config = config;
-
-        addDefaultDetails();
     }
 
-    protected void addDefaultDetails() {
+    void addDefaultDetails() {
         put("System Properties", systemProperties());
         put("MDC Properties", mdcProperties());
     }

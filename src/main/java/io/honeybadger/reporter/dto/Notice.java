@@ -26,6 +26,7 @@ public class Notice implements Serializable {
     public Notice(ConfigContext config) {
         this.config = config;
         this.details = new Details(this.config);
+        this.details.addDefaultDetails();
     }
 
     public Notice() {
