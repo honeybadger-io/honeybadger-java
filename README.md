@@ -251,7 +251,7 @@ Description: CSV of HTTP GET/POST query parameter values that will be excluded
              authentication information, parameters that are too long or 
              sensitive.
              
-honeybadger.read_api_key
+honeybadger.read_api_key or HONEYBADGER_READ_API_KEY
 -------------
 Sample Value: qjcp6c7Nv9yR-bsvGZ77
 Required?: Only when running integration tests
