@@ -58,6 +58,19 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
 
     /**
      * Use {@link HoneybadgerUncaughtExceptionHandler}
+     * as the error handler for the current thread.
+     *
+     * @param configContext configuration context for Honeybadger setup
+     */
+    public static void registerAsUncaughtExceptionHandler(
+            ConfigContext configContext) {
+        Thread.UncaughtExceptionHandler handler =
+                new HoneybadgerUncaughtExceptionHandler(configContext);
+        Thread.setDefaultUncaughtExceptionHandler(handler);
+    }
+
+    /**
+     * Use {@link HoneybadgerUncaughtExceptionHandler}
      * as the error handler for the specified thread.
      *
      * @param t thread to register handler for
@@ -66,6 +79,20 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
             java.lang.Thread t) {
         Thread.UncaughtExceptionHandler handler =
                 new HoneybadgerUncaughtExceptionHandler();
+        t.setUncaughtExceptionHandler(handler);
+    }
+
+    /**
+     * Use {@link HoneybadgerUncaughtExceptionHandler}
+     * as the error handler for the specified thread.
+     *
+     * @param configContext configuration context for Honeybadger setup
+     * @param t thread to register handler for
+     */
+    public static void registerAsUncaughtExceptionHandler(
+            ConfigContext configContext, java.lang.Thread t) {
+        Thread.UncaughtExceptionHandler handler =
+                new HoneybadgerUncaughtExceptionHandler(configContext);
         t.setUncaughtExceptionHandler(handler);
     }
 }

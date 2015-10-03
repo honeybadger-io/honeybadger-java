@@ -68,10 +68,13 @@ handler by adding the library to your SBT build file:
 libraryDependencies += "io.honeybadger" % "honeybadger-java" % "<<VERSION NUMBER>>"
 ```
  
-And then by adding the following line to your conf/application.conf file:
+And then by adding the following lines to your conf/application.conf file:
 
 ```
-play.http.errorHandler=io.honeybadger.reporter.play.HoneybadgerErrorHandler
+honeybadger.api_key = <<API KEY>>
+# You can add any of the Honeybadger configuration parameters here directly
+# honeybadger.excluded_exception_classes = com.myorg.AnnoyingException 
+play.http.errorHandler = io.honeybadger.reporter.play.HoneybadgerErrorHandler
 ```
 
 This will allow the library to wrap the default error handler implementation and
