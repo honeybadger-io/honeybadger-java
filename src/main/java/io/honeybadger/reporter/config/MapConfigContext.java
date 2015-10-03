@@ -193,6 +193,28 @@ public class MapConfigContext implements ConfigContext {
         }
     }
 
+    /**
+     * Allows the caller to perform a put operation on the backing map of the
+     * context. This is typically used by other {@link ConfigContext}
+     * implementations that need to cobble together multiple map values.
+     *
+     * This method is scoped to default because no other packages should be
+     * using it.
+     *
+     * @param key configuration key
+     * @param value configuration value
+     * @return return value of the put() operation from the backing map
+     */
+    Object put(String key, String value) {
+        if (key == null) throw new IllegalArgumentException("Config key can't be null");
+        if (key.isEmpty()) throw new IllegalArgumentException("Config key can't be blank");
+
+        // Java generics can be stupid
+        @SuppressWarnings("unchecked")
+        Map<Object, Object> map = (Map<Object, Object>)this.backingMap;
+        return map.put(key, value);
+    }
+
     private String normalizeEmptyAndNullAndDefaultToStringValue(Object key) {
         Object value = backingMap.get(key);
         if (value == null) return null;
