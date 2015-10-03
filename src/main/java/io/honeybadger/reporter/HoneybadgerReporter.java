@@ -50,6 +50,10 @@ public class HoneybadgerReporter implements NoticeReporter {
             throw new IllegalArgumentException("API key must be set");
         }
 
+        if (config.getApiKey().isEmpty()) {
+            throw new IllegalArgumentException("API key must not be empty");
+        }
+
         if (config.getHoneybadgerUrl() == null) {
             throw new IllegalArgumentException("Honeybadger URL must be set");
         }
