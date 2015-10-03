@@ -14,7 +14,12 @@ apply plugin: 'idea'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.honeybadger'
-version = '1.0.11'
+
+def release = '1.0.11'
+def snapshot = 'SNAPSHOT-beta1'
+// concatenate release version with snapshot version number
+version = "${release}${snapshot && !snapshot.isEmpty() ? ('-' + snapshot) : ''}"
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 archivesBaseName = rootProject.name
