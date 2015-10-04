@@ -1,5 +1,7 @@
 package io.honeybadger.reporter.dto;
 
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
@@ -45,31 +47,38 @@ public class Load implements Serializable {
         String os = osBean.getName();
 
         if (os.equals("Linux")) {
-            File loadavg = new File("/proc/loadavg");
+            return findLinuxLoadAverages(osBean);
+        } else {
+            return defaultLoadAverages(osBean);
+        }
+    }
 
-            if (loadavg.exists() &&  loadavg.isFile() && loadavg.canRead()) {
-                try (Scanner scanner = new Scanner(loadavg)) {
-                    if (!scanner.hasNext()) {
-                        return defaultLoadAverages(osBean);
-                    }
+    static Number[] findLinuxLoadAverages(OperatingSystemMXBean osBean) {
+        File loadavg = new File("/proc/loadavg");
 
-                    String line = scanner.nextLine();
-                    String[] values = line.split(" ", 4);
-
-                    return new Number[]{
-                            Double.parseDouble(values[0]),
-                            Double.parseDouble(values[1]),
-                            Double.parseDouble(values[2])
-                    };
-
-                } catch (Exception e) {
+        if (loadavg.exists() &&  loadavg.isFile() && loadavg.canRead()) {
+            try (Scanner scanner = new Scanner(loadavg)) {
+                if (!scanner.hasNext()) {
                     return defaultLoadAverages(osBean);
                 }
-            } else {
+
+                String line = scanner.nextLine();
+                String[] values = line.split(" ", 4);
+
+                return new Number[]{
+                        Double.parseDouble(values[0]),
+                        Double.parseDouble(values[1]),
+                        Double.parseDouble(values[2])
+                };
+
+            } catch (Exception e) {
+                LoggerFactory.getLogger(Load.class)
+                        .debug("Error reading /proc/loadavg", e);
                 return defaultLoadAverages(osBean);
             }
-
         } else {
+            LoggerFactory.getLogger(Load.class)
+                    .debug("Couldn't fid or access /proc/loadavg");
             return defaultLoadAverages(osBean);
         }
     }
