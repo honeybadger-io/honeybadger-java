@@ -18,12 +18,14 @@ public class Memory implements Serializable {
     public final Number free_total;
 
     public Memory() {
+        // TODO: Write a Linux /proc/meminfo parser
+        final long mebibyte = 1048576L;
         final Runtime r = Runtime.getRuntime();
-        this.total = r.totalMemory();
-        this.free = r.freeMemory();
+        this.total = r.maxMemory() / mebibyte;
+        this.free = r.freeMemory() / mebibyte;
         this.buffers = -1;
         this.cached = -1;
-        this.free_total = r.maxMemory() - (r.totalMemory() - r.freeMemory());
+        this.free_total = (r.maxMemory() - (r.totalMemory() + r.freeMemory())) / mebibyte;
     }
 
     public Memory(Number total, Number free, Number buffers, Number cached, Number free_total) {
