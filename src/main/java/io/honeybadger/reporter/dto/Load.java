@@ -1,7 +1,6 @@
 package io.honeybadger.reporter.dto;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -55,7 +54,7 @@ public class Load implements Serializable {
                     }
 
                     String line = scanner.nextLine();
-                    String[] values = line.split(" ", 3);
+                    String[] values = line.split(" ", 4);
 
                     return new Number[]{
                             Double.parseDouble(values[0]),
