@@ -32,3 +32,8 @@
        - Added Honeybadger error form to servlet filter.
 1.0.10 - Fixed pom.xml so it isn't listing dependencies that are actually shadowed.
 1.0.11 - Refactored configuration settings to use context-based pattern.
+       - Added support for native configuration within the Play Framework.
+       - Added preliminary server statistics support.
+       - Fixed pom.xml generation problems in gradle.
+       - Upgraded gradle wrapper to use gradle 2.7.
+
