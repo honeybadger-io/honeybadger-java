@@ -252,24 +252,70 @@ publishing {
             // I really hate that I have to redefine my dependencies here again
             // for Maven compatibility when I publish to Maven Central. :(
             pom.withXml {
-                def parent = asNode().appendNode("dependencies")
-                def slf4j = parent.appendNode("dependency")
+                // Remove all auto-added dependencies
+                asNode().appendNode("name", "Honeybadger Java Client")
+                asNode().appendNode("packaging", "jar")
+                asNode().appendNode("description", "Library that sends exceptions to the online error management service Honeybadger.")
+                asNode().appendNode("url", "https://github.com/honeybadger-io/honeybadger-java")
+
+                def scm = asNode().appendNode("scm")
+                scm.appendNode("connection", "scm:git:git@github.com:honeybadger-io/honeybadger-java.git")
+                scm.appendNode("developerConnection", "scm:git:git@github.com:honeybadger-io/honeybadger-java.git")
+                scm.appendNode("url", "git@github.com:honeybadger-io/honeybadger-java.git")
+
+                def licenses = asNode().appendNode("licenses")
+                def license = licenses.appendNode("license")
+                license.appendNode("name", "MIT License")
+                license.appendNode("url", "https://raw.githubusercontent.com/honeybadger-io/honeybadger-java/master/LICENSE")
+
+                def developers = asNode().appendNode("developers")
+                def developer = developers.appendNode("developer")
+                developer.appendNode("id", "elijah")
+                developer.appendNode("name", "Elijah Zupancic")
+                developer.appendNode("email", "elijah@zupancic.name")
+                developer.appendNode("organizationUrl", "https://github.com/dekobon")
+
+                // Add dependencies that are explicitly defined
+                def dependencies = asNode().appendNode("dependencies")
+
+                def slf4j = dependencies.appendNode("dependency")
                 slf4j.appendNode("groupId", "org.slf4j")
                 slf4j.appendNode("artifactId", "slf4j-api")
                 slf4j.appendNode("version", slf4jVersion)
-                slf4j.appendNode("scope", "compile")
+                slf4j.appendNode("scope", "runtime")
 
-                def servlet = parent.appendNode("dependency")
+                def servlet = dependencies.appendNode("dependency")
                 servlet.appendNode("groupId", "javax.servlet")
                 servlet.appendNode("artifactId", "javax.servlet-api")
                 servlet.appendNode("version", servletApiVersion)
                 servlet.appendNode("scope", "provided")
 
-                def play = parent.appendNode("dependency")
+                def play = dependencies.appendNode("dependency")
                 play.appendNode("groupId", "com.typesafe.play")
                 play.appendNode("artifactId", "play_2.10")
                 play.appendNode("version", playVersion)
                 play.appendNode("scope", "provided")
+
+                // Build proper exclusions
+                project.configurations[JavaPlugin.RUNTIME_CONFIGURATION_NAME].allDependencies.findAll {
+                    it instanceof ModuleDependency && !it.excludeRules.isEmpty()
+                }.each { ModuleDependency dep ->
+                    def xmlDep = asNode().dependencies.dependency.find {
+                        it.groupId[0].text() == dep.group && it.artifactId[0].text() == dep.name
+                    }
+
+                    if (xmlDep) {
+                        def xmlExclusions = xmlDep?.exclusions[0]
+
+                        if (!xmlExclusions) xmlExclusions = xmlDep.appendNode('exclusions')
+
+                        dep.excludeRules.each { ExcludeRule rule ->
+                            def xmlExclusion = xmlExclusions.appendNode('exclusion')
+                            xmlExclusion.appendNode('groupId', rule.group)
+                            xmlExclusion.appendNode('artifactId', rule.module)
+                        }
+                    }
+                }
             }
 
             // This messy thing is here to add proper exclusions to
@@ -340,6 +386,52 @@ uploadArchives {
                         name 'Elijah Zupancic'
                         email 'elijah@zupancic.name'
                         organizationUrl 'https://github.com/dekobon'
+                    }
+                }
+            }.withXml {
+                // Remove all auto-added dependencies
+                asNode().remove(asNode().get('dependencies'))
+
+                // Readd dependencies that are explicitly defined
+                def parent = asNode().appendNode("dependencies")
+
+                def slf4j = parent.appendNode("dependency")
+                slf4j.appendNode("groupId", "org.slf4j")
+                slf4j.appendNode("artifactId", "slf4j-api")
+                slf4j.appendNode("version", slf4jVersion)
+                slf4j.appendNode("scope", "runtime")
+
+                def servlet = parent.appendNode("dependency")
+                servlet.appendNode("groupId", "javax.servlet")
+                servlet.appendNode("artifactId", "javax.servlet-api")
+                servlet.appendNode("version", servletApiVersion)
+                servlet.appendNode("scope", "provided")
+
+                def play = parent.appendNode("dependency")
+                play.appendNode("groupId", "com.typesafe.play")
+                play.appendNode("artifactId", "play_2.10")
+                play.appendNode("version", playVersion)
+                play.appendNode("scope", "provided")
+            }.withXml {
+                // This messy thing is here to add proper exclusions to
+                // generated POMs
+                project.configurations[JavaPlugin.RUNTIME_CONFIGURATION_NAME].allDependencies.findAll {
+                    it instanceof ModuleDependency && !it.excludeRules.isEmpty()
+                }.each { ModuleDependency dep ->
+                    def xmlDep = asNode().dependencies.dependency.find {
+                        it.groupId[0].text() == dep.group && it.artifactId[0].text() == dep.name
+                    }
+
+                    if (xmlDep) {
+                        def xmlExclusions = xmlDep?.exclusions[0]
+
+                        if (!xmlExclusions) xmlExclusions = xmlDep.appendNode('exclusions')
+
+                        dep.excludeRules.each { ExcludeRule rule ->
+                            def xmlExclusion = xmlExclusions.appendNode('exclusion')
+                            xmlExclusion.appendNode('groupId', rule.group)
+                            xmlExclusion.appendNode('artifactId', rule.module)
+                        }
                     }
                 }
             }
