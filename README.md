@@ -102,7 +102,7 @@ public class ApiUsage {
               .setEnvironment("staging")
               .setApplicationPackage("com.myapp");
         
-        NoticeReporter reporter = new HoneybadgerReporter();
+        NoticeReporter reporter = new HoneybadgerReporter(config);
         Throwable t = new RuntimeException("I'm a custom error");
         reporter.reportError(t);
     }
