@@ -1,4 +1,6 @@
-# honeybadger-java [![Build Status](https://travis-ci.org/honeybadger-io/honeybadger-java.svg)](https://travis-ci.org/honeybadger-io/honeybadger-java)
+# Honeybadger for Java
+ 
+[![Build Status](https://travis-ci.org/honeybadger-io/honeybadger-java.svg)](https://travis-ci.org/honeybadger-io/honeybadger-java)
 
 Java client to report exceptions to the :zap: [Honeybadger.io error notification
 service](https://www.honeybadger.io/). Receive instant notification of
@@ -162,7 +164,7 @@ ossrhUsername=user
 ossrhPassword=AFbz3BjdE4Q9g2E&
 ```
 
-## System Properties
+## Advanced Configuration
 
 The following properties are available:
 
