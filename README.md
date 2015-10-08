@@ -32,6 +32,7 @@ public static void main(String argv[]) {
 A servlet based implementation may look like:
 
 In your web.xml file:
+
 ```xml
     <!-- Send all uncaught servlet exceptions and servlet request details to Honeybadger -->
     <filter>
