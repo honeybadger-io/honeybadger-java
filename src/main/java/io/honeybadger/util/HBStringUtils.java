@@ -9,6 +9,8 @@ import java.util.Arrays;
  * @since 1.0.11
  */
 public class HBStringUtils {
+    private HBStringUtils() { }
+
     /**
      * Removes a single character from the end of a string if it matches.
      * @param input String to remove from, if null returns null

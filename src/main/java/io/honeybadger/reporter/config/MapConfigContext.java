@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.config;
 
+import io.honeybadger.util.HBCollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -267,7 +268,7 @@ public class MapConfigContext implements ConfigContext {
             if (stringValue == null) return null;
 
             HashSet<String> set = new HashSet<>();
-            Collections.addAll(set, stringValue.split(","));
+            set.addAll(HBCollectionUtils.parseNaiveCsvString(stringValue));
 
             return set;
         }
