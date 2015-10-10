@@ -1,11 +1,12 @@
 package io.honeybadger.reporter.config;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import static io.honeybadger.reporter.config.MapConfigContext.*;
+import static io.honeybadger.util.HBCollectionUtils.isPresent;
+import static io.honeybadger.util.HBStringUtils.isPresent;
 
 /**
  * Abstract implementation of {@link ConfigContext} that allows for chaining
@@ -164,14 +165,6 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         if (isPresent(context.getFeedbackFormPath())) {
             this.feedbackFormPath = context.getFeedbackFormPath();
         }
-    }
-
-    protected boolean isPresent(Collection<?> collection) {
-        return collection != null && !collection.isEmpty();
-    }
-
-    protected boolean isPresent(CharSequence charSequence) {
-        return charSequence != null && charSequence.length() > 0;
     }
 
     public BaseChainedConfigContext setEnvironment(String environment) {

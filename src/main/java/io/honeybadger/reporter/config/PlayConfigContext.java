@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.config;
 
+import io.honeybadger.util.HBStringUtils;
 import org.slf4j.LoggerFactory;
 import play.Configuration;
 import play.Environment;
@@ -93,15 +94,15 @@ public class PlayConfigContext extends BaseChainedConfigContext {
 
                 while (subItr.hasNext()) {
                     Map.Entry<String, Object> subEntry = subItr.next();
-                    String subKey = stripTrailingChar(subEntry.getKey(), '.');
+                    String subKey = HBStringUtils.stripTrailingChar(subEntry.getKey(), '.');
                     String key = String.format("%s.%s", entry.getKey(), subKey);
                     flat.put(key, subEntry.getValue());
                 }
             } else if (level == 0){
-                String key = stripTrailingChar(entry.getKey(), '.');
+                String key = HBStringUtils.stripTrailingChar(entry.getKey(), '.');
                 flat.put(String.format("%s", key), entry.getValue());
             } else {
-                String key = stripTrailingChar(entry.getKey(), '.');
+                String key = HBStringUtils.stripTrailingChar(entry.getKey(), '.');
                 flat.put(String.format("%s.", key), entry.getValue());
             }
         }
@@ -109,22 +110,4 @@ public class PlayConfigContext extends BaseChainedConfigContext {
         return flat;
     }
 
-    /**
-     * Removes a single character from the end of a string if it matches.
-     * @param input String to remove from, if null returns null
-     * @param c character to match
-     * @return Original string minus matched character
-     */
-    static String stripTrailingChar(String input, char c) {
-        if (input == null) return null;
-        if (input.isEmpty()) return input;
-
-        char[] charArray = input.toCharArray();
-
-        if (charArray[charArray.length - 1] == c) {
-            return new String(Arrays.copyOf(charArray, charArray.length - 1));
-        } else {
-            return input;
-        }
-    }
 }

@@ -108,18 +108,4 @@ public class PlayConfigContextTest {
             throw e;
         }
     }
-
-    @Test
-    public void canTrimTrailingDot() {
-        String instance = "foo.";
-        String out = PlayConfigContext.stripTrailingChar(instance, '.');
-        assertEquals("Trailing dot not trimmed", "foo", out);
-    }
-
-    @Test
-    public void wontTrimOtherChars() {
-        String instance = "foo";
-        String out = PlayConfigContext.stripTrailingChar(instance, '.');
-        assertEquals("Original string modified", "foo", out);
-    }
 }
