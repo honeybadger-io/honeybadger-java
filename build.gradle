@@ -16,7 +16,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 group = 'io.honeybadger'
 
 def release = '1.0.11'
-def snapshot = 'SNAPSHOT-beta1'
+def snapshot = 'SNAPSHOT-beta2'
 // concatenate release version with snapshot version number
 version = "${release}${snapshot && !snapshot.isEmpty() ? ('-' + snapshot) : ''}"
 
@@ -368,7 +368,7 @@ uploadArchives {
                 url 'https://github.com/honeybadger-io/honeybadger-java'
 
                 scm {
-                    connection 'scm:git:git@github.com:honeybadger-io/honeybadger-jvm-client-v2.git'
+                    connection 'scm:git:git@github.com:honeybadger-io/honeybadger-java.git'
                     developerConnection 'scm:git:git@github.com:honeybadger-io/honeybadger-java.git'
                     url 'git@github.com:honeybadger-io/honeybadger-java.git'
                 }
