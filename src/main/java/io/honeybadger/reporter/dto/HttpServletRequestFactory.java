@@ -8,8 +8,6 @@ import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Enumeration;
 
-import static io.honeybadger.reporter.dto.RequestParsingUtils.parseParamsFromMap;
-
 /**
  * Factory class that creates a {@link Request} based on a
  * {@link javax.servlet.http.HttpServletRequest}.
@@ -43,7 +41,7 @@ public class HttpServletRequestFactory {
 
     protected static Params createParams(ConfigContext config,
                                          HttpServletRequest httpRequest) {
-        return parseParamsFromMap(config.getExcludedParams(),
+        return Params.parseParamsFromMap(config.getExcludedParams(),
                 httpRequest.getParameterMap());
     }
 

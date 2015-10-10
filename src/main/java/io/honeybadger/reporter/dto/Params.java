@@ -4,6 +4,7 @@ import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -54,5 +55,26 @@ public class Params extends LinkedHashMap<String, String>
         }
 
         return super.put(key, value);
+    }
+
+    static Params parseParamsFromMap(Set<String> excludedValues,
+                                     Map<String, String[]> paramMap) {
+        Params params = new Params(excludedValues);
+
+        try {
+            if (paramMap == null || paramMap.isEmpty()) return params;
+
+            for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
+                params.put(entry.getKey(), Params.csv(entry.getValue()));
+            }
+        } catch (RuntimeException e) {
+            /* We really shouldn't ever have an exception here, but we can't
+             * control the underlying implementation, so we just recover by
+             * not displaying any data. */
+
+            params.put("Error getting parameters", e.getMessage());
+        }
+
+        return params;
     }
 }

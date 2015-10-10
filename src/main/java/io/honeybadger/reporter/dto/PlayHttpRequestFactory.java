@@ -6,9 +6,6 @@ import play.mvc.Http;
 
 import java.util.Iterator;
 
-import static io.honeybadger.reporter.dto.RequestParsingUtils.parseParamsFromMap;
-
-
 /**
  * Factory class that creates a {@link Request} based on a
  * {@link play.mvc.Http.Request}.
@@ -50,7 +47,7 @@ public class PlayHttpRequestFactory {
 
         if (body == null) return new Params(config.getExcludedParams());
 
-        return parseParamsFromMap(config.getExcludedParams(),
+        return Params.parseParamsFromMap(config.getExcludedParams(),
                                   body.asFormUrlEncoded());
     }
 
