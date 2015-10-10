@@ -2,7 +2,6 @@ package io.honeybadger.reporter.servlet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionContext;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -61,7 +60,7 @@ public class FakeHttpSession implements HttpSession {
     }
 
     @Override
-    public HttpSessionContext getSessionContext() {
+    public javax.servlet.http.HttpSessionContext getSessionContext() {
         throw new UnsupportedOperationException("Not implemented");
     }
 

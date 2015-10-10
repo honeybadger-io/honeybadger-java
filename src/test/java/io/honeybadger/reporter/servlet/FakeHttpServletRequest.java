@@ -13,6 +13,7 @@ import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("deprecation")
 public class FakeHttpServletRequest implements HttpServletRequest {
     private Map<String, ArrayList<String>> headers =
             new ConcurrentHashMap<>();
@@ -54,9 +55,9 @@ public class FakeHttpServletRequest implements HttpServletRequest {
     public Cookie[] getCookies() {
         List<Cookie> cookies = new ArrayList<>();
         List<String> cookieValues = headers.get("set-cookie");
-        
+
         if (cookieValues == null) return new Cookie[] {};
-        
+
         for (String c : cookieValues) {
             for (HttpCookie httpCookie : HttpCookie.parse(c)) {
                 cookies.add(copyFromHttpCookie(httpCookie));
@@ -67,7 +68,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
         cookies.toArray(cookieArray);
         return cookieArray;
     }
-    
+
     Cookie copyFromHttpCookie(HttpCookie cookie) {
         return new Cookie(cookie.getName(), cookie.getValue());
     }

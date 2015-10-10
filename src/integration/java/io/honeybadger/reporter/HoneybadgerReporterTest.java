@@ -89,9 +89,9 @@ public class HoneybadgerReporterTest {
         assertNull("A suppressed error was actually added", result);
     }
 
-    static void assertReportedErrorIsSame(Notice expected,
-                                          Notice actual) {
-        // Right now details are supported, so we don't check them
+    static void assertReportedErrorIsSame(Notice expected, Notice actual) {
+        // Right now details are supported, but the retrieval API is not,
+        // so we don't check them
 //        if (!expected.getDetails().equals(actual.getDetails())) {
 //            fail(String.format("Details were not equal.\n" +
 //                    "Expected: %s\n" +
