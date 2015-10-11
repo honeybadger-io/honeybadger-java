@@ -1,5 +1,5 @@
 /**
- * Configuration class are contained in this package.
+ * Configuration classes are contained in this package.
  *
  * The usage pattern is that you will define an implementation of
  * {@link io.honeybadger.reporter.config.ConfigContext} that provides a default values implementation
