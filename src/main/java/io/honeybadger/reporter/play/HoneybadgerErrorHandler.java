@@ -82,8 +82,8 @@ public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
      * This will generate an id for the exception, and in dev mode, will load the source code for the code that threw the
      * exception, making it possible to report on the location that the exception was thrown from.
      *
-     * @param throwable exception being converted to UsefuleException
-     * @return input throwable represented as UsefuleException
+     * @param throwable exception being converted to UsefulException
+     * @return input throwable represented as UsefulException
      */
     protected UsefulException throwableToUsefulException(final Throwable throwable) {
         return HttpErrorHandlerExceptions.throwableToUsefulException(
