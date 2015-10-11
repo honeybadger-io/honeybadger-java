@@ -4,6 +4,9 @@ import io.honeybadger.reporter.FeedbackForm;
 import io.honeybadger.reporter.NoticeReportResult;
 import io.honeybadger.reporter.NoticeReporter;
 import io.honeybadger.reporter.HoneybadgerReporter;
+import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.ServletFilterConfigContext;
+import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import org.apache.http.entity.ContentType;
 
 import javax.servlet.*;
@@ -12,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static io.honeybadger.reporter.HoneybadgerReporter.*;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 /**
@@ -22,30 +24,17 @@ import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
  * @since 1.0.4
  */
 public class HoneybadgerFilter implements Filter {
+    private ConfigContext config;
     private NoticeReporter reporter;
     private FeedbackForm feedbackForm;
-    private Properties properties = System.getProperties();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        setSysPropFromFilterConfig(filterConfig, HONEYBADGER_URL_SYS_PROP_KEY);
-        setSysPropFromFilterConfig(filterConfig, HONEYBADGER_API_KEY_SYS_PROP_KEY);
-        setSysPropFromFilterConfig(filterConfig, HONEYBADGER_EXCLUDED_PROPS_SYS_PROP_KEY);
-        setSysPropFromFilterConfig(filterConfig, HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY);
-        setSysPropFromFilterConfig(filterConfig, APPLICATION_PACKAGE_PROP_KEY);
-        setSysPropFromFilterConfig(filterConfig, DISPLAY_FEEDBACK_FORM_KEY);
-        setSysPropFromFilterConfig(filterConfig, FEEDBACK_FORM_TEMPLATE_PATH_KEY);
-
-        reporter = new HoneybadgerReporter();
-        feedbackForm = new FeedbackForm(feedbackFormTemplatePath());
-    }
-
-    static String feedbackFormTemplatePath() {
-        String templatePath = System.getProperty(FEEDBACK_FORM_TEMPLATE_PATH_KEY);
-
-        if (templatePath == null || templatePath.isEmpty()) return DEFAULT_FEEDBACK_FORM_TEMPLATE_PATH;
-
-        return templatePath;
+        ConfigContext filterContext = new ServletFilterConfigContext(filterConfig);
+        ConfigContext config = new SystemSettingsConfigContext(filterContext);
+        this.config = config;
+        this.reporter = new HoneybadgerReporter(config);
+        this.feedbackForm = new FeedbackForm(config);
     }
 
     @Override
@@ -58,7 +47,7 @@ public class HoneybadgerFilter implements Filter {
             NoticeReportResult result = reporter.reportError(e, request);
 
             // Don't render the feedback form and just throw the error
-            if (!displayFeedbackForm()) {
+            if (config.isFeedbackFormDisplayed() != null && !config.isFeedbackFormDisplayed()) {
                 throw e;
             }
 
@@ -90,18 +79,6 @@ public class HoneybadgerFilter implements Filter {
         }
     }
 
-    protected boolean displayFeedbackForm() {
-        String enabled = System.getProperty(DISPLAY_FEEDBACK_FORM_KEY);
-
-        if (enabled == null || enabled.isEmpty()) return true;
-
-        if (enabled.equalsIgnoreCase("false") || enabled.equalsIgnoreCase("off")) {
-            return false;
-        }
-
-        return true;
-    }
-
     protected boolean acceptsOnlyJson(HttpServletRequest request) {
         Enumeration<String> enumeration = request.getHeaders("Accept");
         if (enumeration == null) return false;
@@ -128,21 +105,6 @@ public class HoneybadgerFilter implements Filter {
         // do nothing
     }
 
-    /**
-     * Sets a system property based on the servlet config.
-     */
-    private void setSysPropFromFilterConfig(FilterConfig filterConfig,
-                                            String param) {
-        final String val = filterConfig.getInitParameter(param);
-
-        // Don't overwrite already set properties
-        if (properties.getProperty(param) != null) return;
-
-        if (val != null && !val.trim().equals("")) {
-            properties.setProperty(param, val);
-        }
-    }
-
     NoticeReporter getReporter() {
         return reporter;
     }
@@ -155,11 +117,7 @@ public class HoneybadgerFilter implements Filter {
         this.feedbackForm = feedbackForm;
     }
 
-    Properties getProperties() {
-        return properties;
-    }
-
-    void setProperties(Properties properties) {
-        this.properties = properties;
+    ConfigContext getConfig() {
+        return this.config;
     }
 }

@@ -1,5 +1,7 @@
 package io.honeybadger.reporter.dto;
 
+import io.honeybadger.reporter.config.ConfigContext;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -12,7 +14,11 @@ public class Backtrace extends ArrayList<BacktraceElement>
         implements Serializable {
     private static final long serialVersionUID = 5788866962863555294L;
 
-    public Backtrace(Throwable error) {
+    private final ConfigContext config;
+
+    public Backtrace(ConfigContext config, Throwable error) {
+        this.config = config;
+
         if (error == null) {
             throw new IllegalArgumentException("Error must not be null");
         }
@@ -22,7 +28,7 @@ public class Backtrace extends ArrayList<BacktraceElement>
 
     void addTrace(Throwable error) {
         for (StackTraceElement trace : error.getStackTrace()) {
-            add(new BacktraceElement(trace));
+            add(new BacktraceElement(config, trace));
         }
     }
 }

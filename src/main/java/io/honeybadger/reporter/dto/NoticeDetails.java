@@ -1,6 +1,7 @@
 package io.honeybadger.reporter.dto;
 
 import com.google.gson.annotations.SerializedName;
+import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -22,12 +23,11 @@ public class NoticeDetails implements Serializable {
     public final Causes causes;
 
     @SuppressWarnings("unchecked")
-    public NoticeDetails(Throwable error) {
-
-        this(error, (Set<String>)Collections.EMPTY_SET);
+    public NoticeDetails(ConfigContext config, Throwable error) {
+        this(config, error, (Set<String>)Collections.EMPTY_SET);
     }
 
-    public NoticeDetails(Throwable error, Set<String> tags) {
+    public NoticeDetails(ConfigContext config, Throwable error, Set<String> tags) {
         if (error == null) {
             throw new IllegalArgumentException("Error can't be null");
         }
@@ -35,8 +35,8 @@ public class NoticeDetails implements Serializable {
         this.className = error.getClass().getName();
         this.message = error.getMessage();
         this.tags = tags;
-        this.backtrace = new Backtrace(error);
-        this.causes = new Causes(error);
+        this.backtrace = new Backtrace(config, error);
+        this.causes = new Causes(config, error);
     }
 
     @Override

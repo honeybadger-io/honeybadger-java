@@ -8,13 +8,12 @@ import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.net.CookieManager;
 import java.net.HttpCookie;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("deprecation")
 public class FakeHttpServletRequest implements HttpServletRequest {
     private Map<String, ArrayList<String>> headers =
             new ConcurrentHashMap<>();
@@ -36,6 +35,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
     }
 
     public FakeHttpServletRequest(Map<String, ? extends List<String>> headers) {
+        @SuppressWarnings("unchecked")
         Iterator<Map.Entry<String, List<String>>> itr =
                 ((Map<String, List<String>>)headers).entrySet().iterator();
 
@@ -55,10 +55,10 @@ public class FakeHttpServletRequest implements HttpServletRequest {
     public Cookie[] getCookies() {
         List<Cookie> cookies = new ArrayList<>();
         List<String> cookieValues = headers.get("set-cookie");
-        
+
         if (cookieValues == null) return new Cookie[] {};
-        
-        for (String c : cookieValues) {;
+
+        for (String c : cookieValues) {
             for (HttpCookie httpCookie : HttpCookie.parse(c)) {
                 cookies.add(copyFromHttpCookie(httpCookie));
             }
@@ -68,7 +68,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
         cookies.toArray(cookieArray);
         return cookieArray;
     }
-    
+
     Cookie copyFromHttpCookie(HttpCookie cookie) {
         return new Cookie(cookie.getName(), cookie.getValue());
     }
@@ -226,7 +226,9 @@ public class FakeHttpServletRequest implements HttpServletRequest {
 
     @Override
     public Collection<Part> getParts() throws IOException, ServletException {
-        return (Collection<Part>)parts;
+        @SuppressWarnings("unchecked")
+        Collection<Part> collection = (Collection<Part>)parts;
+        return collection;
     }
 
     @Override

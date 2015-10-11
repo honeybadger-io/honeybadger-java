@@ -2,6 +2,8 @@ package io.honeybadger.reporter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.dto.HttpServletRequestFactory;
 import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.NoticeDetails;
@@ -31,14 +33,30 @@ import java.util.*;
  * @since 1.0.0
  */
 public class HoneybadgerReporter implements NoticeReporter {
-
+    protected ConfigContext config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final Set<String> excludedExceptionClasses;
     private final Gson gson = new GsonBuilder()
+            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
             .create();
 
     public HoneybadgerReporter() {
-        this.excludedExceptionClasses = buildExcludedExceptionClasses();
+        this(new SystemSettingsConfigContext());
+    }
+
+    public HoneybadgerReporter(ConfigContext config) {
+        this.config = config;
+
+        if (config.getApiKey() == null) {
+            throw new IllegalArgumentException("API key must be set");
+        }
+
+        if (config.getApiKey().isEmpty()) {
+            throw new IllegalArgumentException("API key must not be empty");
+        }
+
+        if (config.getHoneybadgerUrl() == null) {
+            throw new IllegalArgumentException("Honeybadger URL must be set");
+        }
     }
 
     /**
@@ -79,12 +97,14 @@ public class HoneybadgerReporter implements NoticeReporter {
         // SERVLET REQUEST
         } else if (supportsHttpServletRequest() && request instanceof javax.servlet.http.HttpServletRequest)  {
             logger.debug("Reporting from a servlet context");
-            requestDetails =  HttpServletRequestFactory.create((javax.servlet.http.HttpServletRequest) request);
+            requestDetails =  HttpServletRequestFactory.create(config,
+                    (javax.servlet.http.HttpServletRequest) request);
 
         // PLAY FRAMEWORK REQUEST
         } else if (supportsPlayHttpRequest() && request instanceof play.mvc.Http.Request) {
             logger.debug("Reporting from the Play Framework");
-            requestDetails = PlayHttpRequestFactory.create((play.mvc.Http.Request)request);
+            requestDetails = PlayHttpRequestFactory.create(config,
+                    (play.mvc.Http.Request)request);
 
         } else {
             logger.debug("No request object available");
@@ -116,12 +136,12 @@ public class HoneybadgerReporter implements NoticeReporter {
                                io.honeybadger.reporter.dto.Request request) {
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
-                excludedExceptionClasses.contains(errorClassName)) {
+                config.getExcludedClasses().contains(errorClassName)) {
             return null;
         }
 
-        Notice notice = new Notice()
-                .setError(new NoticeDetails(error));
+        Notice notice = new Notice(config)
+                .setError(new NoticeDetails(config, error));
 
         if (request != null) {
             notice.setRequest(request);
@@ -174,19 +194,6 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
     }
 
-    private Set<String> buildExcludedExceptionClasses() {
-        String excluded = System.getProperty(HONEYBADGER_EXCLUDED_CLASSES_SYS_PROP_KEY);
-        HashSet<String> set = new HashSet<>();
-
-        if (excluded == null || excluded.isEmpty()) {
-            return set;
-        }
-
-        Collections.addAll(set, excluded.split(","));
-
-        return set;
-    }
-
     /**
      * Send an error encoded in JSON to the Honeybadger API.
      *
@@ -196,8 +203,9 @@ public class HoneybadgerReporter implements NoticeReporter {
      */
     private Response sendToHoneybadger(String jsonError) throws IOException {
         URI honeybadgerUrl = URI.create(
-                String.format("%s/%s", honeybadgerUrl(), "v1/notices"));
+                String.format("%s/%s", config.getHoneybadgerUrl(), "v1/notices"));
         Request request = buildRequest(honeybadgerUrl, jsonError);
+
         return request.execute();
     }
 
@@ -212,7 +220,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     private Request buildRequest(URI honeybadgerUrl, String jsonError) {
         Request request = Request
                .Post(honeybadgerUrl)
-               .addHeader("X-API-Key", apiKey())
+               .addHeader("X-API-Key", config.getApiKey())
                .addHeader("Accept", "application/json")
                .version(HttpVersion.HTTP_1_1)
                .bodyString(jsonError, ContentType.APPLICATION_JSON);
@@ -227,46 +235,5 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
 
         return request;
-    }
-
-    /**
-     * Finds the Honeybadger endpoint to send errors to.
-     *
-     * @return the default URL unless it is overridden by a system property
-     */
-    public static URI honeybadgerUrl() {
-        try {
-            final String url;
-            final String sysProp =
-                    System.getProperty(HONEYBADGER_URL_SYS_PROP_KEY);
-
-            if (sysProp != null && !sysProp.isEmpty()) {
-                url = sysProp;
-            } else {
-                url = String.format("%s://%s",
-                        DEFAULT_API_PROTO, DEFAULT_API_HOST);
-            }
-
-            return URI.create(url);
-        } catch (IllegalArgumentException e) {
-            String format = "Honeybadger URL was not correctly formed. " +
-                            "Double check the [%s] system property and " +
-                            "verify that it is a valid URL.";
-            String msg = String.format(format, HONEYBADGER_URL_SYS_PROP_KEY);
-
-            throw new HoneybadgerException(msg, e);
-        }
-    }
-
-    /**
-     * Finds the API key, preferring ENV to system properties.
-     *
-     * @return the API key if found, otherwise null
-     */
-    private String apiKey() {
-      String envKey = System.getenv("HONEYBADGER_API_KEY");
-      if (envKey != null && !envKey.isEmpty()) return envKey;
-
-      return System.getProperty(HONEYBADGER_API_KEY_SYS_PROP_KEY);
     }
 }

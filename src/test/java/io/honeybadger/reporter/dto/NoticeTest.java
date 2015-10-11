@@ -3,13 +3,17 @@ package io.honeybadger.reporter.dto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import com.github.fge.jsonschema.core.report.*;
+import com.github.fge.jsonschema.core.report.ProcessingMessage;
+import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.honeybadger.reporter.HoneybadgerExclusionStrategy;
+import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
 import org.junit.Test;
 
@@ -38,15 +42,18 @@ public class NoticeTest {
         }
     }
 
+    private ConfigContext config = new SystemSettingsConfigContext();
+
     Gson gson = new GsonBuilder()
+            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
             .setPrettyPrinting()
             .create();
 
     @Test
     public void canSerializeReportedErrorWithoutRequest() throws Exception {
         Exception e = new RuntimeException("Test exception");
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e));
         validateReportedErrorJson(error);
     }
 
@@ -55,9 +62,9 @@ public class NoticeTest {
         Exception e = new RuntimeException("Test exception");
         HttpServletRequest request = new FakeHttpServletRequest();
 
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e))
-                .setRequest(HttpServletRequestFactory.create(request));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e))
+                .setRequest(HttpServletRequestFactory.create(config, request));
         validateReportedErrorJson(error);
     }
 
@@ -74,9 +81,9 @@ public class NoticeTest {
 
         HttpServletRequest request = new FakeHttpServletRequest(headers);
 
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e))
-                .setRequest(HttpServletRequestFactory.create(request));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e))
+                .setRequest(HttpServletRequestFactory.create(config, request));
         validateReportedErrorJson(error);
     }
 
@@ -84,8 +91,8 @@ public class NoticeTest {
     public void canSerializeChainedReportedErrorWithoutRequest() throws Exception {
         Exception origin = new RuntimeException("This is the cause");
         Exception e = new RuntimeException("Test exception", origin);
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e));
         validateReportedErrorJson(error);
     }
 
@@ -95,20 +102,21 @@ public class NoticeTest {
         Exception e = new RuntimeException("Test exception", origin);
         HttpServletRequest request = new FakeHttpServletRequest();
 
-        Notice error = new Notice()
-                .setError(new NoticeDetails(e))
-                .setRequest(HttpServletRequestFactory.create(request));
+        Notice error = new Notice(config)
+                .setError(new NoticeDetails(config, e))
+                .setRequest(HttpServletRequestFactory.create(config, request));
         validateReportedErrorJson(error);
     }
 
     private void validateReportedErrorJson(Notice error)
             throws ProcessingException, IOException {
-        String jsonText = gson.toJson(error).toString();
+        String jsonText = gson.toJson(error);
 
         JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
-        JsonValidator validator = factory.byDefault().getValidator();
+        JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
 
         JsonNode jsonNode = mapper.readTree(jsonText);
+        removeUnsupportedElements(jsonNode);
 
         ProcessingReport report = validator.validate(schema, jsonNode);
 
@@ -128,6 +136,22 @@ public class NoticeTest {
             fail(builder.toString());
         } else {
             assertTrue("Generated JSON validated correctly", true);
+        }
+    }
+
+    private static void removeUnsupportedElements(JsonNode jsonNode) {
+        JsonNode server = jsonNode.get("server");
+        if (server == null) return;
+        JsonNode stats = server.get("stats");
+        if (stats == null) return;
+        JsonNode mem = stats.get("mem");
+        if (mem == null) return;
+
+        Iterator<Map.Entry<String, JsonNode>> itr = mem.fields();
+
+        while (itr.hasNext()) {
+            Map.Entry<String, JsonNode> next = itr.next();
+            if (next.getKey().startsWith("vm_")) itr.remove();
         }
     }
 }

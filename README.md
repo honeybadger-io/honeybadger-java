@@ -1,4 +1,6 @@
-# honeybadger-java [![Build Status](https://travis-ci.org/honeybadger-io/honeybadger-java.svg)](https://travis-ci.org/honeybadger-io/honeybadger-java)
+# Honeybadger for Java
+ 
+[![Build Status](https://travis-ci.org/honeybadger-io/honeybadger-java.svg)](https://travis-ci.org/honeybadger-io/honeybadger-java)
 
 Java client to report exceptions to the :zap: [Honeybadger.io error notification
 service](https://www.honeybadger.io/). Receive instant notification of
@@ -8,7 +10,7 @@ exceptions and errors in your Java applications.
 This is a library for sending errors that implement ```java.lang.Throwable``` on the JVM to the online error reporting service <a href="https://www.honeybadger.io/">Honeybadger</a>.
 
 ## Download / Maven Repository
-You can find the library on <a href="http://search.maven.org/#browse%7C-1627719036">Maven Central</a> or you can always clone this github repository.
+You can find the library on <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.honeybadger%22">Maven Central</a> or you can always clone this github repository.
 
 ## Stand-alone Usage
 If you want to send all unhandled errors to Honeybadger and have them logged to slf4j via 
@@ -30,6 +32,7 @@ public static void main(String argv[]) {
 A servlet based implementation may look like:
 
 In your web.xml file:
+
 ```xml
     <!-- Send all uncaught servlet exceptions and servlet request details to Honeybadger -->
     <filter>
@@ -68,10 +71,13 @@ handler by adding the library to your SBT build file:
 libraryDependencies += "io.honeybadger" % "honeybadger-java" % "<<VERSION NUMBER>>"
 ```
  
-And then by adding the following line to your conf/application.conf file:
+And then by adding the following lines to your conf/application.conf file:
 
 ```
-play.http.errorHandler=io.honeybadger.reporter.play.HoneybadgerErrorHandler
+honeybadger.api_key = <<API KEY>>
+# You can add any of the Honeybadger configuration parameters here directly
+# honeybadger.excluded_exception_classes = com.myorg.AnnoyingException 
+play.http.errorHandler = io.honeybadger.reporter.play.HoneybadgerErrorHandler
 ```
 
 This will allow the library to wrap the default error handler implementation and
@@ -81,6 +87,30 @@ pass around Honeybadger error ids instead of the default Play error ids.
 If you want to send exceptions to HoneyBadger without having to register an uncaught 
 exception handler, you can create an instance of ```HonebadgerReporter``` and call 
 the ```reportError(Throwable error)``` method directly.
+
+This is an example of calling how you might configure the Honeybadger
+library and use it to send an error to the API programmatically.
+
+```java
+package com.myapp;
+
+import io.honeybadger.reporter.HoneybadgerReporter;
+import io.honeybadger.reporter.NoticeReporter;
+import io.honeybadger.reporter.config.StandardConfigContext;
+
+public class ApiUsage {
+    public static void main(String[] argv) {
+        StandardConfigContext config = new StandardConfigContext();
+        config.setApiKey("ab3fg93xs")
+              .setEnvironment("staging")
+              .setApplicationPackage("com.myapp");
+        
+        NoticeReporter reporter = new HoneybadgerReporter();
+        Throwable t = new RuntimeException("I'm a custom error");
+        reporter.reportError(t);
+    }
+}
+```
 
 ## Runtime Dependencies
 All dependencies needed for running are included in the distributed JAR with one
@@ -135,7 +165,7 @@ ossrhUsername=user
 ossrhPassword=AFbz3BjdE4Q9g2E&
 ```
 
-## System Properties
+## Advanced Configuration
 
 The following properties are available:
 
@@ -161,12 +191,12 @@ Description: Any string value. String sent to Honeybadger indicating running
              same as ENV, it is only here to provide compability with systems
              that use it to indicate running environment.
 
-honeybadger.api_key
+honeybadger.api_key or HONEYBADGER_API_KEY
 -------------
 Sample Value: 29facd41
 Required?: Yes
 Default Value: N/A 
-Description: The API key found in the settings tab in the Honeybadger UI. 
+Description: The API key found in the settings tab in the Honeybadger UI.
 
 honeybadger.url
 -------------
@@ -227,7 +257,7 @@ Description: CSV of HTTP GET/POST query parameter values that will be excluded
              authentication information, parameters that are too long or 
              sensitive.
              
-honeybadger.read_api_key
+honeybadger.read_api_key or HONEYBADGER_READ_API_KEY
 -------------
 Sample Value: qjcp6c7Nv9yR-bsvGZ77
 Required?: Only when running integration tests

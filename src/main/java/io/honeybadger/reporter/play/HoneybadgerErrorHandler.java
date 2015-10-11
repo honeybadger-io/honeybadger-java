@@ -3,6 +3,8 @@ package io.honeybadger.reporter.play;
 import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.NoticeReportResult;
 import io.honeybadger.reporter.NoticeReporter;
+import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.PlayConfigContext;
 import play.Configuration;
 import play.Environment;
 import play.Logger;
@@ -26,16 +28,20 @@ import javax.inject.Provider;
  * @since 1.0.9
  */
 public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
-    NoticeReporter reporter = new HoneybadgerReporter();
+    protected final NoticeReporter reporter;
     protected final Environment environment;
     protected final OptionalSourceMapper sourceMapper;
 
     @Inject
-    public HoneybadgerErrorHandler(Configuration configuration, Environment environment, OptionalSourceMapper sourceMapper, Provider<Router> routes) {
+    public HoneybadgerErrorHandler(Configuration configuration,
+                                   Environment environment,
+                                   OptionalSourceMapper sourceMapper,
+                                   Provider<Router> routes) {
         super(configuration, environment, sourceMapper, routes);
         this.environment = environment;
         this.sourceMapper = sourceMapper;
-        System.setProperty("ENV", environment.mode().name());
+        ConfigContext context = new PlayConfigContext(configuration, environment);
+        reporter = new HoneybadgerReporter(context);
     }
 
     @Override

@@ -1,27 +1,26 @@
 package io.honeybadger.reporter.dto;
 
+import io.honeybadger.reporter.config.ConfigContext;
 import org.apache.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.Enumeration;
-import java.util.Map;
-
-import static io.honeybadger.reporter.dto.RequestParsingUtils.parseParamsFromMap;
 
 /**
- * Factory class that creates a {@link Request} based on a 
+ * Factory class that creates a {@link Request} based on a
  * {@link javax.servlet.http.HttpServletRequest}.
  *
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
 public class HttpServletRequestFactory {
-    public static Request create(HttpServletRequest httpRequest) {
+    public static Request create(ConfigContext config,
+                                 HttpServletRequest httpRequest) {
         Context context = createContext(httpRequest);
         String url = getFullURL(httpRequest);
-        Params params = createParams(httpRequest);
+        Params params = createParams(config, httpRequest);
         Session session = createSession(httpRequest);
         CgiData cgi_data = createCgiData(httpRequest);
 
@@ -36,14 +35,16 @@ public class HttpServletRequestFactory {
         if (principal != null) {
             context.put("user_name", principal.getName());
         }
-        
+
         return context;
     }
-    
-    protected static Params createParams(HttpServletRequest httpRequest) {
-        return parseParamsFromMap(httpRequest.getParameterMap());
+
+    protected static Params createParams(ConfigContext config,
+                                         HttpServletRequest httpRequest) {
+        return Params.parseParamsFromMap(config.getExcludedParams(),
+                httpRequest.getParameterMap());
     }
-    
+
     protected static Session createSession(HttpServletRequest httpRequest) {
         final Session session = new Session();
         final HttpSession httpSession = httpRequest.getSession();
@@ -70,10 +71,10 @@ public class HttpServletRequestFactory {
         } catch (RuntimeException e) {
             session.put("Error getting session", e.getMessage());
         }
-        
+
         return session;
     }
-    
+
     protected static CgiData createCgiData(HttpServletRequest httpRequest) {
         final CgiData cgiData = new CgiData();
 
@@ -92,7 +93,7 @@ public class HttpServletRequestFactory {
         cgiData.put("REMOTE_PORT", httpRequest.getRemotePort());
         cgiData.put("QUERY_STRING", httpRequest.getQueryString());
         cgiData.put("PATH_INFO", httpRequest.getPathInfo());
-        
+
         return cgiData;
     }
 
@@ -116,7 +117,7 @@ public class HttpServletRequestFactory {
 
         return builder.toString();
     }
-    
+
     /** Gets the fully formed URL for a servlet request.
      * @see <a href="http://stackoverflow.com/a/2222268/33611">Stack Overflow Answer</a>
      * @param request Servlet request to parse for URL information

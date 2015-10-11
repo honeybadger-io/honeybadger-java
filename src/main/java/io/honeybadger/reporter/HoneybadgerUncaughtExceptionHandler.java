@@ -1,5 +1,7 @@
 package io.honeybadger.reporter;
 
+import io.honeybadger.reporter.config.ConfigContext;
+import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,8 +12,18 @@ import org.slf4j.LoggerFactory;
  * @since 1.0.0
  */
 public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
-    protected NoticeReporter reporter = new HoneybadgerReporter();
+    protected ConfigContext config;
+    protected NoticeReporter reporter;
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
+    public HoneybadgerUncaughtExceptionHandler() {
+        this(new SystemSettingsConfigContext());
+    }
+
+    public HoneybadgerUncaughtExceptionHandler(ConfigContext config) {
+        this.config = config;
+        this.reporter = new HoneybadgerReporter(config);
+    }
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
@@ -46,6 +58,19 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
 
     /**
      * Use {@link HoneybadgerUncaughtExceptionHandler}
+     * as the error handler for the current thread.
+     *
+     * @param configContext configuration context for Honeybadger setup
+     */
+    public static void registerAsUncaughtExceptionHandler(
+            ConfigContext configContext) {
+        Thread.UncaughtExceptionHandler handler =
+                new HoneybadgerUncaughtExceptionHandler(configContext);
+        Thread.setDefaultUncaughtExceptionHandler(handler);
+    }
+
+    /**
+     * Use {@link HoneybadgerUncaughtExceptionHandler}
      * as the error handler for the specified thread.
      *
      * @param t thread to register handler for
@@ -54,6 +79,20 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
             java.lang.Thread t) {
         Thread.UncaughtExceptionHandler handler =
                 new HoneybadgerUncaughtExceptionHandler();
+        t.setUncaughtExceptionHandler(handler);
+    }
+
+    /**
+     * Use {@link HoneybadgerUncaughtExceptionHandler}
+     * as the error handler for the specified thread.
+     *
+     * @param configContext configuration context for Honeybadger setup
+     * @param t thread to register handler for
+     */
+    public static void registerAsUncaughtExceptionHandler(
+            ConfigContext configContext, java.lang.Thread t) {
+        Thread.UncaughtExceptionHandler handler =
+                new HoneybadgerUncaughtExceptionHandler(configContext);
         t.setUncaughtExceptionHandler(handler);
     }
 }

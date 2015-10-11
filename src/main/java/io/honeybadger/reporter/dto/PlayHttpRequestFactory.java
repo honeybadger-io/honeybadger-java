@@ -1,12 +1,10 @@
 package io.honeybadger.reporter.dto;
 
+import io.honeybadger.reporter.config.ConfigContext;
 import org.apache.http.HttpHeaders;
 import play.mvc.Http;
 
 import java.util.Iterator;
-
-import static io.honeybadger.reporter.dto.RequestParsingUtils.parseParamsFromMap;
-
 
 /**
  * Factory class that creates a {@link Request} based on a
@@ -16,10 +14,11 @@ import static io.honeybadger.reporter.dto.RequestParsingUtils.parseParamsFromMap
  * @since 1.0.9
  */
 public class PlayHttpRequestFactory {
-    public static Request create(Http.Request httpRequest) {
+    public static Request create(ConfigContext config,
+                                 Http.Request httpRequest) {
         Context context = createContext(httpRequest);
         String url = getFullURL(httpRequest);
-        Params params = createParams(httpRequest);
+        Params params = createParams(config, httpRequest);
         Session session = createSession(httpRequest);
         CgiData cgi_data = createCgiData(httpRequest);
 
@@ -42,12 +41,14 @@ public class PlayHttpRequestFactory {
         return httpRequest.uri();
     }
 
-    protected static Params createParams(Http.Request httpRequest) {
+    protected static Params createParams(ConfigContext config,
+                                         Http.Request httpRequest) {
         Http.RequestBody body = httpRequest.body();
 
-        if (body == null) return new Params();
+        if (body == null) return new Params(config.getExcludedParams());
 
-        return parseParamsFromMap(body.asFormUrlEncoded());
+        return Params.parseParamsFromMap(config.getExcludedParams(),
+                                  body.asFormUrlEncoded());
     }
 
     protected static Session createSession(Http.Request httpRequest) {
