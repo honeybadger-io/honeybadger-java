@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import io.honeybadger.reporter.config.ConfigContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +31,8 @@ public class ServerDetails implements Serializable {
     public final String time;
     public final Stats stats;
 
-    public ServerDetails() {
-        this.environment_name = environment();
+    public ServerDetails(ConfigContext context) {
+        this.environment_name = context.getEnvironment();
         this.hostname = hostname();
         this.project_root = projectRoot();
         this.pid = pid();
@@ -47,32 +48,6 @@ public class ServerDetails implements Serializable {
         this.pid = pid;
         this.time = time;
         this.stats = stats;
-    }
-
-    /**
-     * Finds the name of the environment by looking at a few common Java
-     * system properties and/or environment variables.
-     *
-     * @return the name of the environment, otherwise "development"
-     */
-    protected static String environment() {
-        String hbEnv = System.getenv("HONEYBADGER_ENV");
-        if (hbEnv != null && !hbEnv.isEmpty()) return hbEnv;
-
-        String sysPropJavaEnv = System.getProperty("JAVA_ENV");
-        if (sysPropJavaEnv != null && !sysPropJavaEnv.isEmpty()) return sysPropJavaEnv;
-
-        String javaEnv = System.getenv("JAVA_ENV");
-        if (javaEnv != null && !javaEnv.isEmpty()) return javaEnv;
-
-        String sysPropEnv = System.getProperty("ENV");
-        if (sysPropEnv != null && !sysPropEnv.isEmpty()) return sysPropEnv;
-
-        String env = System.getenv("ENV");
-        if (env != null && !env.isEmpty()) return env;
-
-        // If no system property defined, then return development
-        return "development";
     }
 
     /**

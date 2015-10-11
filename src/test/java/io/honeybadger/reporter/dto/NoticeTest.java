@@ -140,8 +140,14 @@ public class NoticeTest {
     }
 
     private static void removeUnsupportedElements(JsonNode jsonNode) {
-        JsonNode memNode = jsonNode.get("server").get("stats").get("mem");
-        Iterator<Map.Entry<String, JsonNode>> itr = memNode.fields();
+        JsonNode server = jsonNode.get("server");
+        if (server == null) return;
+        JsonNode stats = server.get("stats");
+        if (stats == null) return;
+        JsonNode mem = stats.get("mem");
+        if (mem == null) return;
+
+        Iterator<Map.Entry<String, JsonNode>> itr = mem.fields();
 
         while (itr.hasNext()) {
             Map.Entry<String, JsonNode> next = itr.next();

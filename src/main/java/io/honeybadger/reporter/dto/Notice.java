@@ -15,7 +15,7 @@ public class Notice implements Serializable {
     private final ConfigContext config;
 
     private Notifier notifier = new Notifier();
-    private ServerDetails server = new ServerDetails();
+    private ServerDetails server;
     private Details details;
     // This is defined as serializable so that it can use APIs that the
     // implementers may not have available like the Servlet API
@@ -24,6 +24,7 @@ public class Notice implements Serializable {
 
     public Notice(ConfigContext config) {
         this.config = config;
+        this.server = new ServerDetails(config);
         this.details = new Details(this.config);
         this.details.addDefaultDetails();
     }
@@ -34,6 +35,7 @@ public class Notice implements Serializable {
                 "Unable to get the expected ConfigContext from ThreadLocal");
 
         this.config = config;
+        this.server = new ServerDetails(config);
     }
 
     public Notifier getNotifier() {
