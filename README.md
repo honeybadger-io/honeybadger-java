@@ -1,4 +1,6 @@
-# honeybadger-java [![Build Status](https://travis-ci.org/honeybadger-io/honeybadger-java.svg)](https://travis-ci.org/honeybadger-io/honeybadger-java)
+# Honeybadger for Java
+ 
+[![Build Status](https://travis-ci.org/honeybadger-io/honeybadger-java.svg)](https://travis-ci.org/honeybadger-io/honeybadger-java)
 
 Java client to report exceptions to the :zap: [Honeybadger.io error notification
 service](https://www.honeybadger.io/). Receive instant notification of
@@ -30,6 +32,7 @@ public static void main(String argv[]) {
 A servlet based implementation may look like:
 
 In your web.xml file:
+
 ```xml
     <!-- Send all uncaught servlet exceptions and servlet request details to Honeybadger -->
     <filter>
@@ -162,7 +165,7 @@ ossrhUsername=user
 ossrhPassword=AFbz3BjdE4Q9g2E&
 ```
 
-## System Properties
+## Advanced Configuration
 
 The following properties are available:
 
