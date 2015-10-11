@@ -96,9 +96,14 @@ public class Memory implements Serializable {
                     memInfo.put(name, mbValue);
                 }
 
-                long freeTotal = memInfo.getOrDefault("MemFree", 0L) +
-                        memInfo.getOrDefault("Buffers", 0L) +
-                        memInfo.getOrDefault("Cached", 0L);
+                long free = memInfo.containsKey("MemFree") ?
+                        memInfo.get("MemFree") : 0L;
+                long buffers = memInfo.containsKey("Buffers") ?
+                        memInfo.get("Buffers") : 0L;
+                long cached = memInfo.containsKey("Cached") ?
+                        memInfo.get("Cached") : 0L;
+
+                long freeTotal = free + buffers + cached;
 
                 memInfo.put("FreeTotal", freeTotal);
 
