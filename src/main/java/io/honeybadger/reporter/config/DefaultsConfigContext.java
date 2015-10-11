@@ -57,6 +57,7 @@ public class DefaultsConfigContext implements ConfigContext {
         HashSet<String> set = new HashSet<>();
 
         set.add(HONEYBADGER_API_KEY);
+        set.add(READ_API_KEY_PROP_KEY);
         set.add(HONEYBADGER_EXCLUDED_PROPS_KEY);
         set.add(HONEYBADGER_URL_KEY);
 

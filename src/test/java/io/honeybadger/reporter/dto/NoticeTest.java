@@ -3,7 +3,8 @@ package io.honeybadger.reporter.dto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import com.github.fge.jsonschema.core.report.*;
+import com.github.fge.jsonschema.core.report.ProcessingMessage;
+import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.google.common.collect.ImmutableList;
@@ -115,6 +116,7 @@ public class NoticeTest {
         JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
 
         JsonNode jsonNode = mapper.readTree(jsonText);
+        removeUnsupportedElements(jsonNode);
 
         ProcessingReport report = validator.validate(schema, jsonNode);
 
@@ -134,6 +136,16 @@ public class NoticeTest {
             fail(builder.toString());
         } else {
             assertTrue("Generated JSON validated correctly", true);
+        }
+    }
+
+    private static void removeUnsupportedElements(JsonNode jsonNode) {
+        JsonNode memNode = jsonNode.get("server").get("stats").get("mem");
+        Iterator<Map.Entry<String, JsonNode>> itr = memNode.fields();
+
+        while (itr.hasNext()) {
+            Map.Entry<String, JsonNode> next = itr.next();
+            if (next.getKey().startsWith("vm_")) itr.remove();
         }
     }
 }
