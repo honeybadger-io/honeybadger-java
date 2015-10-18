@@ -37,11 +37,11 @@ public class FeedbackForm {
         return String.format("%s/%s", config.getHoneybadgerUrl(), "v1/feedback/");
     }
 
-    public void renderHtml(Object errorId, Writer writer) throws IOException {
-        renderHtml(errorId, writer, defaultLocale);
+    public void renderHtml(Object errorId, String message, Writer writer) throws IOException {
+        renderHtml(errorId, message, writer, defaultLocale);
     }
 
-    public void renderHtml(Object errorId, Writer writer, Locale locale) throws IOException {
+    public void renderHtml(Object errorId, String message, Writer writer, Locale locale) throws IOException {
         Locale selectedLocale = locale == null ? defaultLocale : locale;
         ResourceBundle messages = ResourceBundle.getBundle("i8n/feedback-form", selectedLocale);
         Map<String, String> scopes = new HashMap<>(30);
@@ -57,6 +57,11 @@ public class FeedbackForm {
         }
 
         scopes.put("error_id", errorId.toString());
+
+        if (message != null && !message.isEmpty()) {
+            scopes.put("error_msg", message);
+        }
+
         scopes.put("action", actionURI);
 
         Enumeration<String> enumeration = messages.getKeys();
