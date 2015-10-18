@@ -180,8 +180,14 @@ There are a few ways to configure the Honeybadger library. Each one of the ways 
  * [StandardConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/StandardConfigContext.java) - This reads configuration from the system parameters, environment variables and defaults and is **the default configuration provider**.
  * [PlayConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/PlayConfigContext.java) - This reads configuration from the Play Framework's internal configuration mechanism.
  * [ServletFilterConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ServletFilterConfigContext.java) - This reads configuration from a servlet filter configuration.
+ * [SystemSettingsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/SystemSettingsConfigContext.java) - This reads configuration purely from system settings.
+ * [MapConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/MapConfigContext.java) - This reads configuration from a Map that is supplied to its constructor.
 
-The following properties are available:
+### Configuring with Environment Variables (12-factor style)
+
+All configuration options can also be read from environment variables or [Java system properties](https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html).
+
+## Configuration Options
 
 ```
 
