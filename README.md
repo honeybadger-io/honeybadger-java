@@ -182,6 +182,7 @@ There are a few ways to configure the Honeybadger library. Each one of the ways 
  * [ServletFilterConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ServletFilterConfigContext.java) - This reads configuration from a servlet filter configuration.
  * [SystemSettingsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/SystemSettingsConfigContext.java) - This reads configuration purely from system settings.
  * [MapConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/MapConfigContext.java) - This reads configuration from a Map that is supplied to its constructor.
+ * [DefaultsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/DefaultsConfigContext.java) - This configuration context provides defaults that can be read by other context implementations. 
 
 ### Configuring with Environment Variables or System Properties (12-factor style)
 
@@ -213,6 +214,40 @@ Framework specific configuration contexts use of environment variables or system
 | **Name**: `honeybadger.read_api_key` or `HONEYBADGER_READ_API_KEY`<br>**Type**: String<br>**Required**: When testing<br>**Default**: N/A<br>**Sample Value**: `qjcp6c7Nv9yR-bsvGZ77` | API key used to access the Read API. |
 | **Name**: `honeybadger.url`<br>**Type**: String<br>**Required**: No<br>**Default**: `https://api.honeybadger.io`<br>**Sample Value**: `https://other.hbapi.com` | URL to the Honeybadger API endpoint. You may want to access it without TLS in order to test with a proxy utility. |
 
+## Custom Error Pages (ServletFilter)
+
+The Honeybadger library has a few parameters that it looks for whenever it renders an error page. These can be used to display extra information about 
+the error, or to ask the user for information about how they triggered the error. Most of the parameters just link to a resource file that can provide
+translations for the strings displayed to the user.
+
+| Parameter                             | Description          |
+| ------------------------------------- | -------------------- |
+| `honeybadger.feedback.error_title`    | Title of page        |
+| `honeybadger.feedback.thanks`         | Thank you message    |
+| `honeybadger.feedback.heading`        | Prompt for feedback  |
+| `honeybadger.feedback.labels.name`    | Explanation query    |
+| `honeybadger.feedback.labels.phone`   | Phone number label   |
+| `honeybadger.feedback.labels.email`   | Email label          |
+| `honeybadger.feedback.labels.comment` | Comments label       |
+| `honeybadger.feedback.submit`         | Submit button label  |
+| `honeybadger.link`                    | HB link label        |
+| `honeybadger.powered_by`              | Powered by HB text   |
+| `action`                              | Form POST URI        |
+| `error_id`                            | Honeybadger Error ID |
+| `error_msg`                           | Error message        |
+
+The default template is setup to collect user feedback and to suppress the display of the error message.
+This behavior can be changed by placing a new [mustache template](https://mustache.github.io/) in your 
+classpath and specifying its path via the `honeybadger.feedback_form_template_path` configuration option.
+
+### Collecting User Feedback (ServletFilter)
+
+When an error is sent to Honeybadger, an HTML form can be generated so users can fill out relevant 
+information that led up to that error. Feedback responses are displayed inline in the comments section 
+on the fault detail page.
+
+This behavior is enabled by default. To disable it set the configuration option 
+`honeybadger.display_feedback_form` to `false`.
 
 ## Changelog
 
@@ -223,12 +258,23 @@ See https://github.com/honeybadger-io/honeybadger-java/blob/master/changes.txt
 If you're adding a new feature, please [submit an issue](https://github.com/honeybadger-io/honeybadger-java/issues/new) 
 as a preliminary step; that way you can be (moderately) sure that your pull request will be accepted.
 
+### To contribute your code:
+
+1. Fork it.
+2. Create a topic branch `git checkout -b my_branch`
+3. Configure integration tests to use your API keys (see below).
+4. Run unit and integration tests `./gradlew check`
+5. Commit your changes `git commit -am "Boom"`
+6. Push to your branch `git push origin my_branch`
+7. Send a [pull request](https://github.com/honeybadger-java/honeybadger-java/pulls)
+
 ### Testing
 For the purpose of one off testing, you can use the CLI utility. Just execute it using
 ```./gradlew run``` and you can enter in your API key and message to be sent to
 Honeybadger.
 
-#### Unit and Integration Tests
+#### Running the tests
+
 This library by requires access to the remote Honeybadger API, so in order to
 run automated tests you will need to specify system properties to Java in order
 configure the remote API key and other settings.
@@ -248,7 +294,7 @@ With this in place you can run the tests from gradle by using the wrapped
 version of gradle that is bundled with the project by:
 
 ```
-./gradlew test
+./gradlew check
 ```
 
 If you are executing your tests from an IDE like IntelliJ, you may need to
@@ -268,8 +314,18 @@ ossrhUsername=user
 ossrhPassword=AFbz3BjdE4Q9g2E&
 ```
 
+#### Platform differences
+
+We collect performance metrics on the machine in which an error occurs. This means that we have
+to do platform specific operations. Currently, these operations are best supported on Linux systems
+and have minimal support on other platforms.
+
 ## Credits
 
 Originally forked by [Elijah Zupancic](https://github.com/dekobon) from
 [honeybadger-java](https://github.com/styleseek/honeybadger-java) - thanks to
 both of you for doing the hard work of getting this library started.
+
+### License
+
+The Honeybadger gem is MIT licensed. See the [LICENSE](https://raw.github.com/honeybadger-io/honeybadger-java/master/LICENSE) file in this repository for details.
