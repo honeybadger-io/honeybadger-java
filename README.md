@@ -194,24 +194,24 @@ Framework specific configuration contexts use of environment variables or system
 | Option Details | Description |
 |--------------- | ----------- |
 | __CORE__ ||||
-| **Name**: `ENV` or `JAVA_ENV`<br>Type: String<br>Required: No<br>**Default**: unknown<br>**Sample Value**: production  | String sent to Honeybadger indicating running environment (eg development, test, staging, production, etc). |
-| **Name**: `honeybadger.api_key` or `HONEYBADGER_API_KEY`<br>**Type**: String<br>Required: Yes<br>**Default**: N/A<br>**Sample Value**: 29facd41 | The API key found in the settings tab in the Honeybadger UI. |
-| **Name**: `honeybadger.application_package`<br>**Type**: String<br>Required: No<br>**Default**: N/A<br>**Sample Value**: my.app.package | Java application package name used to indicate to Honeybadger what stacktraces are within the calling application's code base. |
-| **Name**: `honeybadger.excluded_exception_classes`<br>**Type**: CSV<br>Required: No<br>**Default**: N/A<br>**Sample Value**: co.foo.Exception,<br>com.myorg.AnnoyingException | CSV of Java classes in which errors are never sent to Honeybadger. This is useful for errors that are bubbled up from underlying frameworks or application servers like Tomcat. If you are using Tomcat, you may want to include `org.apache.catalina.connector.ClientAbortException`. |
-| **Name**: `honeybadger.excluded_sys_props`<br>**Type**: CSV<br>Required: No<br>**Default**: honeybadger.api_key,<br>honeybadger.read_api_key,<br>honeybadger.excluded_sys_props,<br>honeybadger.url<br>**Sample Value**: bonecp.password,bonecp.username | CSV of Java system properties to exclude from being logged to Honeybadger. This is useful for excluding authentication information. Default values are automatically added. |
-| **Name**: `honeybadger.excluded_params`<br>**Type**: CSV<br>Required: No<br>**Default**: N/A<br>**Sample Value**: auth_token,<br>session_data,<br>credit_card_number | CSV of HTTP GET/POST query parameter values that will be excluded from the data sent to Honeybadger. This is useful for excluding authentication information, parameters that are too long or sensitive. |
+| **Name**: `ENV` or `JAVA_ENV`<br>**Type**: String<br>**Required**: No<br>**Default**: `unknown`<br>**Sample Value**: `production`  | String sent to Honeybadger indicating running environment (eg development, test, staging, production, etc). |
+| **Name**: `honeybadger.api_key` or `HONEYBADGER_API_KEY`<br>**Type**: String<br>**Required**: Yes<br>**Default**: N/A<br>**Sample Value**: `29facd41` | The API key found in the settings tab in the Honeybadger UI. |
+| **Name**: `honeybadger.application_package`<br>**Type**: String<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `my.app.package` | Java application package name used to indicate to Honeybadger what stacktraces are within the calling application's code base. |
+| **Name**: `honeybadger.excluded_exception_classes`<br>**Type**: CSV<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `co.foo.Exception`,<br>`com.myorg.AnnoyingException` | CSV of Java classes in which errors are never sent to Honeybadger. This is useful for errors that are bubbled up from underlying frameworks or application servers like Tomcat. If you are using Tomcat, you may want to include `org.apache.catalina.connector.ClientAbortException`. |
+| **Name**: `honeybadger.excluded_sys_props`<br>**Type**: CSV<br>**Required**: No<br>**Default**: `honeybadger.api_key`,<br>`honeybadger.read_api_key`,<br>`honeybadger.excluded_sys_props`,<br>`honeybadger.url`<br>**Sample Value**: `bonecp.password`,`bonecp.username` | CSV of Java system properties to exclude from being logged to Honeybadger. This is useful for excluding authentication information. Default values are automatically added. |
+| **Name**: `honeybadger.excluded_params`<br>**Type**: CSV<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `auth_token`,<br>`session_data`,<br>`credit_card_number` | CSV of HTTP GET/POST query parameter values that will be excluded from the data sent to Honeybadger. This is useful for excluding authentication information, parameters that are too long or sensitive. |
 | &nbsp;||||
 | __FEEDBACK_FORM__||||
-| **Name**: `honeybadger.display_feedback_form`<br>**Type**: Boolean<br>Required: No<br>**Default**: true<br>**Sample Value**: false | Displays the feedback form or JSON output when an error is thrown via a servlet call. |
-| **Name**: `honeybadger.feedback_form_template_path`<br>**Type**: String<br>Required: No<br>**Default**: templates/feedback-form.mustache<br>**Sample Value**: templates/my-company.mustache | Path within the class path to the mustache template that is displayed when an error occurs in a servlet request. |
+| **Name**: `honeybadger.display_feedback_form`<br>**Type**: Boolean<br>**Required**: No<br>**Default**: `true`<br>**Sample Value**: `false` | Displays the feedback form or JSON output when an error is thrown via a servlet call. |
+| **Name**: `honeybadger.feedback_form_template_path`<br>**Type**: String<br>**Required**: No<br>**Default**: `templates/feedback-form.mustache`<br>**Sample Value**: `templates/my-company.mustache` | Path within the class path to the mustache template that is displayed when an error occurs in a servlet request. |
 | &nbsp;||||
 | __NETWORK__||||
-| **Name**: `http.proxyHost`<br>**Type**: String<br>Required: No<br>**Default**: N/A<br>**Sample Value**: localhost | Standard Java system property for specifying the host to proxy all HTTP traffic through. |
-| **Name**: `http.proxyPort`<br>**Type**: Integer<br>Required: No<br>**Default**: N/A<br>**Sample Value**: 8888 | Standard Java system property for specifying the port to proxy all HTTP traffic through. |
+| **Name**: `http.proxyHost`<br>**Type**: String<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `localhost` | Standard Java system property for specifying the host to proxy all HTTP traffic through. |
+| **Name**: `http.proxyPort`<br>**Type**: Integer<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `8888` | Standard Java system property for specifying the port to proxy all HTTP traffic through. |
 | &nbsp;||||
 | __DEVELOPMENT__||||
-| **Name**: `honeybadger.read_api_key` or `HONEYBADGER_READ_API_KEY`<br>**Type**: String<br>Required: When testing<br>**Default**: N/A<br>**Sample Value**: qjcp6c7Nv9yR-bsvGZ77 | API key used to access the Read API. |
-| **Name**: `honeybadger.url`<br>**Type**: String<br>Required: No<br>**Default**: https://api.honeybadger.io<br>**Sample Value**: https://other.hbapi.com | URL to the Honeybadger API endpoint. You may want to access it without SSL in order to test with a proxy utility. |
+| **Name**: `honeybadger.read_api_key` or `HONEYBADGER_READ_API_KEY`<br>**Type**: String<br>**Required**: When testing<br>**Default**: N/A<br>**Sample Value**: `qjcp6c7Nv9yR-bsvGZ77` | API key used to access the Read API. |
+| **Name**: `honeybadger.url`<br>**Type**: String<br>**Required**: No<br>**Default**: `https://api.honeybadger.io`<br>**Sample Value**: `https://other.hbapi.com` | URL to the Honeybadger API endpoint. You may want to access it without TLS in order to test with a proxy utility. |
 
 
 ## Changelog
