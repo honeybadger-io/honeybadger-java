@@ -36,4 +36,5 @@
        - Added preliminary server statistics support.
        - Fixed pom.xml generation problems in gradle.
        - Upgraded gradle wrapper to use gradle 2.7.
-
+       - Rewrote README.md to conform to the same standards as the other Honeybadger.io
+         documentation.

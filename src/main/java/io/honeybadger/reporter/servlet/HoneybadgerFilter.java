@@ -74,7 +74,8 @@ public class HoneybadgerFilter implements Filter {
 
             Object errorId = result == null ? null : result.getId();
 
-            feedbackForm.renderHtml(errorId, response.getWriter(),
+            feedbackForm.renderHtml(errorId, e.getMessage(),
+                    response.getWriter(),
                     request.getLocale());
         }
     }

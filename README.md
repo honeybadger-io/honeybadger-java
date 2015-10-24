@@ -2,33 +2,96 @@
  
 [![Build Status](https://travis-ci.org/honeybadger-io/honeybadger-java.svg)](https://travis-ci.org/honeybadger-io/honeybadger-java)
 
-Java client to report exceptions to the :zap: [Honeybadger.io error notification
-service](https://www.honeybadger.io/). Receive instant notification of
-exceptions and errors in your Java applications.
+This is the notifier JVM library for integrating applications with the :zap: [Honeybadger.io error notification
+service](https://www.honeybadger.io/).
+When an uncaught exception occurs, Honeybadger will POST the relevant data to the Honeybadger server specified in your environment.
 
-## Description
-This is a library for sending errors that implement ```java.lang.Throwable``` on the JVM to the online error reporting service <a href="https://www.honeybadger.io/">Honeybadger</a>.
+## Supported JVM versions
 
-## Download / Maven Repository
-You can find the library on <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.honeybadger%22">Maven Central</a> or you can always clone this github repository.
+| JVM               | Supported Version |
+| ----------------- | ----------------- |
+| Oracle (Java SE)  | 1.7, 1.8          |
+| OpenJDK JDK/JRE   | 1.7, 1.8          |
 
-## Stand-alone Usage
+## Supported web frameworks
+
+| Framework      | Version |
+| -------------- | ------- |
+| Servlet API    | 3.1.0   |
+| Play Framework | 2.4.2   |      
+
+The Play Framework is supported natively (install/configure the library and your done). For the Servlet API, you 
+will need to configure a [servlet filter](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/servlet/HoneybadgerFilter.java) and enable it in your application. As for manual invocation of the API, you will need to configure your application to directly call the [reporter class](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/HoneybadgerReporter.java). You can find more information about this in the stand-alone usage section.
+
+## Getting Started
+
+Honeybadger works out of the box with many popular Java frameworks. Installation is just a matter of including the 
+jar library and setting your API key. In this section, we'll cover the basics. More advanced installations are 
+covered later. 
+
+### 1. Install the jar
+
+The first step is to add the honeybadger jar to your dependency manager (Maven, SBT, Gradle, Ivy, etc). 
+In the case of Maven, you would add it as so:
+
+```xml
+<dependency>
+    <groupId>io.honeybadger</groupId>
+    <artifactId>honeybadger-java</artifactId>
+    <!-- Set the specific version below in order to ensure API compatibility in future versions -->
+    <version>LATEST</version>
+</dependency>
+```
+
+In the case of SBT:
+
+```
+libraryDependencies += "io.honeybadger" % "honeybadger-java" % "<<VERSION NUMBER>>"
+```
+
+For other dependency managers an example is provided on the [Maven Central site](http://search.maven.org/#artifactdetails%7Cio.honeybadger%7Choneybadger-java%7C1.0.10%7Cjar).
+
+If you are not using a dependency manager, [download the jar directly](http://search.maven.org/remotecontent?filepath=io/honeybadger/honeybadger-java/1.0.10/honeybadger-java-1.0.10.jar) and add it to your classpath.
+
+### 2. Install a slf4j compatible logging library or binding in your project
+
+All dependencies needed for running are included in the distributed JAR with one
+exception - slf4j-api. We expect that you are using some logging library and that
+you have imported the sl4j-api in order to provide a common interface for the 
+logger to imported libraries.
+
+Almost every logging library provides a means for it to be compatible with the slf4j API. 
+These are two good candidates if you aren't sure about which one to choose:
+
+ * [Logback](http://logback.qos.ch/)
+ * [log4j2](http://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html)
+
+### 3. Set your API key and configuration parameters
+
+Next, you'll set the API key and some configuration parameters for this project.
+
+#### Stand-alone Usage
+
 If you want to send all unhandled errors to Honeybadger and have them logged to slf4j via 
-the error log level, you will need to set some system properties and add a single line 
-to the thread in which you want to register the error handler.
+the error log level, you will need to set the correct system properties (or provide a [ConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ConfigContext.java)) and add a single line to the thread in which you want to register the error handler.
 
 A typical stand-alone implementation may look like:
 
 ```java
 import io.honeybadger.reporter.HoneybadgerUncaughtExceptionHandler;
 
-public static void main(String argv[]) {
-    HoneybadgerUncaughtExceptionHandler.registerAsUncaughtExceptionHandler();
-    // The rest of the application goes here
+public class MyApp {
+ public static void main(String argv[]) {
+     HoneybadgerUncaughtExceptionHandler.registerAsUncaughtExceptionHandler();
+     // The rest of the application goes here
+ }
 }
 ```
 
-## Servlet Usage
+You would invoke it with the ```-Dhoneybadger.api_key=<my_api_key>``` system parameter and any other configuration values via system parameters it would load with the correct state. It would then register itself as the default error handler.
+
+#### Servlet Usage
+
 A servlet based implementation may look like:
 
 In your web.xml file:
@@ -63,15 +126,12 @@ In your web.xml file:
     </filter-mapping>
 ```
 
-## Play Framework Usage
+**Note: If you have other code executing in your servlet-based application that doesn't go through the servlet interface, you will want to register an exception handler for it in order to report errors to Honeybadger. See the *Stand-alone Usage* section.**
+
+#### Play Framework Usage
+
 This library has been tested against Play 2.4.2. You can add Honeybadger as an error
-handler by adding the library to your SBT build file:
- 
-```
-libraryDependencies += "io.honeybadger" % "honeybadger-java" % "<<VERSION NUMBER>>"
-```
- 
-And then by adding the following lines to your conf/application.conf file:
+handler by adding the following lines to your conf/application.conf file:
 
 ```
 honeybadger.api_key = <<API KEY>>
@@ -84,6 +144,7 @@ This will allow the library to wrap the default error handler implementation and
 pass around Honeybadger error ids instead of the default Play error ids.
 
 ## API Only Usage
+
 If you want to send exceptions to HoneyBadger without having to register an uncaught 
 exception handler, you can create an instance of ```HonebadgerReporter``` and call 
 the ```reportError(Throwable error)``` method directly.
@@ -112,20 +173,108 @@ public class ApiUsage {
 }
 ```
 
-## Runtime Dependencies
-All dependencies needed for running are included in the distributed JAR with one
-exception - slf4j-api. We expect that you are using some logging library and that
-you have imported the sl4j-api in order to provide a common interface for the 
-logger to imported libraries. If you are using Maven, Gralde or Ivy, this should
-happen automatically for you. If you are using Ant, you will need to import
-the slf4j-api jar and an sl4j implementation.
+## Advanced Configuration
 
-## Testing
+There are a few ways to configure the Honeybadger library. Each one of the ways is implemented as a [ConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ConfigContext.java) that can be passed in the constructor of the [HoneybadgerReporter](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/HoneybadgerReporter.java) class. The implementations available are:
+
+ * [StandardConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/StandardConfigContext.java) - This reads configuration from the system parameters, environment variables and defaults and is **the default configuration provider**.
+ * [PlayConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/PlayConfigContext.java) - This reads configuration from the Play Framework's internal configuration mechanism.
+ * [ServletFilterConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ServletFilterConfigContext.java) - This reads configuration from a servlet filter configuration.
+ * [SystemSettingsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/SystemSettingsConfigContext.java) - This reads configuration purely from system settings.
+ * [MapConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/MapConfigContext.java) - This reads configuration from a Map that is supplied to its constructor.
+ * [DefaultsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/DefaultsConfigContext.java) - This configuration context provides defaults that can be read by other context implementations. 
+
+### Configuring with Environment Variables or System Properties (12-factor style)
+
+All configuration options can also be read from environment variables or [Java system properties](https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html)
+when using the default [StandardConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/StandardConfigContext.java).
+Framework specific configuration contexts use of environment variables or system properties depends on the framework's implementation.
+
+## Configuration Options
+
+| Option Details | Description |
+|--------------- | ----------- |
+| __CORE__ ||||
+| **Name**: `ENV` or `JAVA_ENV`<br>**Type**: String<br>**Required**: No<br>**Default**: `unknown`<br>**Sample Value**: `production`  | String sent to Honeybadger indicating running environment (eg development, test, staging, production, etc). |
+| **Name**: `honeybadger.api_key` or `HONEYBADGER_API_KEY`<br>**Type**: String<br>**Required**: Yes<br>**Default**: N/A<br>**Sample Value**: `29facd41` | The API key found in the settings tab in the Honeybadger UI. |
+| **Name**: `honeybadger.application_package`<br>**Type**: String<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `my.app.package` | Java application package name used to indicate to Honeybadger what stacktraces are within the calling application's code base. |
+| **Name**: `honeybadger.excluded_exception_classes`<br>**Type**: CSV<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `co.foo.Exception`,<br>`com.myorg.AnnoyingException` | CSV of Java classes in which errors are never sent to Honeybadger. This is useful for errors that are bubbled up from underlying frameworks or application servers like Tomcat. If you are using Tomcat, you may want to include `org.apache.catalina.connector.ClientAbortException`. |
+| **Name**: `honeybadger.excluded_sys_props`<br>**Type**: CSV<br>**Required**: No<br>**Default**: `honeybadger.api_key`,<br>`honeybadger.read_api_key`,<br>`honeybadger.excluded_sys_props`,<br>`honeybadger.url`<br>**Sample Value**: `bonecp.password`,`bonecp.username` | CSV of Java system properties to exclude from being logged to Honeybadger. This is useful for excluding authentication information. Default values are automatically added. |
+| **Name**: `honeybadger.excluded_params`<br>**Type**: CSV<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `auth_token`,<br>`session_data`,<br>`credit_card_number` | CSV of HTTP GET/POST query parameter values that will be excluded from the data sent to Honeybadger. This is useful for excluding authentication information, parameters that are too long or sensitive. |
+| &nbsp;||||
+| __FEEDBACK_FORM__||||
+| **Name**: `honeybadger.display_feedback_form`<br>**Type**: Boolean<br>**Required**: No<br>**Default**: `true`<br>**Sample Value**: `false` | Displays the feedback form or JSON output when an error is thrown via a servlet call. |
+| **Name**: `honeybadger.feedback_form_template_path`<br>**Type**: String<br>**Required**: No<br>**Default**: `templates/feedback-form.mustache`<br>**Sample Value**: `templates/my-company.mustache` | Path within the class path to the mustache template that is displayed when an error occurs in a servlet request. |
+| &nbsp;||||
+| __NETWORK__||||
+| **Name**: `http.proxyHost`<br>**Type**: String<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `localhost` | Standard Java system property for specifying the host to proxy all HTTP traffic through. |
+| **Name**: `http.proxyPort`<br>**Type**: Integer<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `8888` | Standard Java system property for specifying the port to proxy all HTTP traffic through. |
+| &nbsp;||||
+| __DEVELOPMENT__||||
+| **Name**: `honeybadger.read_api_key` or `HONEYBADGER_READ_API_KEY`<br>**Type**: String<br>**Required**: When testing<br>**Default**: N/A<br>**Sample Value**: `qjcp6c7Nv9yR-bsvGZ77` | API key used to access the Read API. |
+| **Name**: `honeybadger.url`<br>**Type**: String<br>**Required**: No<br>**Default**: `https://api.honeybadger.io`<br>**Sample Value**: `https://other.hbapi.com` | URL to the Honeybadger API endpoint. You may want to access it without TLS in order to test with a proxy utility. |
+
+## Custom Error Pages (ServletFilter)
+
+The Honeybadger library has a few parameters that it looks for whenever it renders an error page. These can be used to display extra information about 
+the error, or to ask the user for information about how they triggered the error. Most of the parameters just link to a resource file that can provide
+translations for the strings displayed to the user.
+
+| Parameter                             | Description          |
+| ------------------------------------- | -------------------- |
+| `honeybadger.feedback.error_title`    | Title of page        |
+| `honeybadger.feedback.thanks`         | Thank you message    |
+| `honeybadger.feedback.heading`        | Prompt for feedback  |
+| `honeybadger.feedback.labels.name`    | Explanation query    |
+| `honeybadger.feedback.labels.phone`   | Phone number label   |
+| `honeybadger.feedback.labels.email`   | Email label          |
+| `honeybadger.feedback.labels.comment` | Comments label       |
+| `honeybadger.feedback.submit`         | Submit button label  |
+| `honeybadger.link`                    | HB link label        |
+| `honeybadger.powered_by`              | Powered by HB text   |
+| `action`                              | Form POST URI        |
+| `error_id`                            | Honeybadger Error ID |
+| `error_msg`                           | Error message        |
+
+The default template is setup to collect user feedback and to suppress the display of the error message.
+This behavior can be changed by placing a new [mustache template](https://mustache.github.io/) in your 
+classpath and specifying its path via the `honeybadger.feedback_form_template_path` configuration option.
+
+### Collecting User Feedback (ServletFilter)
+
+When an error is sent to Honeybadger, an HTML form can be generated so users can fill out relevant 
+information that led up to that error. Feedback responses are displayed inline in the comments section 
+on the fault detail page.
+
+This behavior is enabled by default. To disable it set the configuration option 
+`honeybadger.display_feedback_form` to `false`.
+
+## Changelog
+
+See https://github.com/honeybadger-io/honeybadger-java/blob/master/changes.txt
+
+## Contributing
+
+If you're adding a new feature, please [submit an issue](https://github.com/honeybadger-io/honeybadger-java/issues/new) 
+as a preliminary step; that way you can be (moderately) sure that your pull request will be accepted.
+
+### To contribute your code:
+
+1. Fork it.
+2. Create a topic branch `git checkout -b my_branch`
+3. Configure integration tests to use your API keys (see below).
+4. Run unit and integration tests `./gradlew check`
+5. Commit your changes `git commit -am "Boom"`
+6. Push to your branch `git push origin my_branch`
+7. Send a [pull request](https://github.com/honeybadger-java/honeybadger-java/pulls)
+
+### Testing
 For the purpose of one off testing, you can use the CLI utility. Just execute it using
 ```./gradlew run``` and you can enter in your API key and message to be sent to
 Honeybadger.
 
-### Unit and Integration Tests
+#### Running the tests
+
 This library by requires access to the remote Honeybadger API, so in order to
 run automated tests you will need to specify system properties to Java in order
 configure the remote API key and other settings.
@@ -145,7 +294,7 @@ With this in place you can run the tests from gradle by using the wrapped
 version of gradle that is bundled with the project by:
 
 ```
-./gradlew test
+./gradlew check
 ```
 
 If you are executing your tests from an IDE like IntelliJ, you may need to
@@ -165,124 +314,18 @@ ossrhUsername=user
 ossrhPassword=AFbz3BjdE4Q9g2E&
 ```
 
-## Advanced Configuration
+#### Platform differences
 
-The following properties are available:
-
-```
-
-ENV
--------------
-Sample Value: production
-Required?: No
-Default Value: development
-Description: Any string value. String sent to Honeybadger indicating running 
-             environment (eg development, test, staging, production, etc). This 
-             property can also be read from an environment variable. 
-
-JAVA_ENV
--------------
-Sample Value: production
-Required?: No
-Default Value: development
-Description: Any string value. String sent to Honeybadger indicating running 
-             environment (eg development, test, staging, production, etc). This 
-             property can also be read from an environment variable. This is the
-             same as ENV, it is only here to provide compability with systems
-             that use it to indicate running environment.
-
-honeybadger.api_key or HONEYBADGER_API_KEY
--------------
-Sample Value: 29facd41
-Required?: Yes
-Default Value: N/A 
-Description: The API key found in the settings tab in the Honeybadger UI.
-
-honeybadger.url
--------------
-Sample Value: https://alternative.host
-Required?: No
-Default Value: https://api.honeybadger.io
-Description: URL to the Honeybadger API endpoint. You may want to access it 
-             without SSL in order to test with a proxy utility.
-
-honeybadger.application_package
--------------
-Sample Value: com.tech.digital.donkey
-Required?: No
-Default Value: N/A
-Description: Java application package name used to indicate to Honeybadger what
-             stacktraces are within the calling application's code bade.
-
-http.proxyHost
--------------
-Sample Value: localhost
-Required?: No
-Default Value: N/A
-Description: Standard Java system property for specifying the host to proxy all 
-             HTTP traffic through.
-
-http.proxyPort
--------------
-Sample Value: 8888
-Required?: No
-Default Value: N/A 
-Description: Standard Java system property for specifying the port to proxy all 
-             HTTP traffic through.
-
-honeybadger.excluded_exception_classes
--------------
-Sample Value: org.apache.catalina.connector.ClientAbortException,com.myorg.AnnoyingException
-Required?: No
-Default Value: N/A
-Description: CSV of Java classes in which errors are never sent to Honeybadger. 
-             This is useful for errors that are bubbled up from underlying 
-             frameworks or application servers like Tomcat.
-
-honeybadger.excluded_sys_props
--------------
-Sample Value: bonecp.password,bonecp.username
-Required?: No
-Default Value: honeybadger.api_key,honeybadger.excluded_sys_props,honeybadger.url
-Description: CSV of Java system properties to exclude from being logged to 
-             Honeybadger. This is useful for excluding authentication information.
-             
-honeybadger.excluded_params
--------------
-Sample Value: auth_token,session_data,credit_card_number
-Required?: No
-Default Value: N/A
-Description: CSV of HTTP GET/POST query parameter values that will be excluded 
-             from the data sent to Honeybadger. This is useful for excluding
-             authentication information, parameters that are too long or 
-             sensitive.
-             
-honeybadger.read_api_key or HONEYBADGER_READ_API_KEY
--------------
-Sample Value: qjcp6c7Nv9yR-bsvGZ77
-Required?: Only when running integration tests
-Default Value: N/A
-Description: API key used to access the Read API
-
-honeybadger.display_feedback_form
--------------
-Sample Value: false
-Required?: No
-Default Value: true
-Description: Displays the feedback form or JSON output when an error is thrown
-             via a servlet call.
-             
-honeybadger.feedback_form_template_path
--------------
-Sample Value: templates/my-company.mustache
-Required?: No
-Default Value: templates/feedback-form.mustache
-Description: Path within the class path to the mustache template that is displayed
-             when an error occurs in a servlet request.
-```
+We collect performance metrics on the machine in which an error occurs. This means that we have
+to do platform specific operations. Currently, these operations are best supported on Linux systems
+and have minimal support on other platforms.
 
 ## Credits
 
 Originally forked by [Elijah Zupancic](https://github.com/dekobon) from
 [honeybadger-java](https://github.com/styleseek/honeybadger-java) - thanks to
 both of you for doing the hard work of getting this library started.
+
+### License
+
+The Honeybadger gem is MIT licensed. See the [LICENSE](https://raw.github.com/honeybadger-io/honeybadger-java/master/LICENSE) file in this repository for details.

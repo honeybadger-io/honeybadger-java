@@ -80,7 +80,7 @@ public class Memory implements Serializable {
     static Map<String, Long> findLinuxMemInfo(File memInfoFile) {
         HashMap<String, Long> memInfo = new HashMap<>(50);
 
-        final long mebibyteMultipler = 1024L;
+        final long mebibyteMultiplier = 1024L;
 
         if (memInfoFile.exists() && memInfoFile.isFile() && memInfoFile.canRead()) {
             try (Scanner scanner = new Scanner(memInfoFile)) {
@@ -89,16 +89,21 @@ public class Memory implements Serializable {
                     String[] fields = line.split("(:?)\\s+", 3);
                     String name = fields[0];
                     String kbValue = fields[1];
-                    Long mbValue = Long.parseLong(kbValue) / mebibyteMultipler;
+                    Long mbValue = Long.parseLong(kbValue) / mebibyteMultiplier;
 
                     if (!isPresent(name) || !isPresent(kbValue)) continue;
 
                     memInfo.put(name, mbValue);
                 }
 
-                long freeTotal = memInfo.getOrDefault("MemFree", 0L) +
-                        memInfo.getOrDefault("Buffers", 0L) +
-                        memInfo.getOrDefault("Cached", 0L);
+                long free = memInfo.containsKey("MemFree") ?
+                        memInfo.get("MemFree") : 0L;
+                long buffers = memInfo.containsKey("Buffers") ?
+                        memInfo.get("Buffers") : 0L;
+                long cached = memInfo.containsKey("Cached") ?
+                        memInfo.get("Cached") : 0L;
+
+                long freeTotal = free + buffers + cached;
 
                 memInfo.put("FreeTotal", freeTotal);
 

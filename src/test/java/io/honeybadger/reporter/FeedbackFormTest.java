@@ -18,7 +18,7 @@ public class FeedbackFormTest {
         config.setFeedbackFormPath("templates/feedback-form.mustache");
         FeedbackForm instance = new FeedbackForm(config);
 
-        instance.renderHtml(id, writer);
+        instance.renderHtml(id, "Error message", writer);
 
         assertNotNull("Template renderHtml should return *something*", writer.toString());
         assertFalse("Template renderHtml shouldn't be empty string", writer.toString().trim().isEmpty());

@@ -50,7 +50,7 @@ public class HoneybadgerNoticeLoader {
 
         logger.debug("Querying for error details: {}", baseURI);
 
-        Response response = null;
+        Response response;
         HttpResponse httpResponse = null;
 
         // We loop here because the API returns 404 when the notice still
