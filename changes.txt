@@ -38,3 +38,4 @@
        - Upgraded gradle wrapper to use gradle 2.7.
        - Rewrote README.md to conform to the same standards as the other Honeybadger.io
          documentation.
+       - Added Spring Framework support.

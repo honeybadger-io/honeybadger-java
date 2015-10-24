@@ -75,6 +75,20 @@ public class MapConfigContext implements ConfigContext {
     public static final String HTTP_PROXY_PORT_KEY =
             "http.proxyPort";
 
+    // I know manually adding them all sucks, but it is the simplest operation
+    // for a shared library. We could do all sorts of complicated reflection
+    // or annotation processing, but they are error-prone.
+    /** List of all properties that we read from configuration. */
+    public static final String[] ALL_PROPERTIES = {
+            ENVIRONMENT_KEY, JAVA_ENVIRONMENT_KEY, HONEYBADGER_URL_KEY,
+            HONEYBADGER_API_KEY, HONEYBADGER_API_KEY_ENV,
+            HONEYBADGER_EXCLUDED_PROPS_KEY, HONEYBADGER_EXCLUDED_PARAMS_KEY,
+            HONEYBADGER_EXCLUDED_CLASSES_KEY, APPLICATION_PACKAGE_PROP_KEY,
+            READ_API_KEY_PROP_KEY, READ_API_KEY_ENV, DISPLAY_FEEDBACK_FORM_KEY,
+            FEEDBACK_FORM_TEMPLATE_PATH_KEY, HTTP_PROXY_HOST_KEY,
+            HTTP_PROXY_PORT_KEY
+    };
+
     private final Map<?, ?> backingMap;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

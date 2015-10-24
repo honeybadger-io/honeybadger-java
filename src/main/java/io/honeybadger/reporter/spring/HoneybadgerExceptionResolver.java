@@ -4,22 +4,19 @@ import io.honeybadger.reporter.FeedbackForm;
 import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.NoticeReportResult;
 import io.honeybadger.reporter.NoticeReporter;
+import io.honeybadger.reporter.config.SpringConfigContext;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
@@ -32,7 +29,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 
-import static io.honeybadger.reporter.NoticeReporter.*;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 /**
@@ -40,7 +36,7 @@ import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
  * feedback form to render to users errors by default.
  *
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
- * @since 1.0.9
+ * @since 1.0.11
  */
 @EnableWebMvc
 @Component
@@ -48,58 +44,22 @@ import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 public class HoneybadgerExceptionResolver
         extends SimpleMappingExceptionResolver
         implements Ordered {
-    protected final Environment environment;
+    protected final SpringConfigContext context;
     protected final NoticeReporter reporter;
     protected final FeedbackForm feedbackForm;
 
     @Autowired
-    public HoneybadgerExceptionResolver(Environment environment) {
-        this.environment = environment;
-        this.reporter = new HoneybadgerReporter();
-        this.feedbackForm = new FeedbackForm(feedbackFormTemplatePath());
+    public HoneybadgerExceptionResolver(SpringConfigContext context) {
+        this.context = context;
+        this.reporter = new HoneybadgerReporter(context);
+        this.feedbackForm = new FeedbackForm(context);
 
-        if (displayFeedbackForm()) {
+        if (context.isFeedbackFormDisplayed()) {
             setDefaultErrorView(null);
             setDefaultStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 
-    protected String feedbackFormTemplatePath() {
-        if (environment != null) {
-            String templatePathSpring = environment.getProperty(FEEDBACK_FORM_TEMPLATE_PATH_KEY);
-
-            if (templatePathSpring != null && !templatePathSpring.isEmpty()) {
-                return templatePathSpring;
-            }
-        }
-
-        String templatePath = System.getProperty(FEEDBACK_FORM_TEMPLATE_PATH_KEY);
-
-        if (templatePath == null || templatePath.isEmpty()) return DEFAULT_FEEDBACK_FORM_TEMPLATE_PATH;
-
-        return templatePath;
-    }
-
-    protected boolean displayFeedbackForm() {
-        if (environment != null) {
-            String enabledSpringProp = environment.getProperty(DISPLAY_FEEDBACK_FORM_KEY);
-
-            if (enabledSpringProp != null && !enabledSpringProp.isEmpty() &&
-                    enabledSpringProp.equalsIgnoreCase("false") && enabledSpringProp.equalsIgnoreCase("off")) {
-                return false;
-            }
-        }
-
-        String enabledSysProp = System.getProperty(DISPLAY_FEEDBACK_FORM_KEY);
-
-        if (enabledSysProp == null || enabledSysProp.isEmpty()) return true;
-
-        if (enabledSysProp.equalsIgnoreCase("false") || enabledSysProp.equalsIgnoreCase("off")) {
-            return false;
-        }
-
-        return true;
-    }
 
     protected boolean acceptsOnlyJson(HttpServletRequest request) {
         Enumeration<String> enumeration = request.getHeaders("Accept");
@@ -122,6 +82,11 @@ public class HoneybadgerExceptionResolver
         response.getWriter().append(json);
     }
 
+    protected String jsonErrorString(UUID errorId)
+            throws IOException {
+        return String.format("{ error_id : \"%s\" }", errorId);
+    }
+
     @Override
     protected ModelAndView doResolveException(HttpServletRequest request,
                                               HttpServletResponse response,
@@ -136,7 +101,7 @@ public class HoneybadgerExceptionResolver
 
         NoticeReportResult result = reporter.reportError(exception, request);
 
-        if (!displayFeedbackForm()) {
+        if (!context.isFeedbackFormDisplayed()) {
             return null;
         }
 
@@ -160,8 +125,8 @@ public class HoneybadgerExceptionResolver
         Object errorId = result == null ? null : result.getId();
 
         try {
-            feedbackForm.renderHtml(errorId, response.getWriter(),
-                    request.getLocale());
+            feedbackForm.renderHtml(errorId, exception.getMessage(),
+                    response.getWriter(), request.getLocale());
         } catch (IOException e) {
             // do nothing - we couldn't write to the client
         }
@@ -183,34 +148,35 @@ public class HoneybadgerExceptionResolver
      * @return Content displayed to the user representing the failure
      * @throws Throwable when the feedback form is disabled, we rethrow the exception
      */
-//    @ExceptionHandler(Throwable.class)
-//    public ResponseEntity<String> handleError(HttpServletRequest request,
-//            Throwable exception) throws Throwable {
-//
-//        // Rethrow annotated exceptions or they will be processed here instead OR
-//        // throw if we have feedback form disabled
-//        if (AnnotationUtils.findAnnotation(exception.getClass(), ResponseStatus.class) != null) {
-//            throw exception;
-//        }
-//
-//        NoticeReportResult result = reporter.reportError(exception, request);
-//
-//        if (!displayFeedbackForm()) {
-//            throw exception;
-//        }
-//
-//        if (acceptsOnlyJson(request)) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .body(jsonError(result.getId()));
-//        }
-//
-//        Writer writer = new StringWriter();
-//        Locale locale = request.getLocale();
-//        feedbackForm.renderHtml(result.getId(), writer, locale);
-//
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .contentType(MediaType.TEXT_HTML)
-//                .body(writer.toString());
-//    }
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<String> handleError(HttpServletRequest request,
+            Throwable exception) throws Throwable {
+
+        // Rethrow annotated exceptions or they will be processed here instead OR
+        // throw if we have feedback form disabled
+        if (AnnotationUtils.findAnnotation(exception.getClass(), ResponseStatus.class) != null) {
+            throw exception;
+        }
+
+        NoticeReportResult result = reporter.reportError(exception, request);
+
+        if (!context.isFeedbackFormDisplayed()) {
+            throw exception;
+        }
+
+        if (acceptsOnlyJson(request)) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(jsonErrorString(result.getId()));
+        }
+
+        Writer writer = new StringWriter();
+        Locale locale = request.getLocale();
+        feedbackForm.renderHtml(result.getId(), exception.getMessage(),
+                writer, locale);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.TEXT_HTML)
+                .body(writer.toString());
+    }
 }
