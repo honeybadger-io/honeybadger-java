@@ -29,7 +29,7 @@ ext {
     slf4jVersion = '1.7.12'
     servletApiVersion = '3.1.0'
     playVersion = '2.4.2'
-    springVersion = '4.1.7.RELEASE'
+    springVersion = '4.2.2.RELEASE'
 }
 
 task wrapper(type: Wrapper) {
