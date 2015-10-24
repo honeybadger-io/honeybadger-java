@@ -94,7 +94,7 @@ public class HoneybadgerReporter implements NoticeReporter {
             logger.debug("Reporting using a request DTO");
             requestDetails = (io.honeybadger.reporter.dto.Request)request;
 
-        // SERVLET REQUEST
+        // SERVLET REQUEST - ALSO USED BY SPRING
         } else if (supportsHttpServletRequest() && request instanceof javax.servlet.http.HttpServletRequest)  {
             logger.debug("Reporting from a servlet context");
             requestDetails =  HttpServletRequestFactory.create(config,
@@ -105,7 +105,6 @@ public class HoneybadgerReporter implements NoticeReporter {
             logger.debug("Reporting from the Play Framework");
             requestDetails = PlayHttpRequestFactory.create(config,
                     (play.mvc.Http.Request)request);
-
         } else {
             logger.debug("No request object available");
             requestDetails = null;
