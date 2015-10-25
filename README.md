@@ -167,9 +167,17 @@ application configuration, you would need to add your Honeybadger configuration
 parameters as follows:
 
 ```
+ENV = production
 honeybadger.api_key = <<API KEY>>
 honeybadger.excluded_exception_classes = com.myorg.AnnoyingException
 ```
+
+*Note*: Spring doesn't support the concept of a single environment name. Rather,
+it supports [a pattern of using multiple profiles](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html) 
+to determine the runtime configuration. This pattern doesn't map nicely to
+Honeybadger's configuration, so you will need to define `ENV` or `JAVA_ENV`
+within your configuration in order for it to map properly to Honeybadger's
+way of doing things.
 
 ## API Only Usage
 
