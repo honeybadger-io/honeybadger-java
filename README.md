@@ -15,13 +15,17 @@ When an uncaught exception occurs, Honeybadger will POST the relevant data to th
 
 ## Supported web frameworks
 
-| Framework      | Version |
-| -------------- | ------- |
-| Servlet API    | 3.1.0   |
-| Play Framework | 2.4.2   |      
+| Framework         | Version |
+| ----------------- | ------- |
+| Servlet API       | 3.1.0   |
+| Play Framework    | 2.4.2   |
+| Spring Framework  | 4.2.2   |
 
-The Play Framework is supported natively (install/configure the library and your done). For the Servlet API, you 
-will need to configure a [servlet filter](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/servlet/HoneybadgerFilter.java) and enable it in your application. As for manual invocation of the API, you will need to configure your application to directly call the [reporter class](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/HoneybadgerReporter.java). You can find more information about this in the stand-alone usage section.
+The Play Framework Spring are supported natively (install/configure the library and your done). 
+For the Servlet API, you  will need to configure a [servlet filter](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/servlet/HoneybadgerFilter.java) 
+and enable it in your application. As for manual invocation of the API, you will need to configure 
+your application to directly call the [reporter class](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/HoneybadgerReporter.java). 
+You can find more information about this in the stand-alone usage section.
 
 ## Getting Started
 
@@ -46,7 +50,7 @@ In the case of Maven, you would add it as so:
 In the case of SBT:
 
 ```
-libraryDependencies += "io.honeybadger" % "honeybadger-java" % "<<VERSION NUMBER>>"
+libraryDependencies += "io.honeybadger" % "honeybadger-java" % "]1,)"
 ```
 
 For other dependency managers an example is provided on the [Maven Central site](http://search.maven.org/#artifactdetails%7Cio.honeybadger%7Choneybadger-java%7C1.0.10%7Cjar).
@@ -54,6 +58,10 @@ For other dependency managers an example is provided on the [Maven Central site]
 If you are not using a dependency manager, [download the jar directly](http://search.maven.org/remotecontent?filepath=io/honeybadger/honeybadger-java/1.0.10/honeybadger-java-1.0.10.jar) and add it to your classpath.
 
 ### 2. Install a slf4j compatible logging library or binding in your project
+
+*Note*: If you are using [Spring Boot](http://projects.spring.io/spring-boot/) or the 
+[Play Framework](https://www.playframework.com/), a slf4j compatible logger is
+installed by default.
 
 All dependencies needed for running are included in the distributed JAR with one
 exception - slf4j-api. We expect that you are using some logging library and that
@@ -130,8 +138,11 @@ In your web.xml file:
 
 #### Play Framework Usage
 
-This library has been tested against Play 2.4.2. You can add Honeybadger as an error
-handler by adding the following lines to your conf/application.conf file:
+This library has been tested against Play 2.4.2. After adding Hondeybadger as 
+a dependency to your dependency manager as explained in the 
+[Install the jar section](#instal-the-jar-section), you can enable 
+Honeybadger as an error handler by adding the following lines to your
+conf/application.conf file:
 
 ```
 honeybadger.api_key = <<API KEY>>
@@ -142,6 +153,23 @@ play.http.errorHandler = io.honeybadger.reporter.play.HoneybadgerErrorHandler
 
 This will allow the library to wrap the default error handler implementation and
 pass around Honeybadger error ids instead of the default Play error ids.
+
+#### Spring Framework Usage
+
+This library has been tested against Spring 4.2.2 using Spring Boot. After adding 
+Hondeybadger as a dependency to your dependency manager as explained
+in the [Install the jar section](#instal-the-jar-section), you can enable Honeybadger
+as an error handler by adding the `honeybadger.api_key` configuration parameter to
+your [Spring configuration](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html).
+Spring allows for many different vectors of configuration and it is beyond the scope
+of this document to describe all of them. For example, if you were using a file-based
+application configuration, you would need to add your Honeybadger configuration
+parameters as follows:
+
+```
+honeybadger.api_key = <<API KEY>>
+honeybadger.excluded_exception_classes = com.myorg.AnnoyingException
+```
 
 ## API Only Usage
 
@@ -177,13 +205,14 @@ public class ApiUsage {
 
 There are a few ways to configure the Honeybadger library. Each one of the ways is implemented as a [ConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ConfigContext.java) that can be passed in the constructor of the [HoneybadgerReporter](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/HoneybadgerReporter.java) class. The implementations available are:
 
- * [StandardConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/StandardConfigContext.java) - This reads configuration from the system parameters, environment variables and defaults and is **the default configuration provider**.
+ * [DefaultsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/DefaultsConfigContext.java) - This configuration context provides defaults that can be read by other context implementations.
+ * [MapConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/MapConfigContext.java) - This reads configuration from a Map that is supplied to its constructor. 
  * [PlayConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/PlayConfigContext.java) - This reads configuration from the Play Framework's internal configuration mechanism.
  * [ServletFilterConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ServletFilterConfigContext.java) - This reads configuration from a servlet filter configuration.
+ * [SpringConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/SpringConfigContext.java) - This reads configuration from the Spring framework's internal configuration mechanism.
+ * [StandardConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/StandardConfigContext.java) - This reads configuration from the system parameters, environment variables and defaults and is **the default configuration provider**.
  * [SystemSettingsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/SystemSettingsConfigContext.java) - This reads configuration purely from system settings.
- * [MapConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/MapConfigContext.java) - This reads configuration from a Map that is supplied to its constructor.
- * [DefaultsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/DefaultsConfigContext.java) - This configuration context provides defaults that can be read by other context implementations. 
-
+ 
 ### Configuring with Environment Variables or System Properties (12-factor style)
 
 All configuration options can also be read from environment variables or [Java system properties](https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html)
