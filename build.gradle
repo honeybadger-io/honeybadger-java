@@ -16,7 +16,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 group = 'io.honeybadger'
 
 def release = '1.1.0'
-// def snapshot = 'SNAPSHOT-beta3'
+def snapshot = ''
 // concatenate release version with snapshot version number
 version = "${release}${snapshot && !snapshot.isEmpty() ? ('-' + snapshot) : ''}"
 
