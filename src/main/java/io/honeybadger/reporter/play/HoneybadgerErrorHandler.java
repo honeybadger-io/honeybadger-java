@@ -13,13 +13,14 @@ import play.api.UsefulException;
 import play.api.http.HttpErrorHandlerExceptions;
 import play.api.routing.Router;
 import play.http.DefaultHttpErrorHandler;
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Error handler for the Play Framework.
@@ -45,7 +46,7 @@ public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
     }
 
     @Override
-    public F.Promise<Result> onServerError(Http.RequestHeader request, Throwable exception) {
+    public CompletionStage<Result> onServerError(Http.RequestHeader request, Throwable exception) {
 
         NoticeReportResult errorResult = reporter.reportError(exception, request);
 
@@ -72,7 +73,7 @@ public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
             }
         } catch (Exception e) {
             Logger.error("Error while handling error", e);
-            return F.Promise.<Result>pure(Results.internalServerError());
+            return CompletableFuture.completedFuture(Results.internalServerError());
         }
     }
 

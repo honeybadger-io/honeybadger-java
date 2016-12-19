@@ -20,15 +20,15 @@ def snapshot = ''
 // concatenate release version with snapshot version number
 version = "${release}${snapshot && !snapshot.isEmpty() ? ('-' + snapshot) : ''}"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 archivesBaseName = rootProject.name
 mainClassName = 'io.honeybadger.reporter.HoneybadgerCLI'
 
 ext {
     slf4jVersion = '1.7.12'
     servletApiVersion = '3.1.0'
-    playVersion = '2.4.2'
+    playVersion = '2.5.6'
     springVersion = '4.2.2.RELEASE'
 }
 
@@ -81,7 +81,7 @@ dependencies {
     // because the implementation is typically provided by the application server
     providedCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
 
-    providedCompile "com.typesafe.play:play_2.10:${playVersion}"
+    providedCompile "com.typesafe.play:play_2.11:${playVersion}"
 
     providedCompile "org.springframework:spring-webmvc:${springVersion}"
 
@@ -295,7 +295,7 @@ publishing {
 
                 def play = dependencies.appendNode("dependency")
                 play.appendNode("groupId", "com.typesafe.play")
-                play.appendNode("artifactId", "play_2.10")
+                play.appendNode("artifactId", "play_2.11")
                 play.appendNode("version", playVersion)
                 play.appendNode("scope", "provided")
 
@@ -412,7 +412,7 @@ uploadArchives {
 
                 def play = parent.appendNode("dependency")
                 play.appendNode("groupId", "com.typesafe.play")
-                play.appendNode("artifactId", "play_2.10")
+                play.appendNode("artifactId", "play_2.11")
                 play.appendNode("version", playVersion)
                 play.appendNode("scope", "provided")
             }.withXml {
