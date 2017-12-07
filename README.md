@@ -53,9 +53,9 @@ In the case of SBT:
 libraryDependencies += "io.honeybadger" % "honeybadger-java" % "]1,)"
 ```
 
-For other dependency managers an example is provided on the [Maven Central site](http://search.maven.org/#artifactdetails%7Cio.honeybadger%7Choneybadger-java%7C1.0.10%7Cjar).
+For other dependency managers an example is provided on the [Maven Central site](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22io.honeybadger%22%20AND%20a%3A%22honeybadger-java%22).
 
-If you are not using a dependency manager, [download the jar directly](http://search.maven.org/remotecontent?filepath=io/honeybadger/honeybadger-java/1.0.10/honeybadger-java-1.0.10.jar) and add it to your classpath.
+If you are not using a dependency manager, download the jar directly and add it to your classpath.
 
 ### 2. Install a slf4j compatible logging library or binding in your project
 
