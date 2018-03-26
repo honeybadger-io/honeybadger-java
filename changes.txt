@@ -31,7 +31,7 @@
        - Changed honeybadger.url to refer to the base URL of the API.
        - Added Honeybadger error form to servlet filter.
 1.0.10 - Fixed pom.xml so it isn't listing dependencies that are actually shadowed.
-1.0.11 - Refactored configuration settings to use context-based pattern.
+1.1.0  - Refactored configuration settings to use context-based pattern.
        - Added support for native configuration within the Play Framework.
        - Added preliminary server statistics support.
        - Fixed pom.xml generation problems in gradle.
@@ -39,3 +39,5 @@
        - Rewrote README.md to conform to the same standards as the other Honeybadger.io
          documentation.
        - Added Spring Framework support.
+2.0.0  - Migrated from gradle to Maven.
+       - We now ship unshaded artifacts by default.

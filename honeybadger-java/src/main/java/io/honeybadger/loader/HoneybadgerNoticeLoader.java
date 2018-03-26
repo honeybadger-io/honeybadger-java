@@ -12,8 +12,11 @@ import org.apache.http.client.fluent.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.util.Scanner;
 import java.util.UUID;
 
 /**
@@ -72,7 +75,25 @@ public class HoneybadgerNoticeLoader {
             }
 
             if  (i == 2) {
-                throw new IllegalArgumentException("Unable to get notice from API");
+                final String body;
+
+                try (InputStream in = httpResponse.getEntity().getContent();
+                     Scanner scanner = new Scanner(in).useDelimiter("\\A")) {
+                    if (scanner.hasNext()) {
+                        body = scanner.next();
+                    } else {
+                        body = "";
+                    }
+                }
+
+                String msg = String.format("Unable to get notice from API.\n"
+                        + "[Response Status Code=%d]\n"
+                        + "[Response Reason=%s]\n"
+                        + "[Response Body=%s]",
+                        httpResponse.getStatusLine().getStatusCode(),
+                        httpResponse.getStatusLine().getReasonPhrase(),
+                        body);
+                throw new IllegalArgumentException(msg);
             }
         }
 

@@ -23,12 +23,12 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-public class HoneybadgerReporterTest {
+public class HoneybadgerReporterIT {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private final HoneybadgerNoticeLoader loader;
     private final NoticeReporter reporter;
 
-    public HoneybadgerReporterTest() {
+    public HoneybadgerReporterIT() {
         ConfigContext config = new SystemSettingsConfigContext();
         if (config.getApiKey() == null) {
             throw new IllegalArgumentException("API key must be specified");
