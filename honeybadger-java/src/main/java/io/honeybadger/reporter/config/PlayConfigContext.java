@@ -1,20 +1,64 @@
 package io.honeybadger.reporter.config;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigValue;
 import io.honeybadger.util.HBStringUtils;
 import org.slf4j.LoggerFactory;
-import play.Configuration;
 import play.Environment;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * {@link ConfigContext} implementation that reads its configuration values from
- * a Play Framework {@link play.Configuration} class.
+ * a Play Framework {@link Config} class.
  *
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.11
  */
 public class PlayConfigContext extends BaseChainedConfigContext {
+    /**
+     * {@link Map.Entry} implementation for mapping between Play config objects
+     * and generic Map.Entry objects.
+     *
+     * @param <K> key type
+     * @param <V> value type
+     */
+    private static final class ConfigEntry<K, V> implements Map.Entry<K, V> {
+        private final K key;
+        private V val;
+
+        static Map.Entry<String, Object> fromConfigValueEntry(
+                final Map.Entry<String, ConfigValue> entry) {
+            return new ConfigEntry<>(entry.getKey(), entry.getValue().unwrapped());
+        }
+
+        ConfigEntry(final K key, final V val) {
+            this.key = key;
+            this.val = val;
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public V getValue() {
+            return val;
+        }
+
+        @Override
+        public V setValue(final V value) {
+            final V oldValue = val;
+            this.val = value;
+            return oldValue;
+        }
+    }
     /**
      * Converts a Play Configuration to a Honeybadger {@link ConfigContext}. If
      * null, it will default to a {@link SystemSettingsConfigContext}.
@@ -22,7 +66,7 @@ public class PlayConfigContext extends BaseChainedConfigContext {
      * @param configuration play configuration to convert
      * @param environment play environment to load values from
      */
-    public PlayConfigContext(Configuration configuration,
+    public PlayConfigContext(Config configuration,
                              Environment environment) {
         super();
 
@@ -37,7 +81,14 @@ public class PlayConfigContext extends BaseChainedConfigContext {
         }
 
         if (configuration != null) {
-            Map<String, Object> configMap = flattenNestedMap(configuration.asMap());
+            final Map<String, Object> unwrapped;
+
+            try (Stream<Map.Entry<String, ConfigValue>> stream = configuration.entrySet().stream()) {
+                unwrapped = stream.map(ConfigEntry::fromConfigValueEntry)
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            }
+
+            Map<String, Object> configMap = flattenNestedMap(unwrapped);
             MapConfigContext mapContext = new MapConfigContext(configMap);
             // Overload environment value because it won't be present in the
             // config map.
@@ -73,17 +124,13 @@ public class PlayConfigContext extends BaseChainedConfigContext {
 
         Map<String, Object> flat = new HashMap<>();
 
-        Iterator<Map.Entry<String, Object>> itr = map.entrySet().iterator();
-
-        while (itr.hasNext()) {
-            Map.Entry<String, Object> entry = itr.next();
-
+        for (final Map.Entry<String, Object> entry : map.entrySet()) {
             if (entry.getKey() == null || entry.getKey().isEmpty()) continue;
 
             if (entry.getValue() instanceof Map) {
                 // assume that we have the same underlying generic definition
                 @SuppressWarnings("unchecked")
-                Map<String, Object> innerMap = (Map<String, Object>)entry.getValue();
+                Map<String, Object> innerMap = (Map<String, Object>) entry.getValue();
 
                 // Don't bother to continue processing if this config section is empty
                 if (innerMap.isEmpty()) continue;
@@ -98,7 +145,7 @@ public class PlayConfigContext extends BaseChainedConfigContext {
                     String key = String.format("%s.%s", entry.getKey(), subKey);
                     flat.put(key, subEntry.getValue());
                 }
-            } else if (level == 0){
+            } else if (level == 0) {
                 String key = HBStringUtils.stripTrailingChar(entry.getKey(), '.');
                 flat.put(String.format("%s", key), entry.getValue());
             } else {
@@ -109,5 +156,4 @@ public class PlayConfigContext extends BaseChainedConfigContext {
 
         return flat;
     }
-
 }

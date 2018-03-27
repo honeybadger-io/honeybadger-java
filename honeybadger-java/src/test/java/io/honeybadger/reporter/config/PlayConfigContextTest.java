@@ -13,7 +13,7 @@ public class PlayConfigContextTest {
     @Test
     public void canFlattenASingleLevel() {
         Map<String, Object> instance = ImmutableMap.of(
-                "key_1", (Object)"value_1",
+                "key_1", "value_1",
                 "key_2", "value_2"
         );
 
@@ -34,7 +34,7 @@ public class PlayConfigContextTest {
     @Test
     public void canFlattenTwoLevels() {
         Map<String, Object> instance = ImmutableMap.of(
-                "key_1", (Object)ImmutableMap.of("key_a", "value_a",
+                "key_1", ImmutableMap.of("key_a", "value_a",
                                                  "key_b", "value_b"),
                 "key_2", ImmutableMap.of("key_c", "value_c",
                                                  "key_d", "value_d")
@@ -61,7 +61,7 @@ public class PlayConfigContextTest {
     @Test
     public void canFlattenOneAndTwoLevels() {
         Map<String, Object> instance = ImmutableMap.of(
-                "key_1", (Object)ImmutableMap.of("key_a", "value_a",
+                "key_1", ImmutableMap.of("key_a", "value_a",
                         "key_b", "value_b"),
                 "key_2", "value_c",
                 "key_3", ImmutableMap.of("key_d", "value_d",
@@ -91,7 +91,7 @@ public class PlayConfigContextTest {
     @Test
     public void canFlattenThreeLevels() {
         Map<String, Object> instance = ImmutableMap.of(
-                "key_1", (Object)ImmutableMap.of("key_a", (Object)ImmutableMap.of("key_b", "value_a")),
+                "key_1", ImmutableMap.of("key_a", (Object)ImmutableMap.of("key_b", "value_a")),
                 "key_2", ImmutableMap.of("key_c", ImmutableMap.of("key_d", "value_b"))
         );
 

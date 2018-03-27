@@ -62,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>com.typesafe.play</groupId>
-            <artifactId>play_2.10</artifactId>
+            <artifactId>play_2.12</artifactId>
             <version>${dependency.play.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -96,6 +96,12 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <version>${dependency.logback.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
             <version>${dependency.logback.version}</version>
             <scope>test</scope>
         </dependency>

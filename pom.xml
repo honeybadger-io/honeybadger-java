@@ -73,19 +73,19 @@
 
         <!-- Dependency versions -->
         <dependency.checkstyle.version>8.8</dependency.checkstyle.version>
-        <dependency.slfj.version>1.7.12</dependency.slfj.version>
-        <dependency.servlet-api.version>3.1.0</dependency.servlet-api.version>
-        <dependency.play.version>2.4.2</dependency.play.version>
-        <dependency.spring.version>4.2.2.RELEASE</dependency.spring.version>
-        <dependency.gson.version>2.3.1</dependency.gson.version>
-        <dependency.fluent-hc.version>4.5</dependency.fluent-hc.version>
+        <dependency.slfj.version>1.7.25</dependency.slfj.version>
+        <dependency.servlet-api.version>4.0.0</dependency.servlet-api.version>
+        <dependency.play.version>2.6.12</dependency.play.version>
+        <dependency.spring.version>5.0.4.RELEASE</dependency.spring.version>
+        <dependency.gson.version>2.8.2</dependency.gson.version>
+        <dependency.fluent-hc.version>4.5.5</dependency.fluent-hc.version>
         <dependency.jcabi-manifests.version>1.1</dependency.jcabi-manifests.version>
-        <dependency.mustache.version>0.8.18</dependency.mustache.version>
+        <dependency.mustache.version>0.9.5</dependency.mustache.version>
         <!-- Test Dependency Versions -->
         <dependency.junit.version>4.12</dependency.junit.version>
         <dependency.guava.version>24.1-jre</dependency.guava.version>
-        <dependency.mockito.version>2.16.0</dependency.mockito.version>
-        <dependency.logback.version>1.1.3</dependency.logback.version>
+        <dependency.mockito.version>2.17.0</dependency.mockito.version>
+        <dependency.logback.version>1.2.3</dependency.logback.version>
         <dependency.json-schema-validator>2.2.6</dependency.json-schema-validator>
 
         <!-- Plugin versions -->
@@ -109,6 +109,7 @@
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <maven-shade-plugin.version>3.1.0</maven-shade-plugin.version>
+        <maven-cargo-plugin.version>1.6.7</maven-cargo-plugin.version>
     </properties>
 
     <build>

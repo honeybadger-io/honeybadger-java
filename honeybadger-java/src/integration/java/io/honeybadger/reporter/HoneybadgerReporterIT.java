@@ -10,6 +10,7 @@ import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.Request;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
 import org.apache.http.HttpHeaders;
+import org.junit.Assume;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class HoneybadgerReporterIT {
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -75,9 +78,14 @@ public class HoneybadgerReporterIT {
         logger.info("Created error with id: {}", id);
 
         // Wait for the Honeybadger API to process the error
-        Thread.sleep(10000);
-        Notice error = loader.findErrorDetails(id);
-        assertReportedErrorIsSame(result.getNotice(), error);
+        Thread.sleep(20000);
+
+        try {
+            Notice error = loader.findErrorDetails(id);
+            assertReportedErrorIsSame(result.getNotice(), error);
+        } catch (IllegalArgumentException e) {
+            Assume.assumeNoException(e);
+        }
     }
 
     @Test
