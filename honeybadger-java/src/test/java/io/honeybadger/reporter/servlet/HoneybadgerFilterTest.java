@@ -25,8 +25,9 @@ public class HoneybadgerFilterTest {
      * Generates a fake instance of a {@link HoneybadgerFilter} for testing.
      */
     private HoneybadgerFilter instance(boolean displayForm) throws ServletException {
-        Map<String, String> props = ImmutableMap.of(MapConfigContext.DISPLAY_FEEDBACK_FORM_KEY,
-                String.valueOf(displayForm));
+        final Map<String, String> props = ImmutableMap.of(
+                MapConfigContext.DISPLAY_FEEDBACK_FORM_KEY, String.valueOf(displayForm),
+                MapConfigContext.HONEYBADGER_API_KEY, "test-value");
         FilterConfig filterConfig = new FakeFilterConfig(props);
         final HoneybadgerFilter filter = new HoneybadgerFilter();
         filter.init(filterConfig);
@@ -44,8 +45,9 @@ public class HoneybadgerFilterTest {
             throw new IllegalArgumentException("Reporter must not be null");
         }
 
-        Map<String, String> props = ImmutableMap.of(MapConfigContext.DISPLAY_FEEDBACK_FORM_KEY,
-                String.valueOf(displayForm));
+        Map<String, String> props = ImmutableMap.of(
+                MapConfigContext.DISPLAY_FEEDBACK_FORM_KEY, String.valueOf(displayForm),
+                MapConfigContext.HONEYBADGER_API_KEY, "test-value");
         FilterConfig filterConfig = new FakeFilterConfig(props);
         final HoneybadgerFilter filter = new HoneybadgerFilter();
         filter.init(filterConfig);
