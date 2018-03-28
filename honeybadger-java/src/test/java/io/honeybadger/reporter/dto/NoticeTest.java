@@ -19,15 +19,21 @@ import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeThat;
 
 public class NoticeTest {
+    private static final OperatingSystemMXBean OS_BEAN = ManagementFactory.getOperatingSystemMXBean();
+    private static final String OS = OS_BEAN.getName();
     private static final String JSON_SCHEMA_URL =
             "https://gist.githubusercontent.com/joshuap/94901ba378fd09a783be/raw/b632ff0a6b1ec82ced73735a321f1e44e94669d2/notices.json";
 
@@ -133,6 +139,8 @@ public class NoticeTest {
 
             builder.append(System.lineSeparator()).append(jsonText);
 
+            // Skip test if we aren't on Linux because load time stats will be different
+            assumeThat(builder.toString(), OS, is("Linux"));
             fail(builder.toString());
         } else {
             assertTrue("Generated JSON validated correctly", true);
