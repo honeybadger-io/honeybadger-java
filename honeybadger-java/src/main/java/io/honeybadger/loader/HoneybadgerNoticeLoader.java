@@ -88,11 +88,9 @@ public class HoneybadgerNoticeLoader {
 
                 String msg = String.format("Unable to get notice from API.\n"
                         + "[Response Status Code=%d]\n"
-                        + "[Response Reason=%s]\n"
-                        + "[Response Body=%s]",
+                        + "[Response Reason=%s]",
                         httpResponse.getStatusLine().getStatusCode(),
-                        httpResponse.getStatusLine().getReasonPhrase(),
-                        body);
+                        httpResponse.getStatusLine().getReasonPhrase());
                 throw new IllegalArgumentException(msg);
             }
         }
