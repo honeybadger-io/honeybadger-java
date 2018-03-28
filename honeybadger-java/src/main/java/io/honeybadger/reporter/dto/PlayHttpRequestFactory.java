@@ -31,9 +31,7 @@ public class PlayHttpRequestFactory {
         final Context context = new Context();
         final Optional<String> username = httpRequest.attrs().getOptional(Security.USERNAME);
 
-        if (username.isPresent()) {
-            context.put("user_name", username.get());
-        }
+        username.ifPresent(context::setUsername);
 
         return context;
     }

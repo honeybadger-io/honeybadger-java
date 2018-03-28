@@ -33,7 +33,7 @@ public class HttpServletRequestFactory {
         Principal principal = httpRequest.getUserPrincipal();
 
         if (principal != null) {
-            context.put("user_name", principal.getName());
+            context.setUsername(principal.getName());
         }
 
         return context;

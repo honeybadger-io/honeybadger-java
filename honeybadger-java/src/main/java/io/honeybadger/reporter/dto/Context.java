@@ -14,4 +14,9 @@ public class Context extends LinkedHashMap<String, String>
 
     public Context() {
     }
+
+    public Context setUsername(final String username) {
+        put("user_name", username);
+        return this;
+    }
 }

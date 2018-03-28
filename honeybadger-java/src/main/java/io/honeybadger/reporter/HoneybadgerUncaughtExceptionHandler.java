@@ -46,14 +46,26 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
         }
     }
 
+    public NoticeReporter getReporter() {
+        return reporter;
+    }
+
+    public ConfigContext getConfig() {
+        return config;
+    }
+
     /**
      * Use {@link HoneybadgerUncaughtExceptionHandler}
      * as the error handler for the current thread.
+     *
+     * @return instance registered as handler
      */
-    public static void registerAsUncaughtExceptionHandler() {
-        Thread.UncaughtExceptionHandler handler =
+    public static HoneybadgerUncaughtExceptionHandler registerAsUncaughtExceptionHandler() {
+        final HoneybadgerUncaughtExceptionHandler handler =
                 new HoneybadgerUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(handler);
+
+        return handler;
     }
 
     /**
