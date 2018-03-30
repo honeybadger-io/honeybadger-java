@@ -21,6 +21,7 @@ public class Params extends LinkedHashMap<String, String>
         this.excludedValues = excludedValues;
     }
 
+    @Deprecated
     public Params() {
         ConfigContext config = ConfigContext.threadLocal.get();
         if (config == null) throw new NullPointerException(

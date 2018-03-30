@@ -1,5 +1,7 @@
 package io.honeybadger.reporter;
 
+import io.honeybadger.reporter.config.ConfigContext;
+
 /**
  * Interface representing error reporting behavior.
  *
@@ -25,4 +27,9 @@ public interface NoticeReporter {
      * @return UUID of error created, if there was a problem or ignored null
      */
     NoticeReportResult reportError(Throwable error, Object request);
+
+    /**
+     * @return The configuration used in the reporter
+     */
+    ConfigContext getConfig();
 }

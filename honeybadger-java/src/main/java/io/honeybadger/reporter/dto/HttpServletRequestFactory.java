@@ -76,23 +76,24 @@ public class HttpServletRequestFactory {
     }
 
     protected static CgiData createCgiData(HttpServletRequest httpRequest) {
-        final CgiData cgiData = new CgiData();
-
-        cgiData.put("REQUEST_METHOD", httpRequest.getMethod());
-        cgiData.put("HTTP_ACCEPT", httpRequest.getHeader(HttpHeaders.ACCEPT));
-        cgiData.put("HTTP_USER_AGENT", httpRequest.getHeader(HttpHeaders.USER_AGENT));
-        cgiData.put("HTTP_ACCEPT_ENCODING", httpRequest.getHeader(HttpHeaders.ACCEPT_ENCODING));
-        cgiData.put("HTTP_ACCEPT_LANGUAGE", httpRequest.getHeader(HttpHeaders.ACCEPT_LANGUAGE));
-        cgiData.put("HTTP_ACCEPT_CHARSET", httpRequest.getHeader(HttpHeaders.ACCEPT_CHARSET));
-        cgiData.put("HTTP_COOKIE", parseCookies(httpRequest));
-        cgiData.put("SERVER_NAME", httpRequest.getServerName());
-        cgiData.put("SERVER_PORT", httpRequest.getServerPort());
-        cgiData.put("CONTENT_TYPE", httpRequest.getContentType());
-        cgiData.put("CONTENT_LENGTH", httpRequest.getContentLength());
-        cgiData.put("REMOTE_ADDR", httpRequest.getRemoteAddr());
-        cgiData.put("REMOTE_PORT", httpRequest.getRemotePort());
-        cgiData.put("QUERY_STRING", httpRequest.getQueryString());
-        cgiData.put("PATH_INFO", httpRequest.getPathInfo());
+        final CgiData cgiData = new CgiData()
+                .setRequestMethod(httpRequest.getMethod())
+                .setHttpAccept(httpRequest.getHeader(HttpHeaders.ACCEPT))
+                .setHttpUserAgent(httpRequest.getHeader(HttpHeaders.USER_AGENT))
+                .setHttpAcceptEncoding(httpRequest.getHeader(HttpHeaders.ACCEPT_ENCODING))
+                .setHttpAcceptLanguage(httpRequest.getHeader(HttpHeaders.ACCEPT_LANGUAGE))
+                .setHttpAcceptCharset(httpRequest.getHeader(HttpHeaders.ACCEPT_CHARSET))
+                .setHttpCookie(parseCookies(httpRequest))
+                .setServerName(httpRequest.getServerName())
+                .setServerPort(httpRequest.getServerPort())
+                .setContentType(httpRequest.getContentType())
+                .setContentLength(httpRequest.getContentLength())
+                .setRemoteAddr(httpRequest.getRemoteAddr())
+                .setRemotePort(httpRequest.getRemotePort())
+                .setQueryString(httpRequest.getQueryString())
+                .setPathInfo(httpRequest.getPathInfo())
+                .setPathTranslated(httpRequest.getPathTranslated())
+                .setServerProtocol(httpRequest.getProtocol());
 
         return cgiData;
     }

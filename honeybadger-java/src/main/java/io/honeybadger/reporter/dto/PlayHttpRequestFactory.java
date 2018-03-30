@@ -60,26 +60,30 @@ public class PlayHttpRequestFactory {
     }
 
     protected static CgiData createCgiData(Http.Request httpRequest) {
-        final CgiData cgiData = new CgiData();
-
-        cgiData.put("REQUEST_METHOD", httpRequest.method());
-        cgiData.put("HTTP_ACCEPT", getHeaderValue(httpRequest, HttpHeaders.ACCEPT));
-        cgiData.put("HTTP_USER_AGENT", getHeaderValue(httpRequest, HttpHeaders.USER_AGENT));
-        cgiData.put("HTTP_ACCEPT_ENCODING", getHeaderValue(httpRequest, HttpHeaders.ACCEPT_ENCODING));
-        cgiData.put("HTTP_ACCEPT_LANGUAGE", getHeaderValue(httpRequest, HttpHeaders.ACCEPT_LANGUAGE));
-        cgiData.put("HTTP_ACCEPT_CHARSET", getHeaderValue(httpRequest, HttpHeaders.ACCEPT_CHARSET));
-        cgiData.put("HTTP_COOKIE", parseCookies(httpRequest));
-        cgiData.put("CONTENT_TYPE", getHeaderValue(httpRequest, HttpHeaders.CONTENT_TYPE));
-        cgiData.put("CONTENT_LENGTH", getHeaderValue(httpRequest, HttpHeaders.CONTENT_LENGTH));
-        cgiData.put("REMOTE_ADDR", httpRequest.remoteAddress());
-        cgiData.put("QUERY_STRING", httpRequest.queryString());
-        cgiData.put("PATH_INFO", httpRequest.path());
+        final CgiData cgiData = new CgiData()
+                .setRequestMethod(httpRequest.method())
+                .setContentLength(getHeaderValue(httpRequest, HttpHeaders.CONTENT_LENGTH))
+                .setHttpAccept(getHeaderValue(httpRequest, HttpHeaders.ACCEPT))
+                .setHttpUserAgent(getHeaderValue(httpRequest, HttpHeaders.USER_AGENT))
+                .setHttpAcceptCharset(getHeaderValue(httpRequest, HttpHeaders.ACCEPT_CHARSET))
+                .setHttpAcceptEncoding(getHeaderValue(httpRequest, HttpHeaders.ACCEPT_ENCODING))
+                .setHttpAcceptLanguage(getHeaderValue(httpRequest, HttpHeaders.ACCEPT_LANGUAGE))
+                .setHttpCookie(parseCookies(httpRequest))
+                .setContentLength(getHeaderValue(httpRequest, HttpHeaders.CONTENT_LENGTH))
+                .setContentType(getHeaderValue(httpRequest, HttpHeaders.CONTENT_TYPE))
+                .setRemoteAddr(httpRequest.remoteAddress())
+                .setQueryString(httpRequest.queryString())
+                .setPathInfo(httpRequest.path());
 
         if (httpRequest.host() != null && !httpRequest.host().isEmpty()) {
-            String[] hostParts = httpRequest.host().split(":");
+            final String[] hostParts = httpRequest.host().split(":");
 
-            if (hostParts.length > 0)  cgiData.put("SERVER_NAME", hostParts[0]);
-            if (hostParts.length > 1)  cgiData.put("SERVER_PORT", hostParts[1]);
+            if (hostParts.length > 0) {
+                cgiData.setServerName(hostParts[0]);
+            }
+            if (hostParts.length > 1) {
+                cgiData.setServerPort(hostParts[1]);
+            }
         }
 
         return cgiData;

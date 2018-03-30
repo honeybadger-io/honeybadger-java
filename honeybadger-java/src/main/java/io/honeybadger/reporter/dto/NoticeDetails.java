@@ -24,16 +24,21 @@ public class NoticeDetails implements Serializable {
 
     @SuppressWarnings("unchecked")
     public NoticeDetails(ConfigContext config, Throwable error) {
-        this(config, error, (Set<String>)Collections.EMPTY_SET);
+        this(config, error, Collections.emptySet());
     }
 
     public NoticeDetails(ConfigContext config, Throwable error, Set<String> tags) {
+        this(config, error, tags, error.getMessage());
+    }
+
+    public NoticeDetails(ConfigContext config, Throwable error, Set<String> tags,
+                         String message) {
         if (error == null) {
             throw new IllegalArgumentException("Error can't be null");
         }
 
         this.className = error.getClass().getName();
-        this.message = error.getMessage();
+        this.message = message;
         this.tags = tags;
         this.backtrace = new Backtrace(config, error);
         this.causes = new Causes(config, error);
