@@ -22,7 +22,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Reporter utility class that gives a simple interface for sending Java
@@ -33,6 +35,16 @@ import java.util.*;
  * @since 1.0.0
  */
 public class HoneybadgerReporter implements NoticeReporter {
+    private static Class<?> EXCEPTION_CONTEXT_CLASS;
+
+    static {
+        try {
+            EXCEPTION_CONTEXT_CLASS = Class.forName("org.apache.commons.lang3.exception.ExceptionContext");
+        } catch (ClassNotFoundException e) {
+            EXCEPTION_CONTEXT_CLASS = null;
+        }
+    }
+
     protected ConfigContext config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson = new GsonBuilder()
@@ -113,6 +125,11 @@ public class HoneybadgerReporter implements NoticeReporter {
         return submitError(error, requestDetails);
     }
 
+    @Override
+    public ConfigContext getConfig() {
+        return config;
+    }
+
     protected boolean supportsHttpServletRequest() {
         try {
             Class.forName("javax.servlet.http.HttpServletRequest");
@@ -131,19 +148,24 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
     }
 
-    protected NoticeReportResult submitError(Throwable error,
-                               io.honeybadger.reporter.dto.Request request) {
+    protected NoticeReportResult submitError(
+            final Throwable error, final io.honeybadger.reporter.dto.Request request) {
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
                 config.getExcludedClasses().contains(errorClassName)) {
             return null;
         }
 
-        Notice notice = new Notice(config)
-                .setError(new NoticeDetails(config, error));
+        final Notice notice = new Notice(config);
 
         if (request != null) {
-            notice.setRequest(request);
+            final String message = parseMessage(error);
+            NoticeDetails noticeDetails = new NoticeDetails(
+                    config, error, Collections.emptySet(), message);
+            notice.setRequest(request).setError(noticeDetails);
+        } else {
+            NoticeDetails noticeDetails = new NoticeDetails(config, error);
+            notice.setError(noticeDetails);
         }
 
         for (int retries = 0; retries < 3; retries++) {
@@ -158,8 +180,6 @@ public class HoneybadgerReporter implements NoticeReporter {
                                  "correct code. Response was [{}]. Retries={}",
                                  responseCode, retries);
                 else {
-                    logger.debug("Honeybadger logged error correctly: [{}]",
-                                 error.getMessage());
                     UUID id = parseErrorId(response, gson);
 
                     return new NoticeReportResult(id, notice, error);
@@ -190,6 +210,32 @@ public class HoneybadgerReporter implements NoticeReporter {
             } else {
                 return null;
             }
+        }
+    }
+
+    /**
+     * Parses the exception message and strips out redundant context information
+     * if we are already sending the information as part of the error context.
+     *
+     * @param throwable throwable to parse message from
+     * @return string containing the throwable's error message
+     */
+    private static String parseMessage(final Throwable throwable) {
+        if (EXCEPTION_CONTEXT_CLASS == null) {
+            return throwable.getMessage();
+        }
+
+        if (exceptionClassHasContextedVariables(throwable.getClass())) {
+            final String msg = throwable.getMessage();
+            final int contextSeparatorPos = msg.indexOf("Exception Context:");
+
+            if (contextSeparatorPos == -1) {
+                return msg;
+            }
+
+            return msg.substring(0, contextSeparatorPos).trim();
+        } else {
+            return throwable.getMessage();
         }
     }
 
@@ -234,5 +280,20 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
 
         return request;
+    }
+
+    /**
+     * Tests to see if a given exception class has embedded context variables
+     * like {@link org.apache.commons.lang3.exception.ContextedException}.
+     *
+     * @param clazz class to compare
+     * @return true if a contexted exception, otherwise false
+     */
+    private static boolean exceptionClassHasContextedVariables(final Class<?> clazz) {
+        if (EXCEPTION_CONTEXT_CLASS == null) {
+            return false;
+        }
+
+        return EXCEPTION_CONTEXT_CLASS.isAssignableFrom(clazz);
     }
 }
