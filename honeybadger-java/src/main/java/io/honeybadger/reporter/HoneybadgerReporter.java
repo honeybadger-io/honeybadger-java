@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,15 +39,7 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public class HoneybadgerReporter implements NoticeReporter {
-    private static Class<?> EXCEPTION_CONTEXT_CLASS;
-
-    static {
-        try {
-            EXCEPTION_CONTEXT_CLASS = Class.forName("org.apache.commons.lang3.exception.ExceptionContext");
-        } catch (ClassNotFoundException e) {
-            EXCEPTION_CONTEXT_CLASS = null;
-        }
-    }
+    private static Set<Class<?>> EXCEPTION_CONTEXT_CLASSES = findExceptionContextClasses();
 
     protected ConfigContext config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -218,6 +211,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         return Collections.unmodifiableSet(tagHashSet);
     }
 
+    @SuppressWarnings("LiteralClassName")
     protected boolean supportsHttpServletRequest() {
         try {
             Class.forName("javax.servlet.http.HttpServletRequest");
@@ -227,6 +221,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
     }
 
+    @SuppressWarnings("LiteralClassName")
     protected boolean supportsPlayHttpRequest() {
         try {
             Class.forName("play.mvc.Http", false, this.getClass().getClassLoader());
@@ -296,7 +291,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     private UUID parseErrorId(HttpResponse response, Gson gson)
             throws IOException {
         try (InputStream in = response.getEntity().getContent();
-             Reader reader = new InputStreamReader(in)) {
+             Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
             @SuppressWarnings("unchecked")
             HashMap<String, String> map =
                     (HashMap<String, String>)gson.fromJson(reader, HashMap.class);
@@ -317,10 +312,6 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @return string containing the throwable's error message
      */
     private static String parseMessage(final Throwable throwable) {
-        if (EXCEPTION_CONTEXT_CLASS == null) {
-            return throwable.getMessage();
-        }
-
         if (exceptionClassHasContextedVariables(throwable.getClass())) {
             final String msg = throwable.getMessage();
             final int contextSeparatorPos = msg.indexOf("Exception Context:");
@@ -386,10 +377,38 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @return true if a contexted exception, otherwise false
      */
     private static boolean exceptionClassHasContextedVariables(final Class<?> clazz) {
-        if (EXCEPTION_CONTEXT_CLASS == null) {
+        if (EXCEPTION_CONTEXT_CLASSES == null || EXCEPTION_CONTEXT_CLASSES.isEmpty()) {
             return false;
         }
 
-        return EXCEPTION_CONTEXT_CLASS.isAssignableFrom(clazz);
+        for (Class<?> exceptionClass : EXCEPTION_CONTEXT_CLASSES) {
+            if (exceptionClass.isAssignableFrom(clazz)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return The Apache Commons Lang3 exception context class or null if not found
+     */
+    @SuppressWarnings("LiteralClassName")
+    private static Set<Class<?>> findExceptionContextClasses() {
+        final String[] classNames = new String[] {
+                "org.apache.commons.lang3.exception.ExceptionContext",
+                "com.joyent.manta.org.apache.commons.lang3.exception.ExceptionContext"
+        };
+
+        final Set<Class<?>> classes = new LinkedHashSet<>(classNames.length);
+
+        for (String className : classNames) {
+            try {
+                classes.add(Class.forName(className));
+            } catch (ClassNotFoundException ignored) {
+            }
+        }
+
+        return Collections.unmodifiableSet(classes);
     }
 }

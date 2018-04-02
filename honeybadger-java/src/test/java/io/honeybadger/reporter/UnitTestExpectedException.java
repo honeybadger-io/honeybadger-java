@@ -8,6 +8,8 @@ package io.honeybadger.reporter;
  * @since 1.0.9
  */
 public class UnitTestExpectedException extends RuntimeException {
+    private static final long serialVersionUID = -4503310108779513186L;
+
     public UnitTestExpectedException() {
     }
 

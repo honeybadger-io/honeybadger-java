@@ -29,8 +29,6 @@
                 <version>${maven-shade-plugin.version}</version>
                 <configuration>
                     <minimizeJar>false</minimizeJar>
-                    <createSourcesJar>true</createSourcesJar>
-                    <shadeSourcesContent>true</shadeSourcesContent>
                     <createDependencyReducedPom>true</createDependencyReducedPom>
                     <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
                     <artifactSet>
