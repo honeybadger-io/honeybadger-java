@@ -14,9 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.util.Scanner;
 import java.util.UUID;
 
 /**
@@ -27,6 +25,7 @@ import java.util.UUID;
  * @since 1.0.9
  */
 public class HoneybadgerNoticeLoader {
+    private static final int RETRIES = 3;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson = new GsonBuilder()
             .setExclusionStrategies(new HoneybadgerExclusionStrategy())
@@ -58,7 +57,7 @@ public class HoneybadgerNoticeLoader {
 
         // We loop here because the API returns 404 when the notice still
         // hasn't finished processing
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < RETRIES; i++) {
             response = Request.Get(withAuth)
                               .addHeader("Accept", "application/json")
                               .execute();
@@ -74,18 +73,7 @@ public class HoneybadgerNoticeLoader {
                 break;
             }
 
-            if  (i == 2) {
-                final String body;
-
-                try (InputStream in = httpResponse.getEntity().getContent();
-                     Scanner scanner = new Scanner(in).useDelimiter("\\A")) {
-                    if (scanner.hasNext()) {
-                        body = scanner.next();
-                    } else {
-                        body = "";
-                    }
-                }
-
+            if  (i == RETRIES - 1) {
                 String msg = String.format("Unable to get notice from API.\n"
                         + "[Response Status Code=%d]\n"
                         + "[Response Reason=%s]",

@@ -59,6 +59,7 @@ public class PlayHttpRequestFactory {
         return session;
     }
 
+    @SuppressWarnings("StringSplitter")
     protected static CgiData createCgiData(Http.Request httpRequest) {
         final CgiData cgiData = new CgiData()
                 .setRequestMethod(httpRequest.method())

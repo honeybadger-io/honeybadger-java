@@ -12,6 +12,7 @@ import java.util.Scanner;
  * @since 1.0.0
  */
 public class HoneybadgerCLI {
+    @SuppressWarnings("DefaultCharset")
     public static void main(String[] argv) {
         Scanner in = new Scanner(System.in);
 

@@ -30,12 +30,11 @@ public class HBCollectionUtils {
      * @return a collection of values base on CSV
      */
     public static Collection<String> parseNaiveCsvString(String csv) {
-        if (!HBStringUtils.isPresent(csv)) return Collections.emptyList();
+        if (!HBStringUtils.isPresent(csv)) {
+            return Collections.emptyList();
+        }
 
-        List<String> list = new LinkedList<>();
-        String[] values = csv.split("(\\s*),(\\s*)");
-        Collections.addAll(list, values);
-
-        return list;
+        final String[] values = csv.split("(\\s*),(\\s*)");
+        return Arrays.asList(values);
     }
 }

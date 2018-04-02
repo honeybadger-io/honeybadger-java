@@ -8,6 +8,7 @@ import java.util.Iterator;
 /**
  * Test utility class for turning N number of items into an {@link Enumeration}.
  */
+@SuppressWarnings("JdkObsolete")
 class EnumerationWrapper<E> implements Enumeration<E> {
     final Iterator<E> itr;
 

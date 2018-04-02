@@ -7,8 +7,10 @@ import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static io.honeybadger.util.HBStringUtils.isPresent;
@@ -77,33 +79,33 @@ public class Memory implements Serializable {
         this.vm_nonheap = vm_nonheap;
     }
 
-    static Map<String, Long> findLinuxMemInfo(File memInfoFile) {
-        HashMap<String, Long> memInfo = new HashMap<>(50);
+    static Map<String, Long> findLinuxMemInfo(final File memInfoFile) {
+        final HashMap<String, Long> memInfo = new HashMap<>(50);
 
         final long mebibyteMultiplier = 1024L;
 
         if (memInfoFile.exists() && memInfoFile.isFile() && memInfoFile.canRead()) {
-            try (Scanner scanner = new Scanner(memInfoFile)) {
+            try (Scanner scanner = new Scanner(memInfoFile,
+                    StandardCharsets.US_ASCII.name())) {
                 while (scanner.hasNext()) {
-                    String line = scanner.nextLine();
-                    String[] fields = line.split("(:?)\\s+", 3);
-                    String name = fields[0];
-                    String kbValue = fields[1];
-                    Long mbValue = Long.parseLong(kbValue) / mebibyteMultiplier;
+                    final String line = scanner.nextLine();
+                    final String[] fields = line.split("(:?)\\s+", 3);
+                    final String name = fields[0];
+                    final String kbValue = fields[1];
+                    final Long mbValue = Long.parseLong(kbValue) / mebibyteMultiplier;
 
-                    if (!isPresent(name) || !isPresent(kbValue)) continue;
+                    if (!isPresent(name) || !isPresent(kbValue)) {
+                        continue;
+                    }
 
                     memInfo.put(name, mbValue);
                 }
 
-                long free = memInfo.containsKey("MemFree") ?
-                        memInfo.get("MemFree") : 0L;
-                long buffers = memInfo.containsKey("Buffers") ?
-                        memInfo.get("Buffers") : 0L;
-                long cached = memInfo.containsKey("Cached") ?
-                        memInfo.get("Cached") : 0L;
+                final long free = memInfo.getOrDefault("MemFree", 0L);
+                final long buffers = memInfo.getOrDefault("Buffers", 0L);
+                final long cached = memInfo.getOrDefault("Cached", 0L);
 
-                long freeTotal = free + buffers + cached;
+                final long freeTotal = free + buffers + cached;
 
                 memInfo.put("FreeTotal", freeTotal);
 
@@ -123,7 +125,7 @@ public class Memory implements Serializable {
         Map<String, Number> jvmInfo = new HashMap<>(10);
         Runtime runtime = Runtime.getRuntime();
         MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
-        final long mebibyte = 1048576L;
+        final long mebibyte = 1_048_576L;
 
         /* Total amount of free memory available to the JVM */
         jvmInfo.put("VmFreeMem", runtime.freeMemory() / mebibyte);
@@ -138,47 +140,32 @@ public class Memory implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
 
-        Memory memory = (Memory) o;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        if (total != null ? !total.equals(memory.total) : memory.total != null)
-            return false;
-        if (free != null ? !free.equals(memory.free) : memory.free != null)
-            return false;
-        if (buffers != null ? !buffers.equals(memory.buffers) : memory.buffers != null)
-            return false;
-        if (cached != null ? !cached.equals(memory.cached) : memory.cached != null)
-            return false;
-        if (free_total != null ? !free_total.equals(memory.free_total) : memory.free_total != null)
-            return false;
-        if (vm_free != null ? !vm_free.equals(memory.vm_free) : memory.vm_free != null)
-            return false;
-        if (vm_max != null ? !vm_max.equals(memory.vm_max) : memory.vm_max != null)
-            return false;
-        if (vm_total != null ? !vm_total.equals(memory.vm_total) : memory.vm_total != null)
-            return false;
-        if (vm_heap != null ? !vm_heap.equals(memory.vm_heap) : memory.vm_heap != null)
-            return false;
-        return !(vm_nonheap != null ? !vm_nonheap.equals(memory.vm_nonheap) : memory.vm_nonheap != null);
-
+        final Memory memory = (Memory) o;
+        return Objects.equals(total, memory.total)
+                && Objects.equals(free, memory.free)
+                && Objects.equals(buffers, memory.buffers)
+                && Objects.equals(cached, memory.cached)
+                && Objects.equals(free_total, memory.free_total)
+                && Objects.equals(vm_free, memory.vm_free)
+                && Objects.equals(vm_max, memory.vm_max)
+                && Objects.equals(vm_total, memory.vm_total)
+                && Objects.equals(vm_heap, memory.vm_heap)
+                && Objects.equals(vm_nonheap, memory.vm_nonheap);
     }
 
     @Override
     public int hashCode() {
-        int result = total != null ? total.hashCode() : 0;
-        result = 31 * result + (free != null ? free.hashCode() : 0);
-        result = 31 * result + (buffers != null ? buffers.hashCode() : 0);
-        result = 31 * result + (cached != null ? cached.hashCode() : 0);
-        result = 31 * result + (free_total != null ? free_total.hashCode() : 0);
-        result = 31 * result + (vm_free != null ? vm_free.hashCode() : 0);
-        result = 31 * result + (vm_max != null ? vm_max.hashCode() : 0);
-        result = 31 * result + (vm_total != null ? vm_total.hashCode() : 0);
-        result = 31 * result + (vm_heap != null ? vm_heap.hashCode() : 0);
-        result = 31 * result + (vm_nonheap != null ? vm_nonheap.hashCode() : 0);
-        return result;
+        return Objects.hash(total, free, buffers, cached, free_total, vm_free,
+                vm_max, vm_total, vm_heap, vm_nonheap);
     }
 
     @Override

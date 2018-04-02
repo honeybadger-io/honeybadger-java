@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "AssertionFailureIgnored"})
 public class PlayConfigContextTest {
     @Test
     public void canFlattenASingleLevel() {

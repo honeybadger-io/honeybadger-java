@@ -10,6 +10,7 @@ import java.util.LinkedList;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@SuppressWarnings("JdkObsolete")
 public class Causes extends LinkedList<Cause> implements Serializable {
     private static final long serialVersionUID = -5359764114506595006L;
 

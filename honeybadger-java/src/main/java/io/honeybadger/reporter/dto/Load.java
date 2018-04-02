@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -53,17 +55,18 @@ public class Load implements Serializable {
         }
     }
 
-    static Number[] findLinuxLoadAverages(OperatingSystemMXBean osBean) {
+    static Number[] findLinuxLoadAverages(final OperatingSystemMXBean osBean) {
         File loadavg = new File("/proc/loadavg");
 
         if (loadavg.exists() &&  loadavg.isFile() && loadavg.canRead()) {
-            try (Scanner scanner = new Scanner(loadavg)) {
+            try (Scanner scanner = new Scanner(loadavg,
+                    StandardCharsets.US_ASCII.name())) {
                 if (!scanner.hasNext()) {
                     return defaultLoadAverages(osBean);
                 }
 
-                String line = scanner.nextLine();
-                String[] values = line.split(" ", 4);
+                final String line = scanner.nextLine();
+                final String[] values = line.split(" ", 4);
 
                 return new Number[]{
                         Double.parseDouble(values[0]),
@@ -88,24 +91,25 @@ public class Load implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
 
-        Load load = (Load) o;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        if (one != null ? !one.equals(load.one) : load.one != null) return false;
-        if (five != null ? !five.equals(load.five) : load.five != null) return false;
-        return !(fifteen != null ? !fifteen.equals(load.fifteen) : load.fifteen != null);
-
+        final Load load = (Load) o;
+        return Objects.equals(one, load.one)
+                && Objects.equals(five, load.five)
+                && Objects.equals(fifteen, load.fifteen);
     }
 
     @Override
     public int hashCode() {
-        int result = one != null ? one.hashCode() : 0;
-        result = 31 * result + (five != null ? five.hashCode() : 0);
-        result = 31 * result + (fifteen != null ? fifteen.hashCode() : 0);
-        return result;
+
+        return Objects.hash(one, five, fifteen);
     }
 
     @Override
