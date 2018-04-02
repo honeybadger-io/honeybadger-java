@@ -6,14 +6,16 @@ import org.slf4j.MDC;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Class representing metadata and run-time state.
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
-public class Details extends LinkedHashMap<String, LinkedHashMap<String, String>>
+public class Details extends LinkedHashMap<String, Map<String, String>>
         implements Serializable {
     private static final long serialVersionUID = -6238693264237448645L;
 
@@ -50,18 +52,29 @@ public class Details extends LinkedHashMap<String, LinkedHashMap<String, String>
         return map;
     }
 
-    protected LinkedHashMap<String, String> systemProperties() {
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+    protected Map<String, String> systemProperties() {
+        TreeMap<String, String> map = new TreeMap<>();
         Set<String> excludedSysProps = config.getExcludedSysProps();
 
         for (Map.Entry<Object, Object> entry: System.getProperties().entrySet()) {
-            // We skip all excluded properties
-            if (excludedSysProps.contains(entry.getKey().toString())) {
+            final Object key = entry.getKey();
+
+            if (key == null) {
                 continue;
             }
 
-            map.put(entry.getKey().toString(),
-                    entry.getValue().toString());
+            final String stringKey = Objects.toString(key);
+
+            if (stringKey.isEmpty()) {
+                continue;
+            }
+
+            // We skip all excluded properties
+            if (excludedSysProps.contains(stringKey)) {
+                continue;
+            }
+
+            map.put(stringKey, entry.getValue().toString());
         }
 
         return map;
