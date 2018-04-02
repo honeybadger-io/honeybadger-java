@@ -41,3 +41,6 @@
        - Added Spring Framework support.
 2.0.0  - Migrated from gradle to Maven.
        - We now ship unshaded artifacts by default.
+       - We now require Java 8.
+       - System properties are now sorted.
+       - API for manually building request objects improved.

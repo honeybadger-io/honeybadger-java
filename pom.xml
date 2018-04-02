@@ -62,7 +62,8 @@
         <checkstyle.skip>false</checkstyle.skip>
         <maven.test.skip>false</maven.test.skip>
         <maven.integration.test.skip>false</maven.integration.test.skip>
-        <java.min.version>1.8</java.min.version>
+        <java.min.src.version>1.8</java.min.src.version>
+        <java.min.target.version>1.8</java.min.target.version>
         <maven.min.version>3.0</maven.min.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -110,6 +111,10 @@
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <maven-shade-plugin.version>3.1.0</maven-shade-plugin.version>
         <maven-cargo-plugin.version>1.6.7</maven-cargo-plugin.version>
+
+        <!-- Maven plugin dependency versions -->
+        <maven-plexus-compiler-javac-errorprone.version>2.8.3</maven-plexus-compiler-javac-errorprone.version>
+        <maven-error-prone-core.version>2.2.0</maven-error-prone-core.version>
     </properties>
 
     <build>
@@ -171,9 +176,29 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${java.min.version}</source>
-                    <target>${java.min.version}</target>
+                    <compilerId>javac-with-errorprone</compilerId>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <source>${java.min.src.version}</source>
+                    <target>${java.min.target.version}</target>
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac-errorprone</artifactId>
+                        <version>${maven-plexus-compiler-javac-errorprone.version}</version>
+                    </dependency>
+                    <!-- override plexus-compiler-javac-errorprone's dependency on
+                         Error Prone with the latest version -->
+                    <dependency>
+                        <groupId>com.google.errorprone</groupId>
+                        <artifactId>error_prone_core</artifactId>
+                        <version>${maven-error-prone-core.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -211,7 +236,7 @@
                         <configuration>
                             <rules>
                                 <enforceBytecodeVersion>
-                                    <maxJdkVersion>${java.min.version}</maxJdkVersion>
+                                    <maxJdkVersion>${java.min.target.version}</maxJdkVersion>
                                 </enforceBytecodeVersion>
                             </rules>
                             <fail>false</fail>

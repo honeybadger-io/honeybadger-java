@@ -24,6 +24,9 @@ import java.io.Reader;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -79,8 +82,8 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @return UUID of error created, if there was a problem null
      */
     @Override
-    public NoticeReportResult reportError(Throwable error) {
-        return submitError(error, null);
+    public NoticeReportResult reportError(final Throwable error) {
+        return reportError(error, null, null, Collections.emptySet());
     }
 
     /**
@@ -95,9 +98,57 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @return UUID of error created, if there was a problem or ignored null
      */
     @Override
-    public NoticeReportResult reportError(Throwable error, Object request) {
-        if (error == null) { return null; }
-        if (request == null) { return submitError(error, null); }
+    public NoticeReportResult reportError(final Throwable error,
+                                          final Object request) {
+        return reportError(error, request, null, Collections.emptySet());
+    }
+
+    /**
+     * Send any Java {@link java.lang.Throwable} to the Honeybadger error
+     * reporting interface.
+     *
+     * Currently only {@link javax.servlet.http.HttpServletRequest} objects
+     * are supported as request properties.
+     *
+     * @param error error to report
+     * @param request Object to parse for request properties
+     * @param message message to report instead of message associated with exception
+     * @return UUID of error created, if there was a problem or ignored null
+     */
+    @Override
+    public NoticeReportResult reportError(final Throwable error,
+                                          final Object request,
+                                          final String message) {
+        return reportError(error, request, message, Collections.emptySet());
+    }
+
+    /**
+     * Send any Java {@link java.lang.Throwable} to the Honeybadger error
+     * reporting interface.
+     *
+     * Currently only {@link javax.servlet.http.HttpServletRequest} objects
+     * are supported as request properties.
+     *
+     * @param error error to report
+     * @param request Object to parse for request properties
+     * @param message message to report instead of message associated with exception
+     * @param tags tag values (duplicates will be removed)
+     * @return UUID of error created, if there was a problem or ignored null
+     */
+    @Override
+    public NoticeReportResult reportError(final Throwable error,
+                                          final Object request,
+                                          final String message,
+                                          final Iterable<String> tags) {
+        if (error == null) {
+            return null;
+        }
+
+        final Set<String> tagsSet = aggregateTags(tags);
+
+        if (request == null) {
+            return submitError(error, null, message, tagsSet);
+        }
 
         final io.honeybadger.reporter.dto.Request requestDetails;
 
@@ -122,12 +173,49 @@ public class HoneybadgerReporter implements NoticeReporter {
             requestDetails = null;
         }
 
-        return submitError(error, requestDetails);
+        return submitError(error, requestDetails, message, tagsSet);
     }
 
     @Override
     public ConfigContext getConfig() {
         return config;
+    }
+
+    /**
+     * Processes an {@link Iterable} of Strings, discards invalid values and
+     * aggregates all values into an ordered set.
+     *
+     * @param tags tag values
+     * @return unique set of tags in the same order as input values
+     */
+    protected Set<String> aggregateTags(final Iterable<String> tags) {
+        if (tags == null || tags == Collections.EMPTY_SET) {
+            return Collections.emptySet();
+        }
+
+        final Iterator<String> itr = tags.iterator();
+
+        if (!itr.hasNext()) {
+            return Collections.emptySet();
+        }
+
+        final LinkedHashSet<String> tagHashSet = new LinkedHashSet<>();
+
+        while (itr.hasNext()) {
+            final String tag = itr.next();
+
+            if (tag == null) {
+                continue;
+            }
+
+            final String trimmed = tag.trim();
+
+            if (!trimmed.isEmpty()) {
+                tagHashSet.add(trimmed);
+            }
+        }
+
+        return Collections.unmodifiableSet(tagHashSet);
     }
 
     protected boolean supportsHttpServletRequest() {
@@ -148,8 +236,10 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
     }
 
-    protected NoticeReportResult submitError(
-            final Throwable error, final io.honeybadger.reporter.dto.Request request) {
+    protected NoticeReportResult submitError(final Throwable error,
+                                             final io.honeybadger.reporter.dto.Request request,
+                                             final String message,
+                                             final Set<String> tags) {
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
                 config.getExcludedClasses().contains(errorClassName)) {
@@ -159,12 +249,18 @@ public class HoneybadgerReporter implements NoticeReporter {
         final Notice notice = new Notice(config);
 
         if (request != null) {
-            final String message = parseMessage(error);
+            final String reportedMessage;
+            if (message != null && !message.isEmpty()) {
+                reportedMessage = message;
+            } else {
+                reportedMessage = parseMessage(error);
+            }
+
             NoticeDetails noticeDetails = new NoticeDetails(
-                    config, error, Collections.emptySet(), message);
+                    config, error, tags, reportedMessage);
             notice.setRequest(request).setError(noticeDetails);
         } else {
-            NoticeDetails noticeDetails = new NoticeDetails(config, error);
+            NoticeDetails noticeDetails = new NoticeDetails(config, error, tags);
             notice.setError(noticeDetails);
         }
 
