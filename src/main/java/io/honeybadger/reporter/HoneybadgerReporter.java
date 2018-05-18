@@ -68,7 +68,7 @@ public class HoneybadgerReporter implements NoticeReporter {
      */
     @Override
     public NoticeReportResult reportError(Throwable error) {
-        return submitError(error, null);
+        return submitError(error, null, null);
     }
 
     /**
@@ -84,8 +84,25 @@ public class HoneybadgerReporter implements NoticeReporter {
      */
     @Override
     public NoticeReportResult reportError(Throwable error, Object request) {
+        return reportError(error, request, new HashSet<String>());
+    }
+
+    /**
+     * Send any Java {@link java.lang.Throwable} to the Honeybadger error
+     * reporting interface.
+     *
+     * Currently only {@link javax.servlet.http.HttpServletRequest} objects
+     * are supported as request properties.
+     *
+     * @param error error to report
+     * @param request Object to parse for request properties
+     * @param tags message tags
+     * @return UUID of error created, if there was a problem or ignored null
+     */
+    @Override
+    public NoticeReportResult reportError(Throwable error, Object request, Set<String> tags) {
         if (error == null) { return null; }
-        if (request == null) { return submitError(error, null); }
+        if (request == null) { return submitError(error, null, tags); }
 
         final io.honeybadger.reporter.dto.Request requestDetails;
 
@@ -110,7 +127,7 @@ public class HoneybadgerReporter implements NoticeReporter {
             requestDetails = null;
         }
 
-        return submitError(error, requestDetails);
+        return submitError(error, requestDetails, tags);
     }
 
     protected boolean supportsHttpServletRequest() {
@@ -132,7 +149,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     }
 
     protected NoticeReportResult submitError(Throwable error,
-                               io.honeybadger.reporter.dto.Request request) {
+                               io.honeybadger.reporter.dto.Request request, Set<String> tags) {
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
                 config.getExcludedClasses().contains(errorClassName)) {
@@ -140,7 +157,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
 
         Notice notice = new Notice(config)
-                .setError(new NoticeDetails(config, error));
+                .setError(new NoticeDetails(config, error, tags));
 
         if (request != null) {
             notice.setRequest(request);

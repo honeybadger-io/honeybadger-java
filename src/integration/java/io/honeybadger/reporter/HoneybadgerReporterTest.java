@@ -2,12 +2,14 @@ package io.honeybadger.reporter;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import io.honeybadger.loader.HoneybadgerNoticeLoader;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.dto.CgiData;
 import io.honeybadger.reporter.dto.Notice;
 import io.honeybadger.reporter.dto.Request;
+import io.honeybadger.reporter.dto.NoticeDetails;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
 import org.apache.http.HttpHeaders;
 import org.junit.Test;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -61,9 +64,11 @@ public class HoneybadgerReporterTest {
                 "Set-Cookie", cookies
         );
 
+        Set<String> tags = Sets.newHashSet("test", "local");
+
         HttpServletRequest request = new FakeHttpServletRequest(headers);
 
-        NoticeReportResult result = reporter.reportError(t, request);
+        NoticeReportResult result = reporter.reportError(t, request, tags);
         assertNotNull("Result of error report should never be null", result);
 
         UUID id = result.getId();
