@@ -1,7 +1,7 @@
 buildscript {
     repositories { jcenter() }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:+'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 
@@ -15,7 +15,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.honeybadger'
 
-def release = '1.1.0'
+def release = '1.1.1'
 def snapshot = ''
 // concatenate release version with snapshot version number
 version = "${release}${snapshot && !snapshot.isEmpty() ? ('-' + snapshot) : ''}"
@@ -33,7 +33,7 @@ ext {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = '3.3'
     distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 
@@ -247,7 +247,6 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.shadow
-
             artifact sourcesJar {
                 classifier "sources"
             }
