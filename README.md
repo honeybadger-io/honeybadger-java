@@ -183,7 +183,8 @@ way of doing things.
 
 If you want to send exceptions to HoneyBadger without having to register an uncaught 
 exception handler, you can create an instance of ```HonebadgerReporter``` and call 
-the ```reportError(Throwable error)``` method directly.
+the ```reportError(Throwable error)``` method directly. Besides, you can add tags to
+your reported exception by calling ```reportError(Throwable error, Object request, Set<String> tags)```.
 
 This is an example of calling how you might configure the Honeybadger
 library and use it to send an error to the API programmatically.
@@ -194,6 +195,7 @@ package com.myapp;
 import io.honeybadger.reporter.HoneybadgerReporter;
 import io.honeybadger.reporter.NoticeReporter;
 import io.honeybadger.reporter.config.StandardConfigContext;
+import com.google.common.collect.ImmutableSet;
 
 public class ApiUsage {
     public static void main(String[] argv) {
@@ -205,6 +207,9 @@ public class ApiUsage {
         NoticeReporter reporter = new HoneybadgerReporter(config);
         Throwable t = new RuntimeException("I'm a custom error");
         reporter.reportError(t);
+
+        // send exception with tags
+        reporter.reportError(t, null, ImmutableSet.of("testing", "example"));
     }
 }
 ```
