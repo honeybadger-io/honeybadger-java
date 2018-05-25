@@ -39,3 +39,4 @@
        - Rewrote README.md to conform to the same standards as the other Honeybadger.io
          documentation.
        - Added Spring Framework support.
+1.1.1  - Added support for tags
