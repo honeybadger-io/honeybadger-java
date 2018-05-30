@@ -244,8 +244,16 @@ signing {
 }
 
 publishing {
+    repositories{
+        maven{
+            url "https://mymavenrepo.com/repo/3RngugNS1G2SDIOzSUwZ"
+        }
+    }
     publications {
         maven(MavenPublication) {
+            groupId 'io.honeybadger'
+            artifactId 'honeybadger-java-play-2.6_2.12'
+            version '1.0.0'
             from components.shadow
 
             artifact sourcesJar {
