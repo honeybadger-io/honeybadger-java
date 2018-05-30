@@ -13,13 +13,14 @@ import play.api.UsefulException;
 import play.api.http.HttpErrorHandlerExceptions;
 import play.api.routing.Router;
 import play.http.DefaultHttpErrorHandler;
-import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Error handler for the Play Framework.
@@ -45,7 +46,7 @@ public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
     }
 
     @Override
-    public F.Promise<Result> onServerError(Http.RequestHeader request, Throwable exception) {
+    public CompletionStage<Result> onServerError(Http.RequestHeader request, Throwable exception) {
 
         NoticeReportResult errorResult = reporter.reportError(exception, request);
 
@@ -72,23 +73,7 @@ public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
             }
         } catch (Exception e) {
             Logger.error("Error while handling error", e);
-            return F.Promise.<Result>pure(Results.internalServerError());
+            return CompletableFuture.completedFuture(Results.internalServerError());
         }
-    }
-
-    /**
-     * Convert the given exception to an exception that Play can report more information about.
-     *
-     * This will generate an id for the exception, and in dev mode, will load the source code for the code that threw the
-     * exception, making it possible to report on the location that the exception was thrown from.
-     *
-     * @param throwable exception being converted to UsefulException
-     * @return input throwable represented as UsefulException
-     */
-    protected UsefulException throwableToUsefulException(final Throwable throwable) {
-        return HttpErrorHandlerExceptions.throwableToUsefulException(
-                sourceMapper.sourceMapper(),
-                environment.isProd(),
-                throwable);
     }
 }
