@@ -150,16 +150,16 @@ public class Memory implements Serializable {
         }
 
         final Memory memory = (Memory) o;
-        return Objects.equals(total, memory.total)
-                && Objects.equals(free, memory.free)
-                && Objects.equals(buffers, memory.buffers)
-                && Objects.equals(cached, memory.cached)
-                && Objects.equals(free_total, memory.free_total)
-                && Objects.equals(vm_free, memory.vm_free)
-                && Objects.equals(vm_max, memory.vm_max)
-                && Objects.equals(vm_total, memory.vm_total)
-                && Objects.equals(vm_heap, memory.vm_heap)
-                && Objects.equals(vm_nonheap, memory.vm_nonheap);
+        return Objects.equals(total, memory.total) &&
+                Objects.equals(free, memory.free) &&
+                Objects.equals(buffers, memory.buffers) &&
+                Objects.equals(cached, memory.cached) &&
+                Objects.equals(free_total, memory.free_total) &&
+                Objects.equals(vm_free, memory.vm_free) &&
+                Objects.equals(vm_max, memory.vm_max) &&
+                Objects.equals(vm_total, memory.vm_total) &&
+                Objects.equals(vm_heap, memory.vm_heap) &&
+                Objects.equals(vm_nonheap, memory.vm_nonheap);
     }
 
     @Override

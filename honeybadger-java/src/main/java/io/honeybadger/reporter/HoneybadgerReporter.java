@@ -10,6 +10,7 @@ import io.honeybadger.reporter.dto.NoticeDetails;
 import io.honeybadger.reporter.dto.PlayHttpRequestFactory;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
@@ -266,11 +267,11 @@ public class HoneybadgerReporter implements NoticeReporter {
                         .returnResponse();
                 int responseCode = response.getStatusLine().getStatusCode();
 
-                if (responseCode != 201)
+                if (responseCode != HttpStatus.SC_CREATED) {
                     logger.error("Honeybadger did not respond with the " +
-                                 "correct code. Response was [{}]. Retries={}",
-                                 responseCode, retries);
-                else {
+                                    "correct code. Response was [{}]. Retries={}",
+                            responseCode, retries);
+                } else {
                     UUID id = parseErrorId(response, gson);
 
                     return new NoticeReportResult(id, notice, error);

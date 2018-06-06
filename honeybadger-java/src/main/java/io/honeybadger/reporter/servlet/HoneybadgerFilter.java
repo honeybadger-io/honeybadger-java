@@ -9,11 +9,19 @@ import io.honeybadger.reporter.config.ServletFilterConfigContext;
 import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import org.apache.http.entity.ContentType;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.UUID;
 
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
@@ -95,7 +103,7 @@ public class HoneybadgerFilter implements Filter {
     }
 
     protected void jsonError(UUID errorId, ServletResponse response)
-            throws IOException{
+            throws IOException {
         String json = String.format("{ error_id : \"%s\" }", errorId);
         response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
         response.getWriter().append(json);

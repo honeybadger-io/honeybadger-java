@@ -157,7 +157,7 @@ pass around Honeybadger error ids instead of the default Play error ids.
 #### Spring Framework Usage
 
 This library has been tested against Spring 4.2.2 using Spring Boot. After adding 
-Hondeybadger as a dependency to your dependency manager as explained
+Honeybadger as a dependency to your dependency manager as explained
 in the [Install the jar section](#instal-the-jar-section), you can enable Honeybadger
 as an error handler by adding the `honeybadger.api_key` configuration parameter to
 your [Spring configuration](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html).

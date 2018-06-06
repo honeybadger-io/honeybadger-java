@@ -2,7 +2,7 @@
 <!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD Suppressions 1.1//EN"
         "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
-    <!-- ignore suppressions for test classes -->
+    <!-- ignore inspections for test classes -->
     <suppress checks="MagicNumber" files="^.*Test\.java$" />
     <suppress checks="JavadocMethod" files="^.*Test\.java$" />
     <suppress checks="JavadocType" files="^.*Test\.java$" />
@@ -11,4 +11,10 @@
     <suppress checks="IllegalThrows" files="^.*Test\.java$" />
     <suppress checks="AvoidStarImport" files="^.*Test\.java$" />
     <suppress checks="ImportControl" files="^.*Test\.java$" />
+    <!-- ignore inspections for DTOs until we have a better serialization strategy -->
+    <suppress checks="LocalVariableNameCheck" files="^.*\/dto\/.*\.java" />
+    <suppress checks="FinalParametersCheck" files="^.*\/dto\/.*\.java" />
+    <suppress checks="VisibilityModifier" files="^.*\/dto\/.*\.java" />
+    <suppress checks="MemberName" files="^.*\/dto\/.*\.java" />
+    <suppress checks="ParameterNumber" files="^.*\/dto\/.*\.java" />
 </suppressions>

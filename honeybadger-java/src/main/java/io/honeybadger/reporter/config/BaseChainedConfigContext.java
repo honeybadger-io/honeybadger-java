@@ -2,6 +2,7 @@ package io.honeybadger.reporter.config;
 
 import java.net.URI;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static io.honeybadger.reporter.config.MapConfigContext.*;
@@ -17,6 +18,11 @@ import static io.honeybadger.util.HBStringUtils.isPresent;
  * @since 1.0.10
  */
 public abstract class BaseChainedConfigContext implements ConfigContext {
+    /**
+     * Singleton instance of default configuration for easy reference.
+     */
+    public static final ConfigContext DEFAULT_CONFIG =
+            new DefaultsConfigContext();
     protected String environment;
     protected URI honeybadgerUrl;
     protected String apiKey;
@@ -29,10 +35,6 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     protected String feedbackFormPath;
     protected String httpProxyHost;
     protected Integer httpProxyPort;
-
-    /** Singleton instance of default configuration for easy reference. */
-    public static final ConfigContext DEFAULT_CONFIG =
-            new DefaultsConfigContext();
 
     /**
      * Constructor that prepopulates configuration context with the default
@@ -57,9 +59,19 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return environment;
     }
 
+    public BaseChainedConfigContext setEnvironment(String environment) {
+        this.environment = environment;
+        return this;
+    }
+
     @Override
     public URI getHoneybadgerUrl() {
         return honeybadgerUrl;
+    }
+
+    public BaseChainedConfigContext setHoneybadgerUrl(URI honeybadgerUrl) {
+        this.honeybadgerUrl = honeybadgerUrl;
+        return this;
     }
 
     @Override
@@ -67,9 +79,19 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return apiKey;
     }
 
+    public BaseChainedConfigContext setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+        return this;
+    }
+
     @Override
     public Set<String> getExcludedSysProps() {
         return excludedSysProps;
+    }
+
+    public BaseChainedConfigContext setExcludedSysProps(Set<String> excludedSysProps) {
+        this.excludedSysProps = excludedSysProps;
+        return this;
     }
 
     @Override
@@ -77,9 +99,19 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return excludedParams;
     }
 
+    public BaseChainedConfigContext setExcludedParams(Set<String> excludedParams) {
+        this.excludedParams = excludedParams;
+        return this;
+    }
+
     @Override
     public Set<String> getExcludedClasses() {
         return excludedClasses;
+    }
+
+    public BaseChainedConfigContext setExcludedClasses(Set<String> excludedClasses) {
+        this.excludedClasses = excludedClasses;
+        return this;
     }
 
     @Override
@@ -87,9 +119,19 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return applicationPackage;
     }
 
+    public BaseChainedConfigContext setApplicationPackage(String applicationPackage) {
+        this.applicationPackage = applicationPackage;
+        return this;
+    }
+
     @Override
     public String getHoneybadgerReadApiKey() {
         return honeybadgerReadApiKey;
+    }
+
+    public BaseChainedConfigContext setHoneybadgerReadApiKey(String honeybadgerReadApiKey) {
+        this.honeybadgerReadApiKey = honeybadgerReadApiKey;
+        return this;
     }
 
     @Override
@@ -102,14 +144,29 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return feedbackFormPath;
     }
 
+    public BaseChainedConfigContext setFeedbackFormPath(String feedbackFormPath) {
+        this.feedbackFormPath = feedbackFormPath;
+        return this;
+    }
+
     @Override
     public String getHttpProxyHost() {
         return httpProxyHost;
     }
 
+    public BaseChainedConfigContext setHttpProxyHost(String httpProxyHost) {
+        this.httpProxyHost = httpProxyHost;
+        return this;
+    }
+
     @Override
     public Integer getHttpProxyPort() {
         return httpProxyPort;
+    }
+
+    public BaseChainedConfigContext setHttpProxyPort(Integer httpProxyPort) {
+        this.httpProxyPort = httpProxyPort;
+        return this;
     }
 
     /**
@@ -167,56 +224,6 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         }
     }
 
-    public BaseChainedConfigContext setEnvironment(String environment) {
-        this.environment = environment;
-        return this;
-    }
-
-    public BaseChainedConfigContext setHoneybadgerUrl(URI honeybadgerUrl) {
-        this.honeybadgerUrl = honeybadgerUrl;
-        return this;
-    }
-
-    public BaseChainedConfigContext setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-        return this;
-    }
-
-    public BaseChainedConfigContext setExcludedSysProps(Set<String> excludedSysProps) {
-        this.excludedSysProps = excludedSysProps;
-        return this;
-    }
-
-    public BaseChainedConfigContext setExcludedParams(Set<String> excludedParams) {
-        this.excludedParams = excludedParams;
-        return this;
-    }
-
-    public BaseChainedConfigContext setExcludedClasses(Set<String> excludedClasses) {
-        this.excludedClasses = excludedClasses;
-        return this;
-    }
-
-    public BaseChainedConfigContext setApplicationPackage(String applicationPackage) {
-        this.applicationPackage = applicationPackage;
-        return this;
-    }
-
-    public BaseChainedConfigContext setHoneybadgerReadApiKey(String honeybadgerReadApiKey) {
-        this.honeybadgerReadApiKey = honeybadgerReadApiKey;
-        return this;
-    }
-
-    public BaseChainedConfigContext setHttpProxyHost(String httpProxyHost) {
-        this.httpProxyHost = httpProxyHost;
-        return this;
-    }
-
-    public BaseChainedConfigContext setHttpProxyPort(Integer httpProxyPort) {
-        this.httpProxyPort = httpProxyPort;
-        return this;
-    }
-
     public Boolean setFeedbackFormDisplayed(Boolean feedbackFormDisplayed) {
         if (feedbackFormDisplayed == null) {
             throw new IllegalArgumentException(
@@ -227,59 +234,30 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return feedbackFormDisplayed;
     }
 
-    public BaseChainedConfigContext setFeedbackFormPath(String feedbackFormPath) {
-        this.feedbackFormPath = feedbackFormPath;
-        return this;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         BaseChainedConfigContext that = (BaseChainedConfigContext) o;
-
-        if (environment != null ? !environment.equals(that.environment) : that.environment != null)
-            return false;
-        if (honeybadgerUrl != null ? !honeybadgerUrl.equals(that.honeybadgerUrl) : that.honeybadgerUrl != null)
-            return false;
-        if (apiKey != null ? !apiKey.equals(that.apiKey) : that.apiKey != null)
-            return false;
-        if (excludedSysProps != null ? !excludedSysProps.equals(that.excludedSysProps) : that.excludedSysProps != null)
-            return false;
-        if (excludedParams != null ? !excludedParams.equals(that.excludedParams) : that.excludedParams != null)
-            return false;
-        if (excludedClasses != null ? !excludedClasses.equals(that.excludedClasses) : that.excludedClasses != null)
-            return false;
-        if (applicationPackage != null ? !applicationPackage.equals(that.applicationPackage) : that.applicationPackage != null)
-            return false;
-        if (honeybadgerReadApiKey != null ? !honeybadgerReadApiKey.equals(that.honeybadgerReadApiKey) : that.honeybadgerReadApiKey != null)
-            return false;
-        if (feedbackFormDisplayed != null ? !feedbackFormDisplayed.equals(that.feedbackFormDisplayed) : that.feedbackFormDisplayed != null)
-            return false;
-        if (feedbackFormPath != null ? !feedbackFormPath.equals(that.feedbackFormPath) : that.feedbackFormPath != null)
-            return false;
-        if (httpProxyHost != null ? !httpProxyHost.equals(that.httpProxyHost) : that.httpProxyHost != null)
-            return false;
-        return !(httpProxyPort != null ? !httpProxyPort.equals(that.httpProxyPort) : that.httpProxyPort != null);
-
+        return Objects.equals(environment, that.environment) &&
+                Objects.equals(honeybadgerUrl, that.honeybadgerUrl) &&
+                Objects.equals(apiKey, that.apiKey) &&
+                Objects.equals(excludedSysProps, that.excludedSysProps) &&
+                Objects.equals(excludedParams, that.excludedParams) &&
+                Objects.equals(excludedClasses, that.excludedClasses) &&
+                Objects.equals(applicationPackage, that.applicationPackage) &&
+                Objects.equals(honeybadgerReadApiKey, that.honeybadgerReadApiKey) &&
+                Objects.equals(feedbackFormDisplayed, that.feedbackFormDisplayed) &&
+                Objects.equals(feedbackFormPath, that.feedbackFormPath) &&
+                Objects.equals(httpProxyHost, that.httpProxyHost) &&
+                Objects.equals(httpProxyPort, that.httpProxyPort);
     }
 
     @Override
     public int hashCode() {
-        int result = environment != null ? environment.hashCode() : 0;
-        result = 31 * result + (honeybadgerUrl != null ? honeybadgerUrl.hashCode() : 0);
-        result = 31 * result + (apiKey != null ? apiKey.hashCode() : 0);
-        result = 31 * result + (excludedSysProps != null ? excludedSysProps.hashCode() : 0);
-        result = 31 * result + (excludedParams != null ? excludedParams.hashCode() : 0);
-        result = 31 * result + (excludedClasses != null ? excludedClasses.hashCode() : 0);
-        result = 31 * result + (applicationPackage != null ? applicationPackage.hashCode() : 0);
-        result = 31 * result + (honeybadgerReadApiKey != null ? honeybadgerReadApiKey.hashCode() : 0);
-        result = 31 * result + (feedbackFormDisplayed != null ? feedbackFormDisplayed.hashCode() : 0);
-        result = 31 * result + (feedbackFormPath != null ? feedbackFormPath.hashCode() : 0);
-        result = 31 * result + (httpProxyHost != null ? httpProxyHost.hashCode() : 0);
-        result = 31 * result + (httpProxyPort != null ? httpProxyPort.hashCode() : 0);
-        return result;
+        return Objects.hash(environment, honeybadgerUrl, apiKey, excludedSysProps, excludedParams, excludedClasses,
+                applicationPackage, honeybadgerReadApiKey, feedbackFormDisplayed, feedbackFormPath, httpProxyHost,
+                httpProxyPort);
     }
 
     @Override

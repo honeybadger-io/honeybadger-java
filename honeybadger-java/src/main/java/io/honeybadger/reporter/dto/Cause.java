@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This class represents a single exception in a serious of chained
@@ -29,20 +30,14 @@ public class Cause implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Cause cause = (Cause) o;
-
-        if (className != null ? !className.equals(cause.className) : cause.className != null) return false;
-        if (message != null ? !message.equals(cause.message) : cause.message != null) return false;
-        return !(backtrace != null ? !backtrace.equals(cause.backtrace) : cause.backtrace != null);
-
+        return Objects.equals(className, cause.className) &&
+                Objects.equals(message, cause.message) &&
+                Objects.equals(backtrace, cause.backtrace);
     }
 
     @Override
     public int hashCode() {
-        int result = className != null ? className.hashCode() : 0;
-        result = 31 * result + (message != null ? message.hashCode() : 0);
-        result = 31 * result + (backtrace != null ? backtrace.hashCode() : 0);
-        return result;
+        return Objects.hash(className, message, backtrace);
     }
 }

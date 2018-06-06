@@ -73,7 +73,7 @@
         <failsafe.useSystemClassLoader>true</failsafe.useSystemClassLoader>
 
         <!-- Dependency versions -->
-        <dependency.checkstyle.version>8.8</dependency.checkstyle.version>
+        <dependency.checkstyle.version>8.10</dependency.checkstyle.version>
         <dependency.slfj.version>1.7.25</dependency.slfj.version>
         <dependency.servlet-api.version>4.0.0</dependency.servlet-api.version>
         <dependency.play.version>2.6.12</dependency.play.version>
@@ -90,7 +90,7 @@
         <dependency.json-schema-validator>2.2.6</dependency.json-schema-validator>
 
         <!-- Plugin versions -->
-        <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+        <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
         <maven-build-helper-plugin>1.10</maven-build-helper-plugin>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -119,6 +119,8 @@
 
     <build>
         <plugins>
+            <!-- checkstyle is enabled in the site goal for now. There are too many errors
+                 to add it to the build phase. -->
             <!--<plugin>-->
                 <!--<groupId>org.apache.maven.plugins</groupId>-->
                 <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
@@ -340,6 +342,52 @@
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>${maven-jxr-plugin.version}</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <consoleOutput>false</consoleOutput>
+                    <skip>${checkstyle.skip}</skip>
+                    <suppressionsLocation>suppressions.xml</suppressionsLocation>
+                    <violationSeverity>warning</violationSeverity>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
+                <!--<version>${maven-checkstyle-plugin.version}</version>-->
+                <!--<dependencies>-->
+                    <!--<dependency>-->
+                        <!--<groupId>com.puppycrawl.tools</groupId>-->
+                        <!--<artifactId>checkstyle</artifactId>-->
+                        <!--<version>${dependency.checkstyle.version}</version>-->
+                    <!--</dependency>-->
+                <!--</dependencies>-->
+                <!--<configuration>-->
+                    <!--<configLocation>checkstyle.xml</configLocation>-->
+                    <!--<consoleOutput>false</consoleOutput>-->
+                    <!--<skip>${checkstyle.skip}</skip>-->
+                    <!--<suppressionsLocation>suppressions.xml</suppressionsLocation>-->
+                    <!--<violationSeverity>warning</violationSeverity>-->
+                <!--</configuration>-->
+
+                <!--<reportSets>-->
+                    <!--<reportSet>-->
+                        <!--<reports>-->
+                            <!--<report>checkstyle</report>-->
+                        <!--</reports>-->
+                    <!--</reportSet>-->
+                <!--</reportSets>-->
+            <!--</plugin>-->
         </plugins>
     </reporting>
 
@@ -353,6 +401,22 @@
         <profile>
             <id>release</id>
             <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-checkstyle-plugin</artifactId>
+                            <version>3.0.0</version>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>com.puppycrawl.tools</groupId>
+                                    <artifactId>checkstyle</artifactId>
+                                    <version>${dependency.checkstyle.version}</version>
+                                </dependency>
+                            </dependencies>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

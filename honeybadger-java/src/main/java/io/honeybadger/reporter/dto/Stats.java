@@ -1,6 +1,7 @@
 package io.honeybadger.reporter.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Class containing the statistics about the running JVM.
@@ -38,9 +39,7 @@ public class Stats implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = mem != null ? mem.hashCode() : 0;
-        result = 31 * result + (load != null ? load.hashCode() : 0);
-        return result;
+        return Objects.hash(mem, load);
     }
 
     @Override

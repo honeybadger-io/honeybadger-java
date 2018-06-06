@@ -3,6 +3,7 @@ package io.honeybadger.reporter.dto;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * One single line on a backtrace.
@@ -81,22 +82,16 @@ public class BacktraceElement implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         BacktraceElement that = (BacktraceElement) o;
-
-        if (file != null ? !file.equals(that.file) : that.file != null) return false;
-        if (method != null ? !method.equals(that.method) : that.method != null) return false;
-        if (number != null ? !number.equals(that.number) : that.number != null) return false;
-        return !(context != null ? !context.equals(that.context) : that.context != null);
-
+        return Objects.equals(config, that.config) &&
+                Objects.equals(file, that.file) &&
+                Objects.equals(method, that.method) &&
+                Objects.equals(number, that.number) &&
+                Objects.equals(context, that.context);
     }
 
     @Override
     public int hashCode() {
-        int result = file != null ? file.hashCode() : 0;
-        result = 31 * result + (method != null ? method.hashCode() : 0);
-        result = 31 * result + (number != null ? number.hashCode() : 0);
-        result = 31 * result + (context != null ? context.hashCode() : 0);
-        return result;
+        return Objects.hash(config, file, method, number, context);
     }
 }

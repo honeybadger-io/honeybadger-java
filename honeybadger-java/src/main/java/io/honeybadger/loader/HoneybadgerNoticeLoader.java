@@ -7,6 +7,7 @@ import io.honeybadger.reporter.HoneybadgerExclusionStrategy;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.dto.Notice;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ public class HoneybadgerNoticeLoader {
 
             httpResponse = response.returnResponse();
 
-            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 break;
             }
             try {
@@ -74,9 +75,9 @@ public class HoneybadgerNoticeLoader {
             }
 
             if  (i == RETRIES - 1) {
-                String msg = String.format("Unable to get notice from API.\n"
-                        + "[Response Status Code=%d]\n"
-                        + "[Response Reason=%s]",
+                String msg = String.format("Unable to get notice from API.\n" +
+                                "[Response Status Code=%d]\n" +
+                                "[Response Reason=%s]",
                         httpResponse.getStatusLine().getStatusCode(),
                         httpResponse.getStatusLine().getReasonPhrase());
                 throw new IllegalArgumentException(msg);

@@ -87,7 +87,7 @@ public class Load implements Serializable {
     }
 
     static Number[] defaultLoadAverages(OperatingSystemMXBean osBean) {
-        return new Number[] { osBean.getSystemLoadAverage(), null, null };
+        return new Number[] {osBean.getSystemLoadAverage(), null, null };
     }
 
     @Override
@@ -101,9 +101,9 @@ public class Load implements Serializable {
         }
 
         final Load load = (Load) o;
-        return Objects.equals(one, load.one)
-                && Objects.equals(five, load.five)
-                && Objects.equals(fifteen, load.fifteen);
+        return Objects.equals(one, load.one) &&
+                Objects.equals(five, load.five) &&
+                Objects.equals(fifteen, load.fifteen);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package io.honeybadger.util;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Commonly shared Collection utilities.

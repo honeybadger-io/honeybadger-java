@@ -7,7 +7,11 @@ import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * Utility class responsible for rendering the Honeybadger feedback form.
@@ -16,6 +20,7 @@ import java.util.*;
  * @since 1.0.9
  */
 public class FeedbackForm {
+    public static final int INITIAL_SCOPE_HASHMAP_CAPACITY = 30;
     private final ConfigContext config;
 
     protected final MustacheFactory mf = new DefaultMustacheFactory();
@@ -25,9 +30,9 @@ public class FeedbackForm {
 
     public FeedbackForm(ConfigContext config) {
         String templatePath = config.getFeedbackFormPath();
-        if (templatePath == null)
+        if (templatePath == null) {
             throw new IllegalArgumentException("template path must not be null");
-
+        }
         this.config = config;
         this.mustache = mf.compile(templatePath);
         this.actionURI = actionURI();
@@ -44,7 +49,7 @@ public class FeedbackForm {
     public void renderHtml(Object errorId, String message, Writer writer, Locale locale) throws IOException {
         Locale selectedLocale = locale == null ? defaultLocale : locale;
         ResourceBundle messages = ResourceBundle.getBundle("i8n/feedback-form", selectedLocale);
-        Map<String, String> scopes = new HashMap<>(30);
+        Map<String, String> scopes = new HashMap<>(INITIAL_SCOPE_HASHMAP_CAPACITY);
 
         // This could happen if the Honeybadger API is down
         if (errorId == null) {

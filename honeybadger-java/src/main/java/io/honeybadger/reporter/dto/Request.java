@@ -1,6 +1,7 @@
 package io.honeybadger.reporter.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Class representing the properties of an HTTP request that triggered an
@@ -31,24 +32,16 @@ public class Request implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Request request = (Request) o;
-
-        if (context != null ? !context.equals(request.context) : request.context != null) return false;
-        if (url != null ? !url.equals(request.url) : request.url != null) return false;
-        if (params != null ? !params.equals(request.params) : request.params != null) return false;
-        if (session != null ? !session.equals(request.session) : request.session != null) return false;
-        return !(cgi_data != null ? !cgi_data.equals(request.cgi_data) : request.cgi_data != null);
-
+        return Objects.equals(context, request.context) &&
+                Objects.equals(url, request.url) &&
+                Objects.equals(params, request.params) &&
+                Objects.equals(session, request.session) &&
+                Objects.equals(cgi_data, request.cgi_data);
     }
 
     @Override
     public int hashCode() {
-        int result = context != null ? context.hashCode() : 0;
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + (params != null ? params.hashCode() : 0);
-        result = 31 * result + (session != null ? session.hashCode() : 0);
-        result = 31 * result + (cgi_data != null ? cgi_data.hashCode() : 0);
-        return result;
+        return Objects.hash(context, url, params, session, cgi_data);
     }
 }

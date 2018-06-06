@@ -3,6 +3,7 @@ package io.honeybadger.reporter.dto;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Class representing an error that is reported to the Honeybadger API.
@@ -28,7 +29,7 @@ public class Notice implements Serializable {
         this.details = new Details(this.config);
         this.details.addDefaultDetails();
     }
-
+    //TODO: Elijah says to remove. But will break compatibility, so we should soft deprecate in a 1.x branch
     public Notice() {
         ConfigContext config = ConfigContext.threadLocal.get();
         if (config == null) throw new NullPointerException(
@@ -87,24 +88,17 @@ public class Notice implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Notice that = (Notice) o;
-
-        if (notifier != null ? !notifier.equals(that.notifier) : that.notifier != null) return false;
-        if (server != null ? !server.equals(that.server) : that.server != null) return false;
-        if (details != null ? !details.equals(that.details) : that.details != null) return false;
-        if (request != null ? !request.equals(that.request) : that.request != null) return false;
-        return !(error != null ? !error.equals(that.error) : that.error != null);
-
+        Notice notice = (Notice) o;
+        return Objects.equals(config, notice.config) &&
+                Objects.equals(notifier, notice.notifier) &&
+                Objects.equals(server, notice.server) &&
+                Objects.equals(details, notice.details) &&
+                Objects.equals(request, notice.request) &&
+                Objects.equals(error, notice.error);
     }
 
     @Override
     public int hashCode() {
-        int result = notifier != null ? notifier.hashCode() : 0;
-        result = 31 * result + (server != null ? server.hashCode() : 0);
-        result = 31 * result + (details != null ? details.hashCode() : 0);
-        result = 31 * result + (request != null ? request.hashCode() : 0);
-        result = 31 * result + (error != null ? error.hashCode() : 0);
-        return result;
+        return Objects.hash(config, notifier, server, details, request, error);
     }
 }
