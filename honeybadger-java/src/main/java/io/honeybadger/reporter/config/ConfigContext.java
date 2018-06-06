@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public interface ConfigContext {
     /** Global reference to the currently used config per thread. */
-    ThreadLocal<ConfigContext> threadLocal = new ThreadLocal<>();
+    ThreadLocal<ConfigContext> THREAD_LOCAL = new ThreadLocal<>();
 
     /** @return name of environment */
     String getEnvironment();

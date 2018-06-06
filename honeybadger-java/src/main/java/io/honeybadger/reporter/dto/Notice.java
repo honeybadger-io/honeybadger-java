@@ -31,7 +31,7 @@ public class Notice implements Serializable {
     }
     //TODO: Elijah says to remove. But will break compatibility, so we should soft deprecate in a 1.x branch
     public Notice() {
-        ConfigContext config = ConfigContext.threadLocal.get();
+        ConfigContext config = ConfigContext.THREAD_LOCAL.get();
         if (config == null) throw new NullPointerException(
                 "Unable to get the expected ConfigContext from ThreadLocal");
 

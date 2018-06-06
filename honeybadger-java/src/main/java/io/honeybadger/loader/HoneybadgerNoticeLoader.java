@@ -102,10 +102,10 @@ public class HoneybadgerNoticeLoader {
         Notice error;
 
         try {
-            ConfigContext.threadLocal.set(config);
+            ConfigContext.THREAD_LOCAL.set(config);
             error = gson.fromJson(originalJson, Notice.class);
         } finally {
-            ConfigContext.threadLocal.remove();
+            ConfigContext.THREAD_LOCAL.remove();
         }
 
         return error;

@@ -26,7 +26,7 @@ public class Details extends LinkedHashMap<String, Map<String, String>>
     }
 
     public Details() {
-        ConfigContext defaultConfig = ConfigContext.threadLocal.get();
+        ConfigContext defaultConfig = ConfigContext.THREAD_LOCAL.get();
         if (defaultConfig == null) throw new NullPointerException(
                 "Unable to get the expected ConfigContext from ThreadLocal");
         this.config = defaultConfig;

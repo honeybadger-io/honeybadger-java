@@ -40,7 +40,7 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public class HoneybadgerReporter implements NoticeReporter {
-    private static Set<Class<?>> EXCEPTION_CONTEXT_CLASSES = findExceptionContextClasses();
+    private static Set<Class<?>> exceptionContextClasses = findExceptionContextClasses();
 
     protected ConfigContext config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -378,11 +378,11 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @return true if a contexted exception, otherwise false
      */
     private static boolean exceptionClassHasContextedVariables(final Class<?> clazz) {
-        if (EXCEPTION_CONTEXT_CLASSES == null || EXCEPTION_CONTEXT_CLASSES.isEmpty()) {
+        if (exceptionContextClasses == null || exceptionContextClasses.isEmpty()) {
             return false;
         }
 
-        for (Class<?> exceptionClass : EXCEPTION_CONTEXT_CLASSES) {
+        for (Class<?> exceptionClass : exceptionContextClasses) {
             if (exceptionClass.isAssignableFrom(clazz)) {
                 return true;
             }

@@ -23,7 +23,7 @@ public class Params extends LinkedHashMap<String, String>
 
     @Deprecated
     public Params() {
-        ConfigContext config = ConfigContext.threadLocal.get();
+        ConfigContext config = ConfigContext.THREAD_LOCAL.get();
         if (config == null) throw new NullPointerException(
                 "Unable to get the expected ConfigContext from ThreadLocal");
 
