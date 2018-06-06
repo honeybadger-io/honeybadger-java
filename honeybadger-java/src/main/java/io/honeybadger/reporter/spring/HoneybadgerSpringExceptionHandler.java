@@ -42,13 +42,13 @@ public class HoneybadgerSpringExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public HoneybadgerSpringExceptionHandler(SpringConfigContext context) {
+    public HoneybadgerSpringExceptionHandler(final SpringConfigContext context) {
         this.context = context;
         this.reporter = new HoneybadgerReporter(context);
         this.feedbackForm = new FeedbackForm(context);
     }
 
-    protected boolean acceptsOnlyJson(HttpServletRequest request) {
+    protected boolean acceptsOnlyJson(final HttpServletRequest request) {
         Enumeration<String> enumeration = request.getHeaders("Accept");
         if (enumeration == null) return false;
         if (!enumeration.hasMoreElements()) return false;
@@ -62,14 +62,14 @@ public class HoneybadgerSpringExceptionHandler {
         }
     }
 
-    protected String jsonErrorString(UUID errorId)
+    protected String jsonErrorString(final UUID errorId)
             throws IOException {
         return String.format("{ error_id : \"%s\" }", errorId);
     }
 
     @ExceptionHandler(value = Throwable.class)
-    public ResponseEntity<String> defaultErrorHandler(HttpServletRequest request,
-                                            Exception exception) throws Exception {
+    public ResponseEntity<String> defaultErrorHandler(final HttpServletRequest request,
+                                            final Exception exception) throws Exception {
 
         // Rethrow annotated exceptions or they will be processed here instead OR
         // throw if we have feedback form disabled

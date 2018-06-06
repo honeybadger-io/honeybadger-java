@@ -22,7 +22,7 @@ public class Backtrace extends ArrayList<BacktraceElement>
      * @param config Environment
      * @param error Error or Exception instance
      */
-    public Backtrace(ConfigContext config, Throwable error) {
+    public Backtrace(final ConfigContext config, final Throwable error) {
         this.config = config;
 
         if (error == null) {
@@ -36,7 +36,7 @@ public class Backtrace extends ArrayList<BacktraceElement>
      * Add an error to the collection.
      * @param error Error or Exception instance
      */
-    void addTrace(Throwable error) {
+    void addTrace(final Throwable error) {
         for (StackTraceElement trace : error.getStackTrace()) {
             add(new BacktraceElement(config, trace));
         }

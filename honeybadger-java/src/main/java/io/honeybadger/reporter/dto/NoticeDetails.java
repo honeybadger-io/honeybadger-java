@@ -24,16 +24,16 @@ public class NoticeDetails implements Serializable {
     public final Causes causes;
 
     @SuppressWarnings("unchecked")
-    public NoticeDetails(ConfigContext config, Throwable error) {
+    public NoticeDetails(final ConfigContext config, final Throwable error) {
         this(config, error, Collections.emptySet());
     }
 
-    public NoticeDetails(ConfigContext config, Throwable error, Set<String> tags) {
+    public NoticeDetails(final ConfigContext config, final Throwable error, final Set<String> tags) {
         this(config, error, tags, error.getMessage());
     }
 
-    public NoticeDetails(ConfigContext config, Throwable error, Set<String> tags,
-                         String message) {
+    public NoticeDetails(final ConfigContext config, final Throwable error, final Set<String> tags,
+                         final String message) {
         if (error == null) {
             throw new IllegalArgumentException("Error can't be null");
         }
@@ -46,7 +46,7 @@ public class NoticeDetails implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NoticeDetails that = (NoticeDetails) o;

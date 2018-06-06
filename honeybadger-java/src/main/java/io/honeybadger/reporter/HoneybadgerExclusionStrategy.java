@@ -12,12 +12,12 @@ import io.honeybadger.reporter.config.ConfigContext;
  */
 public class HoneybadgerExclusionStrategy implements ExclusionStrategy {
     @Override
-    public boolean shouldSkipField(FieldAttributes f) {
+    public boolean shouldSkipField(final FieldAttributes f) {
         return f.getName().equals("excludedValues");
     }
 
     @Override
-    public boolean shouldSkipClass(Class<?> clazz) {
+    public boolean shouldSkipClass(final Class<?> clazz) {
         return clazz.isAssignableFrom(ConfigContext.class);
     }
 }

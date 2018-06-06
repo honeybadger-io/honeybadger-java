@@ -28,7 +28,7 @@ public class FeedbackForm {
     protected final Mustache mustache;
     protected final String actionURI;
 
-    public FeedbackForm(ConfigContext config) {
+    public FeedbackForm(final ConfigContext config) {
         String templatePath = config.getFeedbackFormPath();
         if (templatePath == null) {
             throw new IllegalArgumentException("template path must not be null");
@@ -42,11 +42,11 @@ public class FeedbackForm {
         return String.format("%s/%s", config.getHoneybadgerUrl(), "v1/feedback/");
     }
 
-    public void renderHtml(Object errorId, String message, Writer writer) throws IOException {
+    public void renderHtml(final Object errorId, final String message, final Writer writer) throws IOException {
         renderHtml(errorId, message, writer, defaultLocale);
     }
 
-    public void renderHtml(Object errorId, String message, Writer writer, Locale locale) throws IOException {
+    public void renderHtml(final Object errorId, final String message, final Writer writer, final Locale locale) throws IOException {
         Locale selectedLocale = locale == null ? defaultLocale : locale;
         ResourceBundle messages = ResourceBundle.getBundle("i8n/feedback-form", selectedLocale);
         Map<String, String> scopes = new HashMap<>(INITIAL_SCOPE_HASHMAP_CAPACITY);

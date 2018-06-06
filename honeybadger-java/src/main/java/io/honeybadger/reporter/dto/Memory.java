@@ -64,9 +64,10 @@ public class Memory implements Serializable {
         this.vm_nonheap = vmMemValues.get("VmNonHeap");
     }
 
-    public Memory(Number total, Number free, Number buffers, Number cached,
-                  Number free_total, Number vm_free, Number vm_max,
-                  Number vm_total, Number vm_heap, Number vm_nonheap) {
+    @SuppressWarnings("CheckStyle")
+    public Memory(final Number total, final Number free, final Number buffers, final Number cached,
+                  final Number free_total, final Number vm_free, final Number vm_max,
+                  final Number vm_total, final Number vm_heap, final Number vm_nonheap) {
         this.total = total;
         this.free = free;
         this.buffers = buffers;

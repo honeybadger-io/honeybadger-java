@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class ServletFilterConfigContext extends MapConfigContext {
 
-    public ServletFilterConfigContext(FilterConfig filterConfig) {
+    public ServletFilterConfigContext(final FilterConfig filterConfig) {
         super(asMap(filterConfig));
     }
 
@@ -23,7 +23,7 @@ public class ServletFilterConfigContext extends MapConfigContext {
      * @param filterConfig filter configuration to convert
      * @return filter configuration as map
      */
-    protected static Map<String, String> asMap(FilterConfig filterConfig) {
+    protected static Map<String, String> asMap(final FilterConfig filterConfig) {
         Map<String, String> map = new HashMap<>();
         Enumeration<String> enumeration = filterConfig.getInitParameterNames();
 

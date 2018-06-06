@@ -224,7 +224,7 @@ public class CgiData extends LinkedHashMap<String, Object>
         return this;
     }
 
-    public Integer getAsInteger(String key) {
+    public Integer getAsInteger(final String key) {
         Object value = get(key);
 
         if (value instanceof Number) {

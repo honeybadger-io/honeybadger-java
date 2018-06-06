@@ -20,13 +20,13 @@ public class Stats implements Serializable {
         this.load = new Load();
     }
 
-    public Stats(Memory mem, Load load) {
+    public Stats(final Memory mem, final Load load) {
         this.mem = mem;
         this.load = load;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

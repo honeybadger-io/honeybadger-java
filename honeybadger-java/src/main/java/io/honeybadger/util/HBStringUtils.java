@@ -17,7 +17,7 @@ public class HBStringUtils {
      * @param c character to match
      * @return Original string minus matched character
      */
-    public static String stripTrailingChar(String input, char c) {
+    public static String stripTrailingChar(final String input, final char c) {
         if (input == null) return null;
         if (input.isEmpty()) return input;
 
@@ -35,7 +35,7 @@ public class HBStringUtils {
      * @param string String to check
      * @return true if null or empty
      */
-    public static boolean isPresent(String string) {
+    public static boolean isPresent(final String string) {
         return string != null && !string.isEmpty();
     }
 }

@@ -16,8 +16,8 @@ import java.util.Enumeration;
  * @since 1.0.9
  */
 public class HttpServletRequestFactory {
-    public static Request create(ConfigContext config,
-                                 HttpServletRequest httpRequest) {
+    public static Request create(final ConfigContext config,
+                                 final HttpServletRequest httpRequest) {
         Context context = createContext(httpRequest);
         String url = getFullURL(httpRequest);
         Params params = createParams(config, httpRequest);
@@ -27,7 +27,7 @@ public class HttpServletRequestFactory {
         return new Request(context, url, params, session, cgi_data);
     }
 
-    protected static Context createContext(HttpServletRequest httpRequest) {
+    protected static Context createContext(final HttpServletRequest httpRequest) {
         Context context = new Context();
 
         Principal principal = httpRequest.getUserPrincipal();
@@ -39,13 +39,13 @@ public class HttpServletRequestFactory {
         return context;
     }
 
-    protected static Params createParams(ConfigContext config,
-                                         HttpServletRequest httpRequest) {
+    protected static Params createParams(final ConfigContext config,
+                                         final HttpServletRequest httpRequest) {
         return Params.parseParamsFromMap(config.getExcludedParams(),
                 httpRequest.getParameterMap());
     }
 
-    protected static Session createSession(HttpServletRequest httpRequest) {
+    protected static Session createSession(final HttpServletRequest httpRequest) {
         final Session session = new Session();
         final HttpSession httpSession = httpRequest.getSession();
 
@@ -75,7 +75,7 @@ public class HttpServletRequestFactory {
         return session;
     }
 
-    protected static CgiData createCgiData(HttpServletRequest httpRequest) {
+    protected static CgiData createCgiData(final HttpServletRequest httpRequest) {
         final CgiData cgiData = new CgiData()
                 .setRequestMethod(httpRequest.getMethod())
                 .setHttpAccept(httpRequest.getHeader(HttpHeaders.ACCEPT))
@@ -98,7 +98,7 @@ public class HttpServletRequestFactory {
         return cgiData;
     }
 
-    static String parseCookies(HttpServletRequest request) {
+    static String parseCookies(final HttpServletRequest request) {
         Enumeration<String> cookies = request.getHeaders("Set-Cookie");
 
         if (cookies == null || !cookies.hasMoreElements()) return null;
@@ -124,7 +124,7 @@ public class HttpServletRequestFactory {
      * @param request Servlet request to parse for URL information
      * @return fully formed URL as string
      */
-    protected static String getFullURL(HttpServletRequest request) {
+    protected static String getFullURL(final HttpServletRequest request) {
         StringBuffer requestURL = request.getRequestURL();
         String queryString = request.getQueryString();
 

@@ -21,7 +21,7 @@ public class Details extends LinkedHashMap<String, Map<String, String>>
 
     private final ConfigContext config;
 
-    public Details(ConfigContext config) {
+    public Details(final ConfigContext config) {
         this.config = config;
     }
 

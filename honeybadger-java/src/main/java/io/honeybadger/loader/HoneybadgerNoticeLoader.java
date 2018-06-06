@@ -33,11 +33,11 @@ public class HoneybadgerNoticeLoader {
             .create();
     private ConfigContext config;
 
-    public HoneybadgerNoticeLoader(ConfigContext config) {
+    public HoneybadgerNoticeLoader(final ConfigContext config) {
         this.config = config;
     }
 
-    String pullFaultJson(UUID faultId) throws IOException {
+    String pullFaultJson(final UUID faultId) throws IOException {
         String readApiKey = config.getHoneybadgerReadApiKey();
 
         if (readApiKey == null) {
@@ -90,7 +90,7 @@ public class HoneybadgerNoticeLoader {
         return out.toString();
     }
 
-    public Notice findErrorDetails(UUID faultId) throws IOException {
+    public Notice findErrorDetails(final UUID faultId) throws IOException {
         String json = pullFaultJson(faultId);
 
         // HACK: Since our API is not symmetric, we do this in order to rename fields

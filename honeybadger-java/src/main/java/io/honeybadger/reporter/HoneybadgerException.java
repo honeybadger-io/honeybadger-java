@@ -11,21 +11,21 @@ public class HoneybadgerException extends RuntimeException {
     public HoneybadgerException() {
     }
 
-    public HoneybadgerException(String message) {
+    public HoneybadgerException(final String message) {
         super(message);
     }
 
-    public HoneybadgerException(String message, Throwable cause) {
+    public HoneybadgerException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public HoneybadgerException(Throwable cause) {
+    public HoneybadgerException(final Throwable cause) {
         super(cause);
     }
 
-    public HoneybadgerException(String message, Throwable cause,
-                                boolean enableSuppression,
-                                boolean writableStackTrace) {
+    public HoneybadgerException(final String message, final Throwable cause,
+                                final boolean enableSuppression,
+                                final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

@@ -24,7 +24,7 @@ public class StandardConfigContext extends BaseChainedConfigContext {
      *
      * @param configuration map with keys that correspond to the sys prop keys documented
      */
-    public StandardConfigContext(Map<String, ?> configuration) {
+    public StandardConfigContext(final Map<String, ?> configuration) {
         super();
         overwriteWithContext(new MapConfigContext(configuration));
     }
@@ -35,7 +35,7 @@ public class StandardConfigContext extends BaseChainedConfigContext {
      *
      * @param apiKey Honeybadger API key
      */
-    public StandardConfigContext(String apiKey) {
+    public StandardConfigContext(final String apiKey) {
         if (apiKey == null) throw new IllegalArgumentException(
                 "API key must not be null");
         if (apiKey.isEmpty()) throw new IllegalArgumentException(

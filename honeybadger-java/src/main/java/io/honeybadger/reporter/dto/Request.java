@@ -18,9 +18,9 @@ public class Request implements Serializable {
     public final Session session;
     public final CgiData cgi_data;
 
-    public Request(Context context, String url,
-                   Params params, Session session,
-                   CgiData cgi_data) {
+    public Request(final Context context, final String url,
+                   final Params params, final Session session,
+                   final CgiData cgi_data) {
         this.context = context;
         this.url = url;
         this.params = params;
@@ -29,7 +29,7 @@ public class Request implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Request request = (Request) o;

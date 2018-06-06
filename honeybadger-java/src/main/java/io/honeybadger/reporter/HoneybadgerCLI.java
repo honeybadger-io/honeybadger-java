@@ -13,7 +13,7 @@ import java.util.Scanner;
  */
 public class HoneybadgerCLI {
     @SuppressWarnings("DefaultCharset")
-    public static void main(String[] argv) {
+    public static void main(final String[] argv) {
         Scanner in = new Scanner(System.in);
 
         System.out.print("What is your Honeybadger API key: ");

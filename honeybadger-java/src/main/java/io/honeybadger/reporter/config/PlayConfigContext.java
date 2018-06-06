@@ -66,8 +66,8 @@ public class PlayConfigContext extends BaseChainedConfigContext {
      * @param configuration play configuration to convert
      * @param environment play environment to load values from
      */
-    public PlayConfigContext(Config configuration,
-                             Environment environment) {
+    public PlayConfigContext(final Config configuration,
+                             final Environment environment) {
         super();
 
         final String env;
@@ -108,7 +108,7 @@ public class PlayConfigContext extends BaseChainedConfigContext {
      * @param map nested map
      * @return a flat map
      */
-    static Map<String, Object> flattenNestedMap(Map<String, Object> map) {
+    static Map<String, Object> flattenNestedMap(final Map<String, Object> map) {
         return flattenNestedMap(map, 0);
     }
 
@@ -119,7 +119,7 @@ public class PlayConfigContext extends BaseChainedConfigContext {
      * @param level level of nesting
      * @return a flat map
      */
-    static Map<String, Object> flattenNestedMap(Map<String, Object> map, long level) {
+    static Map<String, Object> flattenNestedMap(final Map<String, Object> map, final long level) {
         if (map.isEmpty()) return Collections.emptyMap();
 
         Map<String, Object> flat = new HashMap<>();

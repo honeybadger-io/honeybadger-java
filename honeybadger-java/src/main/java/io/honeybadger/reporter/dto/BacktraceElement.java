@@ -24,7 +24,7 @@ public class BacktraceElement implements Serializable {
 
         private final String name;
 
-        Context(String name) {
+        Context(final String name) {
             this.name = name;
         }
 
@@ -39,8 +39,8 @@ public class BacktraceElement implements Serializable {
     public final String number;
     public final String context;
 
-    public BacktraceElement(ConfigContext config, String number, String file,
-                            String method) {
+    public BacktraceElement(final ConfigContext config, final String number, final String file,
+                            final String method) {
         this.config = config;
         this.number = number;
         this.file = file;
@@ -48,7 +48,7 @@ public class BacktraceElement implements Serializable {
         this.context = calculateContext(method).getName();
     }
 
-    public BacktraceElement(ConfigContext config, StackTraceElement element) {
+    public BacktraceElement(final ConfigContext config, final StackTraceElement element) {
         this.config = config;
         this.number = String.valueOf(element.getLineNumber());
         this.file = String.valueOf(element.getFileName());
@@ -56,12 +56,12 @@ public class BacktraceElement implements Serializable {
         this.context = calculateContext(method).getName();
     }
 
-    static String formatMethod(StackTraceElement element) {
+    static String formatMethod(final StackTraceElement element) {
         return String.format("%s.%s",
                 element.getClassName(), element.getMethodName());
     }
 
-    Context calculateContext(String method) {
+    Context calculateContext(final String method) {
         final String appPackage = config.getApplicationPackage();
         final Context methodContext;
 
@@ -79,7 +79,7 @@ public class BacktraceElement implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BacktraceElement that = (BacktraceElement) o;

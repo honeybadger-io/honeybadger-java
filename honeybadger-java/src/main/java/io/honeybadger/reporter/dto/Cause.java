@@ -20,14 +20,14 @@ public class Cause implements Serializable {
     public final String message;
     public final Backtrace backtrace;
 
-    public Cause(ConfigContext config, Throwable error) {
+    public Cause(final ConfigContext config, final Throwable error) {
         this.className = error.getClass().getName();
         this.message = error.getMessage();
         this.backtrace = new Backtrace(config, error);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cause cause = (Cause) o;

@@ -18,7 +18,7 @@ public class Session extends LinkedHashMap<String, Object>
     }
 
     @Override
-    public Object put(String key, Object value) {
+    public Object put(final String key, final Object value) {
         if (key.equals("creation_time")) {
             if (value instanceof CharSequence) {
                 return super.put(key, Long.parseLong(value.toString()));

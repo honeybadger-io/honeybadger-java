@@ -27,7 +27,7 @@ public class SystemSettingsConfigContext extends BaseChainedConfigContext {
      *
      * @param context additional context to layer on top
      */
-    public SystemSettingsConfigContext(ConfigContext context) {
+    public SystemSettingsConfigContext(final ConfigContext context) {
         // load all of the chained defaults
         this();
         // now load in an additional context

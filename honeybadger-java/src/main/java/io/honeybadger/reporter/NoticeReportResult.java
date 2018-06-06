@@ -14,7 +14,7 @@ public class NoticeReportResult {
     private final Notice notice;
     private final Throwable error;
 
-    public NoticeReportResult(UUID id, Notice notice, Throwable error) {
+    public NoticeReportResult(final UUID id, final Notice notice, final Throwable error) {
         this.id = id;
         this.notice = notice;
         this.error = error;
@@ -35,7 +35,7 @@ public class NoticeReportResult {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NoticeReportResult that = (NoticeReportResult) o;

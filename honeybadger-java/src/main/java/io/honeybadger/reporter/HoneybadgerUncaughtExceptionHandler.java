@@ -20,13 +20,13 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
         this(new SystemSettingsConfigContext());
     }
 
-    public HoneybadgerUncaughtExceptionHandler(ConfigContext config) {
+    public HoneybadgerUncaughtExceptionHandler(final ConfigContext config) {
         this.config = config;
         this.reporter = new HoneybadgerReporter(config);
     }
 
     @Override
-    public void uncaughtException(Thread t, Throwable e) {
+    public void uncaughtException(final Thread t, final Throwable e) {
         NoticeReportResult errorResult = null;
 
         try {
@@ -75,7 +75,7 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
      * @param configContext configuration context for Honeybadger setup
      */
     public static void registerAsUncaughtExceptionHandler(
-            ConfigContext configContext) {
+            final ConfigContext configContext) {
         Thread.UncaughtExceptionHandler handler =
                 new HoneybadgerUncaughtExceptionHandler(configContext);
         Thread.setDefaultUncaughtExceptionHandler(handler);
@@ -88,7 +88,7 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
      * @param t thread to register handler for
      */
     public static void registerAsUncaughtExceptionHandler(
-            java.lang.Thread t) {
+            final java.lang.Thread t) {
         Thread.UncaughtExceptionHandler handler =
                 new HoneybadgerUncaughtExceptionHandler();
         t.setUncaughtExceptionHandler(handler);
@@ -102,7 +102,7 @@ public class HoneybadgerUncaughtExceptionHandler implements Thread.UncaughtExcep
      * @param t thread to register handler for
      */
     public static void registerAsUncaughtExceptionHandler(
-            ConfigContext configContext, java.lang.Thread t) {
+            final ConfigContext configContext, final java.lang.Thread t) {
         Thread.UncaughtExceptionHandler handler =
                 new HoneybadgerUncaughtExceptionHandler(configContext);
         t.setUncaughtExceptionHandler(handler);

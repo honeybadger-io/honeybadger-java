@@ -13,7 +13,6 @@
     <suppress checks="ImportControl" files="^.*Test\.java$" />
     <!-- ignore inspections for DTOs until we have a better serialization strategy -->
     <suppress checks="LocalVariableNameCheck" files="^.*\/dto\/.*\.java" />
-    <suppress checks="FinalParametersCheck" files="^.*\/dto\/.*\.java" />
     <suppress checks="VisibilityModifier" files="^.*\/dto\/.*\.java" />
     <suppress checks="MemberName" files="^.*\/dto\/.*\.java" />
     <suppress checks="ParameterNumber" files="^.*\/dto\/.*\.java" />

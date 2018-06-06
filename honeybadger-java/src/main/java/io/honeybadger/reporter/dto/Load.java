@@ -30,7 +30,7 @@ public class Load implements Serializable {
         this.fifteen = loadAverages[2];
     }
 
-    public Load(Number one, Number five, Number fifteen) {
+    public Load(final Number one, final Number five, final Number fifteen) {
         this.one = one;
         this.five = five;
         this.fifteen = fifteen;

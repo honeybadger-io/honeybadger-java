@@ -50,7 +50,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
      *
      * @param defaultingContext context that provides default values
      */
-    public BaseChainedConfigContext(ConfigContext defaultingContext) {
+    public BaseChainedConfigContext(final ConfigContext defaultingContext) {
         overwriteWithContext(defaultingContext);
     }
 
@@ -59,7 +59,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return environment;
     }
 
-    public BaseChainedConfigContext setEnvironment(String environment) {
+    public BaseChainedConfigContext setEnvironment(final String environment) {
         this.environment = environment;
         return this;
     }
@@ -69,7 +69,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return honeybadgerUrl;
     }
 
-    public BaseChainedConfigContext setHoneybadgerUrl(URI honeybadgerUrl) {
+    public BaseChainedConfigContext setHoneybadgerUrl(final URI honeybadgerUrl) {
         this.honeybadgerUrl = honeybadgerUrl;
         return this;
     }
@@ -79,7 +79,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return apiKey;
     }
 
-    public BaseChainedConfigContext setApiKey(String apiKey) {
+    public BaseChainedConfigContext setApiKey(final String apiKey) {
         this.apiKey = apiKey;
         return this;
     }
@@ -89,7 +89,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return excludedSysProps;
     }
 
-    public BaseChainedConfigContext setExcludedSysProps(Set<String> excludedSysProps) {
+    public BaseChainedConfigContext setExcludedSysProps(final Set<String> excludedSysProps) {
         this.excludedSysProps = excludedSysProps;
         return this;
     }
@@ -99,7 +99,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return excludedParams;
     }
 
-    public BaseChainedConfigContext setExcludedParams(Set<String> excludedParams) {
+    public BaseChainedConfigContext setExcludedParams(final Set<String> excludedParams) {
         this.excludedParams = excludedParams;
         return this;
     }
@@ -109,7 +109,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return excludedClasses;
     }
 
-    public BaseChainedConfigContext setExcludedClasses(Set<String> excludedClasses) {
+    public BaseChainedConfigContext setExcludedClasses(final Set<String> excludedClasses) {
         this.excludedClasses = excludedClasses;
         return this;
     }
@@ -119,7 +119,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return applicationPackage;
     }
 
-    public BaseChainedConfigContext setApplicationPackage(String applicationPackage) {
+    public BaseChainedConfigContext setApplicationPackage(final String applicationPackage) {
         this.applicationPackage = applicationPackage;
         return this;
     }
@@ -129,7 +129,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return honeybadgerReadApiKey;
     }
 
-    public BaseChainedConfigContext setHoneybadgerReadApiKey(String honeybadgerReadApiKey) {
+    public BaseChainedConfigContext setHoneybadgerReadApiKey(final String honeybadgerReadApiKey) {
         this.honeybadgerReadApiKey = honeybadgerReadApiKey;
         return this;
     }
@@ -144,7 +144,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return feedbackFormPath;
     }
 
-    public BaseChainedConfigContext setFeedbackFormPath(String feedbackFormPath) {
+    public BaseChainedConfigContext setFeedbackFormPath(final String feedbackFormPath) {
         this.feedbackFormPath = feedbackFormPath;
         return this;
     }
@@ -154,7 +154,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return httpProxyHost;
     }
 
-    public BaseChainedConfigContext setHttpProxyHost(String httpProxyHost) {
+    public BaseChainedConfigContext setHttpProxyHost(final String httpProxyHost) {
         this.httpProxyHost = httpProxyHost;
         return this;
     }
@@ -164,7 +164,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return httpProxyPort;
     }
 
-    public BaseChainedConfigContext setHttpProxyPort(Integer httpProxyPort) {
+    public BaseChainedConfigContext setHttpProxyPort(final Integer httpProxyPort) {
         this.httpProxyPort = httpProxyPort;
         return this;
     }
@@ -175,7 +175,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
      *
      * @param context context to overwrite configuration with
      */
-    public void overwriteWithContext(ConfigContext context) {
+    public void overwriteWithContext(final ConfigContext context) {
         if (isPresent(context.getEnvironment())) {
             this.environment = context.getEnvironment();
         }
@@ -224,7 +224,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         }
     }
 
-    public Boolean setFeedbackFormDisplayed(Boolean feedbackFormDisplayed) {
+    public Boolean setFeedbackFormDisplayed(final Boolean feedbackFormDisplayed) {
         if (feedbackFormDisplayed == null) {
             throw new IllegalArgumentException(
                     "This value should be only null during initialization");
@@ -235,7 +235,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BaseChainedConfigContext that = (BaseChainedConfigContext) o;

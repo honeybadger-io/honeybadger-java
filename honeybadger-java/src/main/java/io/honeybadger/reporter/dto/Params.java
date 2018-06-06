@@ -17,7 +17,7 @@ public class Params extends LinkedHashMap<String, String>
     private static final long serialVersionUID = -5633548926144410598L;
     private final Set<String> excludedValues;
 
-    public Params(Set<String> excludedValues) {
+    public Params(final Set<String> excludedValues) {
         this.excludedValues = excludedValues;
     }
 
@@ -35,7 +35,7 @@ public class Params extends LinkedHashMap<String, String>
      * @param strings parameters to convert
      * @return CSV of params, otherwise empty string
      */
-    static String csv(String[] strings) {
+    static String csv(final String[] strings) {
         if (strings == null || strings.length == 0) return "";
         if (strings.length == 1) return strings[0];
 
@@ -50,7 +50,7 @@ public class Params extends LinkedHashMap<String, String>
     }
 
     @Override
-    public String put(String key, String value) {
+    public String put(final String key, final String value) {
         if (excludedValues.contains(key)) {
             return null;
         }
@@ -58,8 +58,8 @@ public class Params extends LinkedHashMap<String, String>
         return super.put(key, value);
     }
 
-    static Params parseParamsFromMap(Set<String> excludedValues,
-                                     Map<String, String[]> paramMap) {
+    static Params parseParamsFromMap(final Set<String> excludedValues,
+                                     final Map<String, String[]> paramMap) {
         Params params = new Params(excludedValues);
 
         try {

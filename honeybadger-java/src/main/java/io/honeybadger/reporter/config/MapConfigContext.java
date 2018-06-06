@@ -224,7 +224,7 @@ public class MapConfigContext implements ConfigContext {
      * @param value configuration value
      * @return return value of the put() operation from the backing map
      */
-    Object put(String key, String value) {
+    Object put(final String key, final String value) {
         if (key == null) throw new IllegalArgumentException("Config key can't be null");
         if (key.isEmpty()) throw new IllegalArgumentException("Config key can't be blank");
 
@@ -234,7 +234,7 @@ public class MapConfigContext implements ConfigContext {
         return map.put(key, value);
     }
 
-    private String normalizeEmptyAndNullAndDefaultToStringValue(Object key) {
+    private String normalizeEmptyAndNullAndDefaultToStringValue(final Object key) {
         Object value = backingMap.get(key);
         if (value == null) return null;
 
@@ -245,7 +245,7 @@ public class MapConfigContext implements ConfigContext {
         return stringValue;
     }
 
-    private Boolean parseBoolean(Object key) {
+    private Boolean parseBoolean(final Object key) {
         Object value = backingMap.get(key);
 
         if (value == null) return null;
@@ -269,7 +269,7 @@ public class MapConfigContext implements ConfigContext {
         return null;
     }
 
-    private Set<String> parseCsvStringSetOrPassOnObject(Object key) {
+    private Set<String> parseCsvStringSetOrPassOnObject(final Object key) {
         Object value = backingMap.get(key);
 
         if (value == null) return null;

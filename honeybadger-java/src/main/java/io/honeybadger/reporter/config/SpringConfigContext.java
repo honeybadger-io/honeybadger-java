@@ -18,7 +18,7 @@ import java.util.Map;
 @Component
 public class SpringConfigContext extends BaseChainedConfigContext {
     @Autowired
-    public SpringConfigContext(Environment environment) {
+    public SpringConfigContext(final Environment environment) {
         super();
 
         if (environment != null) {
@@ -43,7 +43,7 @@ public class SpringConfigContext extends BaseChainedConfigContext {
      * @return Map containing all properties found in Spring
      */
     protected static Map<String, String> environmentAsMap(
-            Environment environment) {
+            final Environment environment) {
         if (environment == null) {
             String msg = "Spring environment must not be null";
             throw new IllegalArgumentException(msg);

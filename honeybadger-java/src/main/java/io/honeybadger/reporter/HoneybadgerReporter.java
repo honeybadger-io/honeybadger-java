@@ -52,7 +52,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         this(new SystemSettingsConfigContext());
     }
 
-    public HoneybadgerReporter(ConfigContext config) {
+    public HoneybadgerReporter(final ConfigContext config) {
         this.config = config;
 
         if (config.getApiKey() == null) {
@@ -289,7 +289,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         return null;
     }
 
-    private UUID parseErrorId(HttpResponse response, Gson gson)
+    private UUID parseErrorId(final HttpResponse response, final Gson gson)
             throws IOException {
         try (InputStream in = response.getEntity().getContent();
              Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
@@ -334,7 +334,7 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @return Status code from the Honeybadger API
      * @throws IOException thrown when a network was encountered
      */
-    private Response sendToHoneybadger(String jsonError) throws IOException {
+    private Response sendToHoneybadger(final String jsonError) throws IOException {
         URI honeybadgerUrl = URI.create(
                 String.format("%s/%s", config.getHoneybadgerUrl(), "v1/notices"));
         Request request = buildRequest(honeybadgerUrl, jsonError);
@@ -350,7 +350,7 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @param jsonError Error JSON payload
      * @return a configured request object
      */
-    private Request buildRequest(URI honeybadgerUrl, String jsonError) {
+    private Request buildRequest(final URI honeybadgerUrl, final String jsonError) {
         Request request = Request
                .Post(honeybadgerUrl)
                .addHeader("X-API-Key", config.getApiKey())

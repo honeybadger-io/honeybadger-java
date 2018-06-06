@@ -32,7 +32,7 @@ public class ServerDetails implements Serializable {
     public final String time;
     public final Stats stats;
 
-    public ServerDetails(ConfigContext context) {
+    public ServerDetails(final ConfigContext context) {
         this.environment_name = context.getEnvironment();
         this.hostname = hostname();
         this.project_root = projectRoot();
@@ -41,8 +41,8 @@ public class ServerDetails implements Serializable {
         this.stats = new Stats();
     }
 
-    public ServerDetails(String environment_name, String hostname, String project_root,
-                         Integer pid, String time, Stats stats) {
+    public ServerDetails(final String environment_name, final String hostname, final String project_root,
+                         final Integer pid, final String time, final Stats stats) {
         this.environment_name = environment_name;
         this.hostname = hostname;
         this.project_root = project_root;
@@ -125,7 +125,7 @@ public class ServerDetails implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ServerDetails that = (ServerDetails) o;
