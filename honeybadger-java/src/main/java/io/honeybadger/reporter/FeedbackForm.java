@@ -23,10 +23,10 @@ public class FeedbackForm {
     public static final int INITIAL_SCOPE_HASHMAP_CAPACITY = 30;
     private final ConfigContext config;
 
-    protected final MustacheFactory mf = new DefaultMustacheFactory();
-    protected final Locale defaultLocale = new Locale("en", "US");
-    protected final Mustache mustache;
-    protected final String actionURI;
+    private final MustacheFactory mf = new DefaultMustacheFactory();
+    private final Locale defaultLocale = new Locale("en", "US");
+    private final Mustache mustache;
+    private final String actionURI;
 
     public FeedbackForm(final ConfigContext config) {
         String templatePath = config.getFeedbackFormPath();
@@ -34,7 +34,7 @@ public class FeedbackForm {
             throw new IllegalArgumentException("template path must not be null");
         }
         this.config = config;
-        this.mustache = mf.compile(templatePath);
+        this.mustache = getMf().compile(templatePath);
         this.actionURI = actionURI();
     }
 
@@ -43,11 +43,11 @@ public class FeedbackForm {
     }
 
     public void renderHtml(final Object errorId, final String message, final Writer writer) throws IOException {
-        renderHtml(errorId, message, writer, defaultLocale);
+        renderHtml(errorId, message, writer, getDefaultLocale());
     }
 
     public void renderHtml(final Object errorId, final String message, final Writer writer, final Locale locale) throws IOException {
-        Locale selectedLocale = locale == null ? defaultLocale : locale;
+        Locale selectedLocale = locale == null ? getDefaultLocale() : locale;
         ResourceBundle messages = ResourceBundle.getBundle("i8n/feedback-form", selectedLocale);
         Map<String, String> scopes = new HashMap<>(INITIAL_SCOPE_HASHMAP_CAPACITY);
 
@@ -67,7 +67,7 @@ public class FeedbackForm {
             scopes.put("error_msg", message);
         }
 
-        scopes.put("action", actionURI);
+        scopes.put("action", getActionURI());
 
         Enumeration<String> enumeration = messages.getKeys();
 
@@ -76,6 +76,22 @@ public class FeedbackForm {
             scopes.put(key, messages.getString(key));
         }
 
-        mustache.execute(writer, scopes);
+        getMustache().execute(writer, scopes);
+    }
+
+    public MustacheFactory getMf() {
+        return mf;
+    }
+
+    public Locale getDefaultLocale() {
+        return defaultLocale;
+    }
+
+    public Mustache getMustache() {
+        return mustache;
+    }
+
+    public String getActionURI() {
+        return actionURI;
     }
 }

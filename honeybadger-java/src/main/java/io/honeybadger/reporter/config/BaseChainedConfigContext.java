@@ -23,18 +23,18 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
      */
     public static final ConfigContext DEFAULT_CONFIG =
             new DefaultsConfigContext();
-    protected String environment;
-    protected URI honeybadgerUrl;
-    protected String apiKey;
-    protected Set<String> excludedSysProps = new HashSet<>();
-    protected Set<String> excludedParams = new HashSet<>();
-    protected Set<String> excludedClasses = new HashSet<>();
-    protected String applicationPackage;
-    protected String honeybadgerReadApiKey;
-    protected Boolean feedbackFormDisplayed;
-    protected String feedbackFormPath;
-    protected String httpProxyHost;
-    protected Integer httpProxyPort;
+    private String environment;
+    private URI honeybadgerUrl;
+    private String apiKey;
+    private Set<String> excludedSysProps = new HashSet<>();
+    private Set<String> excludedParams = new HashSet<>();
+    private Set<String> excludedClasses = new HashSet<>();
+    private String applicationPackage;
+    private String honeybadgerReadApiKey;
+    private Boolean feedbackFormDisplayed;
+    private String feedbackFormPath;
+    private String httpProxyHost;
+    private Integer httpProxyPort;
 
     /**
      * Constructor that prepopulates configuration context with the default
@@ -136,7 +136,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
 
     @Override
     public Boolean isFeedbackFormDisplayed() {
-        return feedbackFormDisplayed;
+        return getFeedbackFormDisplayed();
     }
 
     @Override
@@ -240,43 +240,47 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BaseChainedConfigContext that = (BaseChainedConfigContext) o;
-        return Objects.equals(environment, that.environment) &&
-                Objects.equals(honeybadgerUrl, that.honeybadgerUrl) &&
-                Objects.equals(apiKey, that.apiKey) &&
-                Objects.equals(excludedSysProps, that.excludedSysProps) &&
-                Objects.equals(excludedParams, that.excludedParams) &&
-                Objects.equals(excludedClasses, that.excludedClasses) &&
-                Objects.equals(applicationPackage, that.applicationPackage) &&
-                Objects.equals(honeybadgerReadApiKey, that.honeybadgerReadApiKey) &&
-                Objects.equals(feedbackFormDisplayed, that.feedbackFormDisplayed) &&
-                Objects.equals(feedbackFormPath, that.feedbackFormPath) &&
-                Objects.equals(httpProxyHost, that.httpProxyHost) &&
-                Objects.equals(httpProxyPort, that.httpProxyPort);
+        return Objects.equals(getEnvironment(), that.getEnvironment()) &&
+                Objects.equals(getHoneybadgerUrl(), that.getHoneybadgerUrl()) &&
+                Objects.equals(getApiKey(), that.getApiKey()) &&
+                Objects.equals(getExcludedSysProps(), that.getExcludedSysProps()) &&
+                Objects.equals(getExcludedParams(), that.getExcludedParams()) &&
+                Objects.equals(getExcludedClasses(), that.getExcludedClasses()) &&
+                Objects.equals(getApplicationPackage(), that.getApplicationPackage()) &&
+                Objects.equals(getHoneybadgerReadApiKey(), that.getHoneybadgerReadApiKey()) &&
+                Objects.equals(getFeedbackFormDisplayed(), that.getFeedbackFormDisplayed()) &&
+                Objects.equals(getFeedbackFormPath(), that.getFeedbackFormPath()) &&
+                Objects.equals(getHttpProxyHost(), that.getHttpProxyHost()) &&
+                Objects.equals(getHttpProxyPort(), that.getHttpProxyPort());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(environment, honeybadgerUrl, apiKey, excludedSysProps, excludedParams, excludedClasses,
-                applicationPackage, honeybadgerReadApiKey, feedbackFormDisplayed, feedbackFormPath, httpProxyHost,
-                httpProxyPort);
+        return Objects.hash(getEnvironment(), getHoneybadgerUrl(), getApiKey(), getExcludedSysProps(), getExcludedParams(),
+                getExcludedClasses(), getApplicationPackage(), getHoneybadgerReadApiKey(), getFeedbackFormDisplayed(),
+                getFeedbackFormPath(), getHttpProxyHost(), getHttpProxyPort());
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("BaseChainedConfigContext{");
-        sb.append("environment='").append(environment).append('\'');
-        sb.append(", honeybadgerUrl='").append(honeybadgerUrl).append('\'');
-        sb.append(", apiKey='").append(apiKey).append('\'');
-        sb.append(", excludedSysProps=").append(excludedSysProps);
-        sb.append(", excludedParams=").append(excludedParams);
-        sb.append(", excludedClasses=").append(excludedClasses);
-        sb.append(", applicationPackage='").append(applicationPackage).append('\'');
-        sb.append(", honeybadgerReadApiKey='").append(honeybadgerReadApiKey).append('\'');
-        sb.append(", feedbackFormDisplayed=").append(feedbackFormDisplayed);
-        sb.append(", feedbackFormPath='").append(feedbackFormPath).append('\'');
-        sb.append(", httpProxyHost='").append(httpProxyHost).append('\'');
-        sb.append(", httpProxyPort=").append(httpProxyPort);
+        sb.append("environment='").append(getEnvironment()).append('\'');
+        sb.append(", honeybadgerUrl='").append(getHoneybadgerUrl()).append('\'');
+        sb.append(", apiKey='").append(getApiKey()).append('\'');
+        sb.append(", excludedSysProps=").append(getExcludedSysProps());
+        sb.append(", excludedParams=").append(getExcludedParams());
+        sb.append(", excludedClasses=").append(getExcludedClasses());
+        sb.append(", applicationPackage='").append(getApplicationPackage()).append('\'');
+        sb.append(", honeybadgerReadApiKey='").append(getHoneybadgerReadApiKey()).append('\'');
+        sb.append(", feedbackFormDisplayed=").append(getFeedbackFormDisplayed());
+        sb.append(", feedbackFormPath='").append(getFeedbackFormPath()).append('\'');
+        sb.append(", httpProxyHost='").append(getHttpProxyHost()).append('\'');
+        sb.append(", httpProxyPort=").append(getHttpProxyPort());
         sb.append('}');
         return sb.toString();
+    }
+
+    protected Boolean getFeedbackFormDisplayed() {
+        return feedbackFormDisplayed;
     }
 }

@@ -28,9 +28,9 @@ import java.util.concurrent.CompletionStage;
  * @since 1.0.9
  */
 public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
-    protected final NoticeReporter reporter;
-    protected final Environment environment;
-    protected final OptionalSourceMapper sourceMapper;
+    private final NoticeReporter reporter;
+    private final Environment environment;
+    private final OptionalSourceMapper sourceMapper;
 
     @Inject
     public HoneybadgerErrorHandler(final Config config,
@@ -49,7 +49,7 @@ public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
     public CompletionStage<Result> onServerError(final Http.RequestHeader request,
                                                  final Throwable exception) {
 
-        NoticeReportResult errorResult = reporter.reportError(exception, request);
+        NoticeReportResult errorResult = getReporter().reportError(exception, request);
 
         try {
             UsefulException usefulException = throwableToUsefulException(exception);
@@ -66,7 +66,7 @@ public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
 
             logServerError(request, usefulException);
 
-            switch (environment.mode()) {
+            switch (getEnvironment().mode()) {
                 case PROD:
                     return onProdServerError(request, usefulException);
                 default:
@@ -76,5 +76,17 @@ public class HoneybadgerErrorHandler extends DefaultHttpErrorHandler {
             Logger.error("Error while handling error", e);
             return CompletableFuture.completedFuture(Results.internalServerError());
         }
+    }
+
+    protected NoticeReporter getReporter() {
+        return reporter;
+    }
+
+    protected Environment getEnvironment() {
+        return environment;
+    }
+
+    protected OptionalSourceMapper getSourceMapper() {
+        return sourceMapper;
     }
 }

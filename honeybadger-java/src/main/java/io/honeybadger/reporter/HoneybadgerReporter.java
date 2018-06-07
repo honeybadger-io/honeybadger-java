@@ -43,7 +43,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     public static final int RETRIES = 3;
     private static Set<Class<?>> exceptionContextClasses = findExceptionContextClasses();
 
-    protected ConfigContext config;
+    private ConfigContext config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson = new GsonBuilder()
             .setExclusionStrategies(new HoneybadgerExclusionStrategy())
@@ -54,7 +54,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     }
 
     public HoneybadgerReporter(final ConfigContext config) {
-        this.config = config;
+        this.setConfig(config);
 
         if (config.getApiKey() == null) {
             throw new IllegalArgumentException("API key must be set");
@@ -155,13 +155,13 @@ public class HoneybadgerReporter implements NoticeReporter {
         // SERVLET REQUEST - ALSO USED BY SPRING
         } else if (supportsHttpServletRequest() && request instanceof javax.servlet.http.HttpServletRequest)  {
             logger.debug("Reporting from a servlet context");
-            requestDetails =  HttpServletRequestFactory.create(config,
+            requestDetails =  HttpServletRequestFactory.create(getConfig(),
                     (javax.servlet.http.HttpServletRequest) request);
 
         // PLAY FRAMEWORK REQUEST
         } else if (supportsPlayHttpRequest() && request instanceof play.mvc.Http.Request) {
             logger.debug("Reporting from the Play Framework");
-            requestDetails = PlayHttpRequestFactory.create(config,
+            requestDetails = PlayHttpRequestFactory.create(getConfig(),
                     (play.mvc.Http.Request)request);
         } else {
             logger.debug("No request object available");
@@ -239,11 +239,11 @@ public class HoneybadgerReporter implements NoticeReporter {
                                              final Set<String> tags) {
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
-                config.getExcludedClasses().contains(errorClassName)) {
+                getConfig().getExcludedClasses().contains(errorClassName)) {
             return null;
         }
 
-        final Notice notice = new Notice(config);
+        final Notice notice = new Notice(getConfig());
 
         if (request != null) {
             final String reportedMessage;
@@ -254,10 +254,10 @@ public class HoneybadgerReporter implements NoticeReporter {
             }
 
             NoticeDetails noticeDetails = new NoticeDetails(
-                    config, error, tags, reportedMessage);
+                    getConfig(), error, tags, reportedMessage);
             notice.setRequest(request).setError(noticeDetails);
         } else {
-            NoticeDetails noticeDetails = new NoticeDetails(config, error, tags);
+            NoticeDetails noticeDetails = new NoticeDetails(getConfig(), error, tags);
             notice.setError(noticeDetails);
         }
 
@@ -337,7 +337,7 @@ public class HoneybadgerReporter implements NoticeReporter {
      */
     private Response sendToHoneybadger(final String jsonError) throws IOException {
         URI honeybadgerUrl = URI.create(
-                String.format("%s/%s", config.getHoneybadgerUrl(), "v1/notices"));
+                String.format("%s/%s", getConfig().getHoneybadgerUrl(), "v1/notices"));
         Request request = buildRequest(honeybadgerUrl, jsonError);
 
         return request.execute();
@@ -354,7 +354,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     private Request buildRequest(final URI honeybadgerUrl, final String jsonError) {
         Request request = Request
                .Post(honeybadgerUrl)
-               .addHeader("X-API-Key", config.getApiKey())
+               .addHeader("X-API-Key", getConfig().getApiKey())
                .addHeader("Accept", "application/json")
                .version(HttpVersion.HTTP_1_1)
                .bodyString(jsonError, ContentType.APPLICATION_JSON);
@@ -412,5 +412,9 @@ public class HoneybadgerReporter implements NoticeReporter {
         }
 
         return Collections.unmodifiableSet(classes);
+    }
+
+    protected void setConfig(final ConfigContext config) {
+        this.config = config;
     }
 }

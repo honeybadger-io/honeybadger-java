@@ -35,9 +35,9 @@ import static org.springframework.http.MediaType.*;
  */
 @ControllerAdvice
 public class HoneybadgerSpringExceptionHandler {
-    protected final SpringConfigContext context;
-    protected final NoticeReporter reporter;
-    protected final FeedbackForm feedbackForm;
+    private final SpringConfigContext context;
+    private final NoticeReporter reporter;
+    private final FeedbackForm feedbackForm;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -77,7 +77,7 @@ public class HoneybadgerSpringExceptionHandler {
             throw exception;
         }
 
-        NoticeReportResult result = reporter.reportError(exception, request);
+        NoticeReportResult result = getReporter().reportError(exception, request);
 
         if (logger.isErrorEnabled()) {
             String msg = String.format("Internal server error [honeybadger-id: %s]",
@@ -85,7 +85,7 @@ public class HoneybadgerSpringExceptionHandler {
             logger.error(msg, exception);
         }
 
-        if (!context.isFeedbackFormDisplayed()) {
+        if (!getContext().isFeedbackFormDisplayed()) {
             String msg = "Internal server error";
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .contentType(TEXT_PLAIN)
@@ -100,11 +100,23 @@ public class HoneybadgerSpringExceptionHandler {
 
         Writer writer = new StringWriter();
         Locale locale = request.getLocale();
-        feedbackForm.renderHtml(result.getId(), exception.getMessage(),
+        getFeedbackForm().renderHtml(result.getId(), exception.getMessage(),
                 writer, locale);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(TEXT_HTML)
                 .body(writer.toString());
+    }
+
+    protected SpringConfigContext getContext() {
+        return context;
+    }
+
+    protected NoticeReporter getReporter() {
+        return reporter;
+    }
+
+    protected FeedbackForm getFeedbackForm() {
+        return feedbackForm;
     }
 }
