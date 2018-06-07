@@ -273,7 +273,7 @@ public class HoneybadgerReporter implements NoticeReporter {
                                     "correct code. Response was [{}]. Retries={}",
                             responseCode, retries);
                 } else {
-                    UUID id = parseErrorId(response, gson);
+                    UUID id = parseErrorId(response);
 
                     return new NoticeReportResult(id, notice, error);
                 }
@@ -290,7 +290,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         return null;
     }
 
-    private UUID parseErrorId(final HttpResponse response, final Gson gson)
+    private UUID parseErrorId(final HttpResponse response)
             throws IOException {
         try (InputStream in = response.getEntity().getContent();
              Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {

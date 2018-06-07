@@ -224,6 +224,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         }
     }
 
+    @SuppressWarnings("HiddenField")
     public Boolean setFeedbackFormDisplayed(final Boolean feedbackFormDisplayed) {
         if (feedbackFormDisplayed == null) {
             throw new IllegalArgumentException(

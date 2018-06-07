@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
-
 <!--
   Checkstyle configuration that checks the sun coding conventions from:
     - the Java Language Specification at
@@ -16,16 +15,26 @@
   To completely disable a check, just comment it out or delete it from the file.
   Finally, it is worth reading the documentation.
 -->
+
 <module name="Checker">
+    <!-- While Maven supports passing Suppression file information in parameters,
+         Intellij's Checkstyle-IDEA plugin only appears to support suppressions
+         in checkstyle.xml configuration file, we're configuring the suppression
+         file here -->
+    <module name="SuppressionFilter">
+        <property name="file" value="suppressions.xml"/>
+        <property name="optional" value="false"/>
+    </module>
+
+    <!-- Enable suppression with @SuppressWarnings annotations -->
+    <module name="SuppressWarningsFilter" />
+
     <!--
         If you set the basedir property below, then all reported file
         names will be relative to the specified directory. See
         http://checkstyle.sourceforge.net/5.x/config.html#Checker
         <property name="basedir" value="${basedir}"/>
     -->
-
-    <!-- Enable suppression with @SuppressWarnings annotations -->
-    <module name="SuppressWarningsFilter" />
 
     <!-- Checks that a package-info.java file exists for each package.     -->
     <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage -->
@@ -61,6 +70,12 @@
     <module name="TreeWalker">
         <!-- Make annotations available for filtering via SuppressWarningsFilter -->
         <module name="SuppressWarningsHolder" />
+
+        <module name="SuppressWithNearbyCommentFilter">
+            <property name="commentFormat" value="checkstyle"/>
+            <property name="checkFormat" value=".*"/>
+            <property name="influenceFormat" value="0"/>
+        </module>
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->

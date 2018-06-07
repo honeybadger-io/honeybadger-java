@@ -61,15 +61,15 @@ public class BacktraceElement implements Serializable {
                 element.getClassName(), element.getMethodName());
     }
 
-    Context calculateContext(final String method) {
+    Context calculateContext(final String methodName) {
         final String appPackage = config.getApplicationPackage();
         final Context methodContext;
 
         if (appPackage == null || appPackage.isEmpty()) {
             methodContext = Context.ALL;
-        } else if (method == null || method.isEmpty()) {
+        } else if (methodName == null || methodName.isEmpty()) {
             methodContext = Context.ALL;
-        } else if (method.startsWith(appPackage)) {
+        } else if (methodName.startsWith(appPackage)) {
             methodContext = Context.APP;
         } else {
             methodContext = Context.ALL;

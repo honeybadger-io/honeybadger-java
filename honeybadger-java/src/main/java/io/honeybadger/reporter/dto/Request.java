@@ -20,12 +20,12 @@ public class Request implements Serializable {
 
     public Request(final Context context, final String url,
                    final Params params, final Session session,
-                   final CgiData cgi_data) {
+                   final CgiData cgiData) {
         this.context = context;
         this.url = url;
         this.params = params;
         this.session = session;
-        this.cgi_data = cgi_data;
+        this.cgi_data = cgiData;
     }
 
     @Override

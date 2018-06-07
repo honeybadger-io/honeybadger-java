@@ -31,8 +31,6 @@ public class Causes extends LinkedList<Cause> implements Serializable {
 
         int iterations = 0;
 
-        //noinspection CheckStyle
-        //(the while loop InnerAssignment is the type that's generally considered readable)
         do {
             // If we are in a simple circular reference, exit
             if (lastCause != null && lastCause.equals(nextCause)) break;
@@ -43,6 +41,6 @@ public class Causes extends LinkedList<Cause> implements Serializable {
             // for too big of a cause trace
             if (++iterations > MAX_CAUSES) break;
             lastCause = nextCause;
-        } while (null != (nextCause = nextCause.getCause()));
+        } while (null != (nextCause = nextCause.getCause())); //checkstyle ignore
     }
 }

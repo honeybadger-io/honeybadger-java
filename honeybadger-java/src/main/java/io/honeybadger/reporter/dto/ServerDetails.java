@@ -41,11 +41,11 @@ public class ServerDetails implements Serializable {
         this.stats = new Stats();
     }
 
-    public ServerDetails(final String environment_name, final String hostname, final String project_root,
+    public ServerDetails(final String environmentName, final String hostname, final String projectRoot,
                          final Integer pid, final String time, final Stats stats) {
-        this.environment_name = environment_name;
+        this.environment_name = environmentName;
         this.hostname = hostname;
-        this.project_root = project_root;
+        this.project_root = projectRoot;
         this.pid = pid;
         this.time = time;
         this.stats = stats;

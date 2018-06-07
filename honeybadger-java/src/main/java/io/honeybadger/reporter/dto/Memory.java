@@ -67,18 +67,18 @@ public class Memory implements Serializable {
 
     @SuppressWarnings("CheckStyle")
     public Memory(final Number total, final Number free, final Number buffers, final Number cached,
-                  final Number free_total, final Number vm_free, final Number vm_max,
-                  final Number vm_total, final Number vm_heap, final Number vm_nonheap) {
+                  final Number freeTotal, final Number vmFree, final Number vmMax,
+                  final Number vmTotal, final Number vmHeap, final Number vmNonheap) {
         this.total = total;
         this.free = free;
         this.buffers = buffers;
         this.cached = cached;
-        this.free_total = free_total;
-        this.vm_free = vm_free;
-        this.vm_max = vm_max;
-        this.vm_total = vm_total;
-        this.vm_heap = vm_heap;
-        this.vm_nonheap = vm_nonheap;
+        this.free_total = freeTotal;
+        this.vm_free = vmFree;
+        this.vm_max = vmMax;
+        this.vm_total = vmTotal;
+        this.vm_heap = vmHeap;
+        this.vm_nonheap = vmNonheap;
     }
 
     static Map<String, Long> findLinuxMemInfo(final File memInfoFile) {
