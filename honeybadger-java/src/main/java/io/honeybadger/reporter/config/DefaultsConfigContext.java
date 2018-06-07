@@ -13,6 +13,8 @@ import static io.honeybadger.reporter.config.MapConfigContext.*;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.10
  */
+// Disabling naming/visibility checks temporarily until we can make a more philosophical decision
+@SuppressWarnings({"StaticVariableName", "VisibilityModifier"})
 public class DefaultsConfigContext implements ConfigContext {
     /** Default protocol for connecting to the Honeybadger API. */
     public static String DEFAULT_API_PROTO = "https";
