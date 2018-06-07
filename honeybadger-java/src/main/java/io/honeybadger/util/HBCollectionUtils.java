@@ -10,7 +10,7 @@ import java.util.Collections;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.11
  */
-public class HBCollectionUtils {
+public final class HBCollectionUtils {
     private HBCollectionUtils() { }
 
     /**

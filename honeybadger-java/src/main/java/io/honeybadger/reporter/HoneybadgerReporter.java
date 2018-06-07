@@ -40,6 +40,7 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public class HoneybadgerReporter implements NoticeReporter {
+    public static final int RETRIES = 3;
     private static Set<Class<?>> exceptionContextClasses = findExceptionContextClasses();
 
     protected ConfigContext config;
@@ -260,7 +261,7 @@ public class HoneybadgerReporter implements NoticeReporter {
             notice.setError(noticeDetails);
         }
 
-        for (int retries = 0; retries < 3; retries++) {
+        for (int retries = 0; retries < RETRIES; retries++) {
             try {
                 String json = gson.toJson(notice);
                 HttpResponse response = sendToHoneybadger(json)

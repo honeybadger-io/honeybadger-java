@@ -11,7 +11,9 @@ import java.util.Scanner;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.0
  */
-public class HoneybadgerCLI {
+public final class HoneybadgerCLI {
+    private HoneybadgerCLI() { }
+
     @SuppressWarnings("DefaultCharset")
     public static void main(final String[] argv) {
         Scanner in = new Scanner(System.in);

@@ -94,7 +94,8 @@ public class ServerDetails implements Serializable {
     /**
      * Finds the process id for the running JVM.
      *
-     * @see <a href="http://stackoverflow.com/questions/35842/how-can-a-java-program-get-its-own-process-id/7690178#7690178">referenced this implementation</a>
+     * @see <a href="http://stackoverflow.com/questions/35842/how-can-a-java-program-get-its-own-process-id/7690178#7690178"
+     * >referenced this implementation</a>
      * @return process id or null if not found
      */
     protected static Integer pid() {

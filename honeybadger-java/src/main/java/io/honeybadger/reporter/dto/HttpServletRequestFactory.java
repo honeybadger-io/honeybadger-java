@@ -15,7 +15,9 @@ import java.util.Enumeration;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
-public class HttpServletRequestFactory {
+public final class HttpServletRequestFactory {
+    private HttpServletRequestFactory() { }
+
     public static Request create(final ConfigContext config,
                                  final HttpServletRequest httpRequest) {
         Context context = createContext(httpRequest);

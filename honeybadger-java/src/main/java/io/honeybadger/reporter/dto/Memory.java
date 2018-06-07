@@ -25,6 +25,7 @@ public class Memory implements Serializable {
     private static final long serialVersionUID = -8799953046383217102L;
 
     private static final String LINUX_MEMINFO_PATH = "/proc/meminfo";
+    public static final int JVM_INFO_INITIAL_CAPACITY = 10;
 
     public final Number total;
     public final Number free;
@@ -123,7 +124,7 @@ public class Memory implements Serializable {
     }
 
     static Map<String, Number> findJvmMemInfo() {
-        Map<String, Number> jvmInfo = new HashMap<>(10);
+        Map<String, Number> jvmInfo = new HashMap<>(JVM_INFO_INITIAL_CAPACITY);
         Runtime runtime = Runtime.getRuntime();
         MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
         final long mebibyte = 1_048_576L;

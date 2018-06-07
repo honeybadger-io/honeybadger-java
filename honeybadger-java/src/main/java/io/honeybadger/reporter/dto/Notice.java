@@ -23,7 +23,7 @@ public class Notice implements Serializable {
     private Request request;
     private NoticeDetails error;
 
-    public Notice(ConfigContext config) {
+    public Notice(final ConfigContext config) {
         this.config = config;
         this.server = new ServerDetails(config);
         this.details = new Details(this.config);

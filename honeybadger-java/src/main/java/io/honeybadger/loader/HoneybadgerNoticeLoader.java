@@ -27,6 +27,7 @@ import java.util.UUID;
  */
 public class HoneybadgerNoticeLoader {
     private static final int RETRIES = 3;
+    public static final int RETRY_DELAY_MILLIS = 5000;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson = new GsonBuilder()
             .setExclusionStrategies(new HoneybadgerExclusionStrategy())
@@ -69,7 +70,7 @@ public class HoneybadgerNoticeLoader {
                 break;
             }
             try {
-                Thread.sleep(5000);
+                Thread.sleep(RETRY_DELAY_MILLIS);
             } catch (InterruptedException e) {
                 break;
             }

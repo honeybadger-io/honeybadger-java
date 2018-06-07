@@ -97,7 +97,7 @@ public class MapConfigContext implements ConfigContext {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public MapConfigContext(Map<?, ?> backingMap) {
+    public MapConfigContext(final Map<?, ?> backingMap) {
         this.backingMap = backingMap;
     }
 

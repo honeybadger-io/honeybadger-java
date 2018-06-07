@@ -8,7 +8,7 @@ import java.util.Arrays;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.11
  */
-public class HBStringUtils {
+public final class HBStringUtils {
     private HBStringUtils() { }
 
     /**
