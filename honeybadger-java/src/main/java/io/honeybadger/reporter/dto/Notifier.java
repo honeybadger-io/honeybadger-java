@@ -19,11 +19,23 @@ public class Notifier implements Serializable {
 
     private static final long serialVersionUID = -9160493241433298708L;
 
-    public final String name = "io.honeybadger:honeybadger-java";
-    public final String url = "https://github.com/honeybadger-io/honeybadger-java";
-    public final String version = VERSION;
+    private final String name = "io.honeybadger:honeybadger-java";
+    private final String url = "https://github.com/honeybadger-io/honeybadger-java";
+    private final String version = VERSION;
 
     public Notifier() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     /**

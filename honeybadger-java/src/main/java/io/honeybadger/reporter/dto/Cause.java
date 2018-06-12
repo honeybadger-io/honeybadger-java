@@ -16,9 +16,9 @@ public class Cause implements Serializable {
     private static final long serialVersionUID = -6876640270344752492L;
 
     @SerializedName("class")
-    public final String className;
-    public final String message;
-    public final Backtrace backtrace;
+    private final String className;
+    private final String message;
+    private final Backtrace backtrace;
 
     public Cause(final ConfigContext config, final Throwable error) {
         this.className = error.getClass().getName();
@@ -31,13 +31,25 @@ public class Cause implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cause cause = (Cause) o;
-        return Objects.equals(className, cause.className) &&
-                Objects.equals(message, cause.message) &&
-                Objects.equals(backtrace, cause.backtrace);
+        return Objects.equals(getClassName(), cause.getClassName()) &&
+                Objects.equals(getMessage(), cause.getMessage()) &&
+                Objects.equals(getBacktrace(), cause.getBacktrace());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(className, message, backtrace);
+        return Objects.hash(getClassName(), getMessage(), getBacktrace());
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Backtrace getBacktrace() {
+        return backtrace;
     }
 }

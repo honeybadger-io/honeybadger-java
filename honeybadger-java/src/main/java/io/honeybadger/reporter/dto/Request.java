@@ -14,12 +14,12 @@ import java.util.Objects;
 public class Request implements Serializable {
     private static final long serialVersionUID = 9105532956022860986L;
 
-    public final Context context;
-    public final String url;
-    public final Params params;
-    public final Session session;
+    private final Context context;
+    private final String url;
+    private final Params params;
+    private final Session session;
     @SerializedName("cgi_data")
-    public final CgiData cgiData;
+    private final CgiData cgiData;
 
     public Request(final Context context, final String url,
                    final Params params, final Session session,
@@ -36,15 +36,35 @@ public class Request implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Request request = (Request) o;
-        return Objects.equals(context, request.context) &&
-                Objects.equals(url, request.url) &&
-                Objects.equals(params, request.params) &&
-                Objects.equals(session, request.session) &&
-                Objects.equals(cgiData, request.cgiData);
+        return Objects.equals(getContext(), request.getContext()) &&
+                Objects.equals(getUrl(), request.getUrl()) &&
+                Objects.equals(getParams(), request.getParams()) &&
+                Objects.equals(getSession(), request.getSession()) &&
+                Objects.equals(getCgiData(), request.getCgiData());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(context, url, params, session, cgiData);
+        return Objects.hash(getContext(), getUrl(), getParams(), getSession(), getCgiData());
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Params getParams() {
+        return params;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public CgiData getCgiData() {
+        return cgiData;
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

@@ -12,8 +12,8 @@ import java.util.Objects;
 public class Stats implements Serializable {
     private static final long serialVersionUID = 4563609532018909058L;
 
-    public final Memory mem;
-    public final Load load;
+    private final Memory mem;
+    private final Load load;
 
     public Stats() {
         this.mem = new Memory();

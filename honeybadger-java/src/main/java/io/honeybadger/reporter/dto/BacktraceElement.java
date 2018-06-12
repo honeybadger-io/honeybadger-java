@@ -34,10 +34,10 @@ public class BacktraceElement implements Serializable {
     }
 
     private final ConfigContext config;
-    public final String file;
-    public final String method;
-    public final String number;
-    public final String context;
+    private final String file;
+    private final String method;
+    private final String number;
+    private final String context;
 
     public BacktraceElement(final ConfigContext config, final String number, final String file,
                             final String method) {

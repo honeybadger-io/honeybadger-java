@@ -26,13 +26,13 @@ public class ServerDetails implements Serializable {
     private static final long serialVersionUID = 4689643321013504425L;
     private static Logger logger = LoggerFactory.getLogger(ServerDetails.class);
     @SerializedName("environment_name")
-    public final String environmentName;
-    public final String hostname;
+    private final String environmentName;
+    private final String hostname;
     @SerializedName("project_root")
-    public final String projectRoot;
-    public final Integer pid;
-    public final String time;
-    public final Stats stats;
+    private final String projectRoot;
+    private final Integer pid;
+    private final String time;
+    private final Stats stats;
 
     public ServerDetails(final ConfigContext context) {
         this.environmentName = context.getEnvironment();
@@ -132,28 +132,52 @@ public class ServerDetails implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ServerDetails that = (ServerDetails) o;
-        return Objects.equals(environmentName, that.environmentName) &&
-                Objects.equals(hostname, that.hostname) &&
-                Objects.equals(projectRoot, that.projectRoot) &&
-                Objects.equals(pid, that.pid) &&
-                Objects.equals(time, that.time) &&
-                Objects.equals(stats, that.stats);
+        return Objects.equals(getEnvironmentName(), that.getEnvironmentName()) &&
+                Objects.equals(getHostname(), that.getHostname()) &&
+                Objects.equals(getProjectRoot(), that.getProjectRoot()) &&
+                Objects.equals(getPid(), that.getPid()) &&
+                Objects.equals(getTime(), that.getTime()) &&
+                Objects.equals(getStats(), that.getStats());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(environmentName, hostname, projectRoot, pid, time, stats);
+        return Objects.hash(getEnvironmentName(), getHostname(), getProjectRoot(), getPid(), getTime(), getStats());
     }
 
     @Override
     public String toString() {
         return "ServerDetails{" +
-                "environment_name='" + environmentName + '\'' +
-                ", hostname='" + hostname + '\'' +
-                ", project_root='" + projectRoot + '\'' +
-                ", pid=" + pid +
-                ", stats=" + stats +
+                "environment_name='" + getEnvironmentName() + '\'' +
+                ", hostname='" + getHostname() + '\'' +
+                ", project_root='" + getProjectRoot() + '\'' +
+                ", pid=" + getPid() +
+                ", stats=" + getStats() +
                 '}';
+    }
+
+    public String getEnvironmentName() {
+        return environmentName;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public String getProjectRoot() {
+        return projectRoot;
+    }
+
+    public Integer getPid() {
+        return pid;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public Stats getStats() {
+        return stats;
     }
 }

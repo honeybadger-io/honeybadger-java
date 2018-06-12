@@ -19,9 +19,9 @@ import java.util.Scanner;
 public class Load implements Serializable {
     private static final long serialVersionUID = 3398000045209329774L;
 
-    public final Number one;
-    public final Number five;
-    public final Number fifteen;
+    private final Number one;
+    private final Number five;
+    private final Number fifteen;
 
     public Load() {
         Number[] loadAverages = findLoadAverages();
@@ -101,23 +101,35 @@ public class Load implements Serializable {
         }
 
         final Load load = (Load) o;
-        return Objects.equals(one, load.one) &&
-                Objects.equals(five, load.five) &&
-                Objects.equals(fifteen, load.fifteen);
+        return Objects.equals(getOne(), load.getOne()) &&
+                Objects.equals(getFive(), load.getFive()) &&
+                Objects.equals(getFifteen(), load.getFifteen());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(one, five, fifteen);
+        return Objects.hash(getOne(), getFive(), getFifteen());
     }
 
     @Override
     public String toString() {
         return "Load{" +
-                "one=" + one +
-                ", five=" + five +
-                ", fifteen=" + fifteen +
+                "one=" + getOne() +
+                ", five=" + getFive() +
+                ", fifteen=" + getFifteen() +
                 '}';
+    }
+
+    public Number getOne() {
+        return one;
+    }
+
+    public Number getFive() {
+        return five;
+    }
+
+    public Number getFifteen() {
+        return fifteen;
     }
 }

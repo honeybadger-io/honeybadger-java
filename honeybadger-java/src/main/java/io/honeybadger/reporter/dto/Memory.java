@@ -28,22 +28,22 @@ public class Memory implements Serializable {
     private static final String LINUX_MEMINFO_PATH = "/proc/meminfo";
     public static final int JVM_INFO_INITIAL_CAPACITY = 10;
 
-    public final Number total;
-    public final Number free;
-    public final Number buffers;
-    public final Number cached;
+    private final Number total;
+    private final Number free;
+    private final Number buffers;
+    private final Number cached;
     @SerializedName("vm_freeTotal")
-    public final Number freeTotal;
+    private final Number freeTotal;
     @SerializedName("vm_free")
-    public final Number vmFree;
+    private final Number vmFree;
     @SerializedName("vm_max")
-    public final Number vmMax;
+    private final Number vmMax;
     @SerializedName("vm_total")
-    public final Number vmTotal;
+    private final Number vmTotal;
     @SerializedName("vm_heap")
-    public final Number vmHeap;
+    private final Number vmHeap;
     @SerializedName("vm_nonheap")
-    public final Number vmNonheap;
+    private final Number vmNonheap;
 
     public Memory() {
         OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
@@ -72,7 +72,8 @@ public class Memory implements Serializable {
         this.vmNonheap = vmMemValues.get("VmNonHeap");
     }
 
-    @SuppressWarnings("CheckStyle")
+    @SuppressWarnings("ParameterNumber")
+    // No reason to be restrictive for a DTO
     public Memory(final Number total, final Number free, final Number buffers, final Number cached,
                   final Number freeTotal, final Number vmFree, final Number vmMax,
                   final Number vmTotal, final Number vmHeap, final Number vmNonheap) {
@@ -159,38 +160,78 @@ public class Memory implements Serializable {
         }
 
         final Memory memory = (Memory) o;
-        return Objects.equals(total, memory.total) &&
-                Objects.equals(free, memory.free) &&
-                Objects.equals(buffers, memory.buffers) &&
-                Objects.equals(cached, memory.cached) &&
-                Objects.equals(freeTotal, memory.freeTotal) &&
-                Objects.equals(vmFree, memory.vmFree) &&
-                Objects.equals(vmMax, memory.vmMax) &&
-                Objects.equals(vmTotal, memory.vmTotal) &&
-                Objects.equals(vmHeap, memory.vmHeap) &&
-                Objects.equals(vmNonheap, memory.vmNonheap);
+        return Objects.equals(getTotal(), memory.getTotal()) &&
+                Objects.equals(getFree(), memory.getFree()) &&
+                Objects.equals(getBuffers(), memory.getBuffers()) &&
+                Objects.equals(getCached(), memory.getCached()) &&
+                Objects.equals(getFreeTotal(), memory.getFreeTotal()) &&
+                Objects.equals(getVmFree(), memory.getVmFree()) &&
+                Objects.equals(getVmMax(), memory.getVmMax()) &&
+                Objects.equals(getVmTotal(), memory.getVmTotal()) &&
+                Objects.equals(getVmHeap(), memory.getVmHeap()) &&
+                Objects.equals(getVmNonheap(), memory.getVmNonheap());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(total, free, buffers, cached, freeTotal, vmFree,
-                vmMax, vmTotal, vmHeap, vmNonheap);
+        return Objects.hash(getTotal(), getFree(), getBuffers(), getCached(), getFreeTotal(), getVmFree(),
+                getVmMax(), getVmTotal(), getVmHeap(), getVmNonheap());
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Memory{");
-        sb.append("total=").append(total);
-        sb.append(", free=").append(free);
-        sb.append(", buffers=").append(buffers);
-        sb.append(", cached=").append(cached);
-        sb.append(", free_total=").append(freeTotal);
-        sb.append(", vm_free=").append(vmFree);
-        sb.append(", vm_max=").append(vmMax);
-        sb.append(", vm_total=").append(vmTotal);
-        sb.append(", vm_heap=").append(vmHeap);
-        sb.append(", vm_nonheap=").append(vmNonheap);
+        sb.append("total=").append(getTotal());
+        sb.append(", free=").append(getFree());
+        sb.append(", buffers=").append(getBuffers());
+        sb.append(", cached=").append(getCached());
+        sb.append(", free_total=").append(getFreeTotal());
+        sb.append(", vm_free=").append(getVmFree());
+        sb.append(", vm_max=").append(getVmMax());
+        sb.append(", vm_total=").append(getVmTotal());
+        sb.append(", vm_heap=").append(getVmHeap());
+        sb.append(", vm_nonheap=").append(getVmNonheap());
         sb.append('}');
         return sb.toString();
+    }
+
+    public Number getTotal() {
+        return total;
+    }
+
+    public Number getFree() {
+        return free;
+    }
+
+    public Number getBuffers() {
+        return buffers;
+    }
+
+    public Number getCached() {
+        return cached;
+    }
+
+    public Number getFreeTotal() {
+        return freeTotal;
+    }
+
+    public Number getVmFree() {
+        return vmFree;
+    }
+
+    public Number getVmMax() {
+        return vmMax;
+    }
+
+    public Number getVmTotal() {
+        return vmTotal;
+    }
+
+    public Number getVmHeap() {
+        return vmHeap;
+    }
+
+    public Number getVmNonheap() {
+        return vmNonheap;
     }
 }

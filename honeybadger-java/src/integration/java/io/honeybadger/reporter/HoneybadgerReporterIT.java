@@ -113,12 +113,12 @@ public class HoneybadgerReporterIT {
         Request expectedRequest = expected.getRequest();
         Request actualRequest = actual.getRequest();
 
-        assertEquals(expectedRequest.context, actualRequest.context);
-        assertEquals(expectedRequest.params, actualRequest.params);
-        assertEquals(expectedRequest.session, actualRequest.session);
+        assertEquals(expectedRequest.getContext(), actualRequest.getContext());
+        assertEquals(expectedRequest.getParams(), actualRequest.getParams());
+        assertEquals(expectedRequest.getSession(), actualRequest.getSession());
 
-        CgiData expectedCgi = expectedRequest.cgiData;
-        CgiData actualCgi = actualRequest.cgiData;
+        CgiData expectedCgi = expectedRequest.getCgiData();
+        CgiData actualCgi = actualRequest.getCgiData();
 
         assertEquals(expectedCgi.getAsInteger(HttpHeaders.CONTENT_LENGTH.toUpperCase()),
                      actualCgi.getAsInteger(HttpHeaders.CONTENT_LENGTH.toUpperCase()));
