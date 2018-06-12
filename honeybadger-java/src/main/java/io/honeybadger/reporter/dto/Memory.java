@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.google.gson.annotations.SerializedName;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;

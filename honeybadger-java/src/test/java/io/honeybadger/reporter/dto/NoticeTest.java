@@ -31,11 +31,22 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeThat;
 
+
+/**
+ * This test needs to be run on multiple platforms to be considered completely passing. On Linux
+ * we support reporting system memory utilization and historical load data which isn't available
+ * without fairly expensive process forking or environment-specific monitoring methods.
+ *
+ * Historically this test was skipped on non-Linux environments, but because serialization structure
+ * is fairly important we've revised the json schema to allow both Linux and Non-Linux variations
+ * of the Notice message.
+ */
 public class NoticeTest {
     private static final OperatingSystemMXBean OS_BEAN = ManagementFactory.getOperatingSystemMXBean();
     private static final String OS = OS_BEAN.getName();
     private static final String JSON_SCHEMA_URL =
-            "https://gist.githubusercontent.com/joshuap/94901ba378fd09a783be/raw/b632ff0a6b1ec82ced73735a321f1e44e94669d2/notices.json";
+            "https://gist.githubusercontent.com/JasonTrue/80e28e9debe4a9a94164c85bf5ec5f85/raw/fbd90c052133ac911606743547583797a5d1b8f3/notices.json";
+            // originally: "https://gist.githubusercontent.com/joshuap/94901ba378fd09a783be/raw/b632ff0a6b1ec82ced73735a321f1e44e94669d2/notices.json";
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final JsonNode schema;
@@ -122,8 +133,6 @@ public class NoticeTest {
         JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
 
         JsonNode jsonNode = mapper.readTree(jsonText);
-        removeUnsupportedElements(jsonNode);
-
         ProcessingReport report = validator.validate(schema, jsonNode);
 
         if (!report.isSuccess()) {
@@ -139,27 +148,9 @@ public class NoticeTest {
 
             builder.append(System.lineSeparator()).append(jsonText);
 
-            // Skip test if we aren't on Linux because load time stats will be different
-            assumeThat(builder.toString(), OS, is("Linux"));
             fail(builder.toString());
         } else {
             assertTrue("Generated JSON validated correctly", true);
-        }
-    }
-
-    private static void removeUnsupportedElements(JsonNode jsonNode) {
-        JsonNode server = jsonNode.get("server");
-        if (server == null) return;
-        JsonNode stats = server.get("stats");
-        if (stats == null) return;
-        JsonNode mem = stats.get("mem");
-        if (mem == null) return;
-
-        Iterator<Map.Entry<String, JsonNode>> itr = mem.fields();
-
-        while (itr.hasNext()) {
-            Map.Entry<String, JsonNode> next = itr.next();
-            if (next.getKey().startsWith("vm_")) itr.remove();
         }
     }
 }
