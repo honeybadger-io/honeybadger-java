@@ -32,12 +32,18 @@ public class Memory implements Serializable {
     public final Number free;
     public final Number buffers;
     public final Number cached;
-    public final Number free_total;
-    public final Number vm_free;
-    public final Number vm_max;
-    public final Number vm_total;
-    public final Number vm_heap;
-    public final Number vm_nonheap;
+    @SerializedName("vm_freeTotal")
+    public final Number freeTotal;
+    @SerializedName("vm_free")
+    public final Number vmFree;
+    @SerializedName("vm_max")
+    public final Number vmMax;
+    @SerializedName("vm_total")
+    public final Number vmTotal;
+    @SerializedName("vm_heap")
+    public final Number vmHeap;
+    @SerializedName("vm_nonheap")
+    public final Number vmNonheap;
 
     public Memory() {
         OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
@@ -58,12 +64,12 @@ public class Memory implements Serializable {
         this.free = memValues.get("MemFree");
         this.buffers = memValues.get("Buffers");
         this.cached = memValues.get("Cached");
-        this.free_total = memValues.get("FreeTotal");
-        this.vm_free = vmMemValues.get("VmFreeMem");
-        this.vm_max = vmMemValues.get("VmMaxMem");
-        this.vm_total = vmMemValues.get("VmTotalMem");
-        this.vm_heap = vmMemValues.get("VmHeap");
-        this.vm_nonheap = vmMemValues.get("VmNonHeap");
+        this.freeTotal = memValues.get("FreeTotal");
+        this.vmFree = vmMemValues.get("VmFreeMem");
+        this.vmMax = vmMemValues.get("VmMaxMem");
+        this.vmTotal = vmMemValues.get("VmTotalMem");
+        this.vmHeap = vmMemValues.get("VmHeap");
+        this.vmNonheap = vmMemValues.get("VmNonHeap");
     }
 
     @SuppressWarnings("CheckStyle")
@@ -74,12 +80,12 @@ public class Memory implements Serializable {
         this.free = free;
         this.buffers = buffers;
         this.cached = cached;
-        this.free_total = freeTotal;
-        this.vm_free = vmFree;
-        this.vm_max = vmMax;
-        this.vm_total = vmTotal;
-        this.vm_heap = vmHeap;
-        this.vm_nonheap = vmNonheap;
+        this.freeTotal = freeTotal;
+        this.vmFree = vmFree;
+        this.vmMax = vmMax;
+        this.vmTotal = vmTotal;
+        this.vmHeap = vmHeap;
+        this.vmNonheap = vmNonheap;
     }
 
     static Map<String, Long> findLinuxMemInfo(final File memInfoFile) {
@@ -157,18 +163,18 @@ public class Memory implements Serializable {
                 Objects.equals(free, memory.free) &&
                 Objects.equals(buffers, memory.buffers) &&
                 Objects.equals(cached, memory.cached) &&
-                Objects.equals(free_total, memory.free_total) &&
-                Objects.equals(vm_free, memory.vm_free) &&
-                Objects.equals(vm_max, memory.vm_max) &&
-                Objects.equals(vm_total, memory.vm_total) &&
-                Objects.equals(vm_heap, memory.vm_heap) &&
-                Objects.equals(vm_nonheap, memory.vm_nonheap);
+                Objects.equals(freeTotal, memory.freeTotal) &&
+                Objects.equals(vmFree, memory.vmFree) &&
+                Objects.equals(vmMax, memory.vmMax) &&
+                Objects.equals(vmTotal, memory.vmTotal) &&
+                Objects.equals(vmHeap, memory.vmHeap) &&
+                Objects.equals(vmNonheap, memory.vmNonheap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(total, free, buffers, cached, free_total, vm_free,
-                vm_max, vm_total, vm_heap, vm_nonheap);
+        return Objects.hash(total, free, buffers, cached, freeTotal, vmFree,
+                vmMax, vmTotal, vmHeap, vmNonheap);
     }
 
     @Override
@@ -178,12 +184,12 @@ public class Memory implements Serializable {
         sb.append(", free=").append(free);
         sb.append(", buffers=").append(buffers);
         sb.append(", cached=").append(cached);
-        sb.append(", free_total=").append(free_total);
-        sb.append(", vm_free=").append(vm_free);
-        sb.append(", vm_max=").append(vm_max);
-        sb.append(", vm_total=").append(vm_total);
-        sb.append(", vm_heap=").append(vm_heap);
-        sb.append(", vm_nonheap=").append(vm_nonheap);
+        sb.append(", free_total=").append(freeTotal);
+        sb.append(", vm_free=").append(vmFree);
+        sb.append(", vm_max=").append(vmMax);
+        sb.append(", vm_total=").append(vmTotal);
+        sb.append(", vm_heap=").append(vmHeap);
+        sb.append(", vm_nonheap=").append(vmNonheap);
         sb.append('}');
         return sb.toString();
     }

@@ -1,5 +1,7 @@
 package io.honeybadger.reporter.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -16,7 +18,8 @@ public class Request implements Serializable {
     public final String url;
     public final Params params;
     public final Session session;
-    public final CgiData cgi_data;
+    @SerializedName("cgi_data")
+    public final CgiData cgiData;
 
     public Request(final Context context, final String url,
                    final Params params, final Session session,
@@ -25,7 +28,7 @@ public class Request implements Serializable {
         this.url = url;
         this.params = params;
         this.session = session;
-        this.cgi_data = cgiData;
+        this.cgiData = cgiData;
     }
 
     @Override
@@ -37,11 +40,11 @@ public class Request implements Serializable {
                 Objects.equals(url, request.url) &&
                 Objects.equals(params, request.params) &&
                 Objects.equals(session, request.session) &&
-                Objects.equals(cgi_data, request.cgi_data);
+                Objects.equals(cgiData, request.cgiData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(context, url, params, session, cgi_data);
+        return Objects.hash(context, url, params, session, cgiData);
     }
 }

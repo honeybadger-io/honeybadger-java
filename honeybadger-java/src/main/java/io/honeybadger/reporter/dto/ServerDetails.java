@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.google.gson.annotations.SerializedName;
 import io.honeybadger.reporter.config.ConfigContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,18 +25,19 @@ import java.util.TimeZone;
 public class ServerDetails implements Serializable {
     private static final long serialVersionUID = 4689643321013504425L;
     private static Logger logger = LoggerFactory.getLogger(ServerDetails.class);
-
-    public final String environment_name;
+    @SerializedName("environment_name")
+    public final String environmentName;
     public final String hostname;
-    public final String project_root;
+    @SerializedName("project_root")
+    public final String projectRoot;
     public final Integer pid;
     public final String time;
     public final Stats stats;
 
     public ServerDetails(final ConfigContext context) {
-        this.environment_name = context.getEnvironment();
+        this.environmentName = context.getEnvironment();
         this.hostname = hostname();
-        this.project_root = projectRoot();
+        this.projectRoot = projectRoot();
         this.pid = pid();
         this.time = time();
         this.stats = new Stats();
@@ -43,9 +45,9 @@ public class ServerDetails implements Serializable {
 
     public ServerDetails(final String environmentName, final String hostname, final String projectRoot,
                          final Integer pid, final String time, final Stats stats) {
-        this.environment_name = environmentName;
+        this.environmentName = environmentName;
         this.hostname = hostname;
-        this.project_root = projectRoot;
+        this.projectRoot = projectRoot;
         this.pid = pid;
         this.time = time;
         this.stats = stats;
@@ -130,9 +132,9 @@ public class ServerDetails implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ServerDetails that = (ServerDetails) o;
-        return Objects.equals(environment_name, that.environment_name) &&
+        return Objects.equals(environmentName, that.environmentName) &&
                 Objects.equals(hostname, that.hostname) &&
-                Objects.equals(project_root, that.project_root) &&
+                Objects.equals(projectRoot, that.projectRoot) &&
                 Objects.equals(pid, that.pid) &&
                 Objects.equals(time, that.time) &&
                 Objects.equals(stats, that.stats);
@@ -141,15 +143,15 @@ public class ServerDetails implements Serializable {
     @Override
     public int hashCode() {
 
-        return Objects.hash(environment_name, hostname, project_root, pid, time, stats);
+        return Objects.hash(environmentName, hostname, projectRoot, pid, time, stats);
     }
 
     @Override
     public String toString() {
         return "ServerDetails{" +
-                "environment_name='" + environment_name + '\'' +
+                "environment_name='" + environmentName + '\'' +
                 ", hostname='" + hostname + '\'' +
-                ", project_root='" + project_root + '\'' +
+                ", project_root='" + projectRoot + '\'' +
                 ", pid=" + pid +
                 ", stats=" + stats +
                 '}';
