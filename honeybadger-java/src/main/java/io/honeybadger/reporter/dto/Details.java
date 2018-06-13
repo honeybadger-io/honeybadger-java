@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.honeybadger.reporter.config.ConfigContext;
 import org.slf4j.MDC;
 
@@ -15,6 +16,7 @@ import java.util.TreeMap;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Details extends LinkedHashMap<String, Map<String, String>>
         implements Serializable {
     private static final long serialVersionUID = -6238693264237448645L;

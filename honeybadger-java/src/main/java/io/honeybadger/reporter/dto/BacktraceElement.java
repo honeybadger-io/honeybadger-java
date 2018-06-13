@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Objects;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BacktraceElement implements Serializable {
     private static final long serialVersionUID = -4455225669072193184L;
 
@@ -34,6 +36,23 @@ public class BacktraceElement implements Serializable {
     }
 
     private final ConfigContext config;
+
+    public String getFile() {
+        return file;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
     private final String file;
     private final String method;
     private final String number;

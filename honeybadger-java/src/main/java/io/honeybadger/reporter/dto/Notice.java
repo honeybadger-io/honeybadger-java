@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Objects;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Notice implements Serializable {
     private static final long serialVersionUID = 1661111694538362413L;
 

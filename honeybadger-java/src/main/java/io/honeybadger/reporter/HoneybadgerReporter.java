@@ -1,7 +1,8 @@
 package io.honeybadger.reporter;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.dto.HttpServletRequestFactory;
@@ -45,9 +46,8 @@ public class HoneybadgerReporter implements NoticeReporter {
 
     private ConfigContext config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final Gson gson = new GsonBuilder()
-            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
-            .create();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     public HoneybadgerReporter() {
         this(new SystemSettingsConfigContext());
@@ -261,9 +261,17 @@ public class HoneybadgerReporter implements NoticeReporter {
             notice.setError(noticeDetails);
         }
 
+        String json;
+        try {
+            json = OBJECT_MAPPER.writeValueAsString(notice);
+        } catch (JsonProcessingException e) {
+            logger.error("JSON Serialization of the Notice Failed.", e);
+            logger.error("Original Error", error);
+            return null;
+        }
+
         for (int retries = 0; retries < RETRIES; retries++) {
             try {
-                String json = gson.toJson(notice);
                 HttpResponse response = sendToHoneybadger(json)
                         .returnResponse();
                 int responseCode = response.getStatusLine().getStatusCode();
@@ -296,7 +304,7 @@ public class HoneybadgerReporter implements NoticeReporter {
              Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
             @SuppressWarnings("unchecked")
             HashMap<String, String> map =
-                    (HashMap<String, String>)gson.fromJson(reader, HashMap.class);
+                    (HashMap<String, String>)OBJECT_MAPPER.readValue(reader, HashMap.class);
 
             if (map.containsKey("id")) {
                 return UUID.fromString(map.get("id"));

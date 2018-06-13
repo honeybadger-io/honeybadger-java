@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jcabi.manifests.Manifests;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Objects;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Notifier implements Serializable {
     public static final String VERSION;
 

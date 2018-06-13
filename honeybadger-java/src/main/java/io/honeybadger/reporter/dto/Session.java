@@ -1,5 +1,7 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
@@ -8,6 +10,7 @@ import java.util.LinkedHashMap;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Session extends LinkedHashMap<String, Object>
         implements Serializable {
     private static final long serialVersionUID = 1683674267395812181L;

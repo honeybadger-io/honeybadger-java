@@ -9,14 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import static org.apache.http.HttpHeaders.ACCEPT;
-import static org.apache.http.HttpHeaders.ACCEPT_CHARSET;
-import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
-import static org.apache.http.HttpHeaders.ACCEPT_LANGUAGE;
-import static org.apache.http.HttpHeaders.AUTHORIZATION;
-import static org.apache.http.HttpHeaders.CONTENT_LENGTH;
-import static org.apache.http.HttpHeaders.CONTENT_TYPE;
-import static org.apache.http.HttpHeaders.USER_AGENT;
+import static org.apache.http.HttpHeaders.*;
 
 /**
  * CGI parameters passed to the server when the error occurred.

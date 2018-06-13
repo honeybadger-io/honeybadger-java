@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import java.util.Scanner;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.11
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Load implements Serializable {
     private static final long serialVersionUID = 3398000045209329774L;
 

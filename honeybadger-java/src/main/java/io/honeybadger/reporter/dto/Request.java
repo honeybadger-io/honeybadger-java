@@ -1,5 +1,7 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -11,6 +13,7 @@ import java.util.Objects;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Request implements Serializable {
     private static final long serialVersionUID = 9105532956022860986L;
 
@@ -19,6 +22,7 @@ public class Request implements Serializable {
     private final Params params;
     private final Session session;
     @SerializedName("cgi_data")
+    @JsonProperty("cgi_data")
     private final CgiData cgiData;
 
     public Request(final Context context, final String url,

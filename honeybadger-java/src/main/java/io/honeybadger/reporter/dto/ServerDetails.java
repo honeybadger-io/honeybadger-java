@@ -1,5 +1,8 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.gson.annotations.SerializedName;
 import io.honeybadger.reporter.config.ConfigContext;
 import org.slf4j.Logger;
@@ -22,13 +25,17 @@ import java.util.TimeZone;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({"environment_name", "hostname", "project_root", "pid", "time", "stats", ""})
 public class ServerDetails implements Serializable {
     private static final long serialVersionUID = 4689643321013504425L;
     private static Logger logger = LoggerFactory.getLogger(ServerDetails.class);
     @SerializedName("environment_name")
+    @JsonProperty("environment_name")
     private final String environmentName;
     private final String hostname;
     @SerializedName("project_root")
+    @JsonProperty("project_root")
     private final String projectRoot;
     private final Integer pid;
     private final String time;
