@@ -2,7 +2,6 @@ package io.honeybadger.reporter.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -35,22 +34,16 @@ public class Memory implements Serializable {
     private final Number free;
     private final Number buffers;
     private final Number cached;
-    @SerializedName("vm_free_total")
     @JsonProperty("vm_free_total")
     private final Number freeTotal;
-    @SerializedName("vm_free")
     @JsonProperty("vm_free")
     private final Number vmFree;
-    @SerializedName("vm_max")
     @JsonProperty("vm_max")
     private final Number vmMax;
-    @SerializedName("vm_total")
     @JsonProperty("vm_total")
     private final Number vmTotal;
-    @SerializedName("vm_heap")
     @JsonProperty("vm_heap")
     private final Number vmHeap;
-    @SerializedName("vm_nonheap")
     @JsonProperty("vm_nonheap")
     private final Number vmNonheap;
 

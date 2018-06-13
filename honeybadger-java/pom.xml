@@ -20,15 +20,14 @@
             <artifactId>slf4j-api</artifactId>
             <version>${dependency.slfj.version}</version>
         </dependency>
-        <!--TODO: about to take this out-->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${dependency.gson.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
+            <version>${dependency.jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
             <version>${dependency.jackson.version}</version>
         </dependency>
         <dependency>

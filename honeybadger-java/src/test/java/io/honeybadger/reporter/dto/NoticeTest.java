@@ -11,9 +11,6 @@ import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import io.honeybadger.reporter.HoneybadgerExclusionStrategy;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
@@ -28,11 +25,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeThat;
 
 
 /**
@@ -67,11 +61,6 @@ public class NoticeTest {
     }
 
     private ConfigContext config = new SystemSettingsConfigContext();
-
-    Gson gson = new GsonBuilder()
-            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
-            .setPrettyPrinting()
-            .create();
 
     @Test
     public void canSerializeReportedErrorWithoutRequest() throws Exception {

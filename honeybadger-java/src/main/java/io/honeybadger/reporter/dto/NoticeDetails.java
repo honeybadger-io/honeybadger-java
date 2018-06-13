@@ -3,7 +3,6 @@ package io.honeybadger.reporter.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.google.gson.annotations.SerializedName;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -21,7 +20,6 @@ import java.util.Set;
 public class NoticeDetails implements Serializable {
     private static final long serialVersionUID = -3055963787038629496L;
 
-    @SerializedName("class")
     @JsonProperty("class")
     private final String className;
     private final String message;
