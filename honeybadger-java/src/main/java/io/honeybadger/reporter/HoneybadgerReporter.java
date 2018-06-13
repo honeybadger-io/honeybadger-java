@@ -27,7 +27,6 @@ import java.io.Reader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
