@@ -2,6 +2,7 @@ package io.honeybadger.reporter;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.SystemSettingsConfigContext;
@@ -302,12 +303,11 @@ public class HoneybadgerReporter implements NoticeReporter {
             throws IOException {
         try (InputStream in = response.getEntity().getContent();
              Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
-            @SuppressWarnings("unchecked")
-            HashMap<String, String> map =
-                    (HashMap<String, String>)OBJECT_MAPPER.readValue(reader, HashMap.class);
 
-            if (map.containsKey("id")) {
-                return UUID.fromString(map.get("id"));
+            JsonNode responseNode = OBJECT_MAPPER.readTree(reader);
+
+            if (responseNode.has("id")) {
+                return UUID.fromString(responseNode.get("id").textValue());
             } else {
                 return null;
             }
