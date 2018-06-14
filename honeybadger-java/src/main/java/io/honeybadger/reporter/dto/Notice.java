@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.honeybadger.reporter.config.ConfigContext;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
 public class Notice implements Serializable {
     private static final long serialVersionUID = 1661111694538362413L;
 
+    @JacksonInject("config")
     private final ConfigContext config;
 
     private Notifier notifier = new Notifier();

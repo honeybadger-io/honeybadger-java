@@ -1,8 +1,10 @@
 package io.honeybadger.loader;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.dto.Notice;
@@ -31,7 +33,8 @@ public class HoneybadgerNoticeLoader {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                    .configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
 
     private ConfigContext config;
 
@@ -103,13 +106,11 @@ public class HoneybadgerNoticeLoader {
                 .replace("cgi_data", cgiData);
         Notice error;
 
-        try {
-            ConfigContext.THREAD_LOCAL.set(config);
-            error = OBJECT_MAPPER.readValue(originalJson.asText(), Notice.class);
-        } finally {
-            ConfigContext.THREAD_LOCAL.remove();
-        }
+        InjectableValues.Std injectableValues = new InjectableValues.Std();
+        OBJECT_MAPPER.setInjectableValues(injectableValues);
+        injectableValues.addValue("config", config);
 
+        error = OBJECT_MAPPER.readValue(originalJson.asText(), Notice.class);
         return error;
     }
 }

@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.honeybadger.reporter.config.ConfigContext;
 
@@ -35,6 +36,7 @@ public class BacktraceElement implements Serializable {
         }
     }
 
+    @JacksonInject("config")
     private final ConfigContext config;
 
     public String getFile() {
