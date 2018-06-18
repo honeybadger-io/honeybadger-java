@@ -1,7 +1,9 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -20,11 +22,12 @@ public class Request implements Serializable {
     private final Params params;
     private final Session session;
     @JsonProperty("cgi_data")
-    private final CgiData cgiData;
+    private CgiData cgiData;
 
-    public Request(final Context context, final String url,
-                   final Params params, final Session session,
-                   final CgiData cgiData) {
+    @JsonCreator
+    public Request(@JsonProperty("context")final Context context, @JsonProperty("url") final String url,
+                   @JsonProperty("params") final Params params,  @JsonProperty("session") final Session session,
+                   @JsonProperty("cgi_data") final CgiData cgiData) {
         this.context = context;
         this.url = url;
         this.params = params;
@@ -63,6 +66,10 @@ public class Request implements Serializable {
 
     public CgiData getCgiData() {
         return cgiData;
+    }
+
+    public void setCgiData(final CgiData value) {
+        this.cgiData = value;
     }
 
     public Context getContext() {

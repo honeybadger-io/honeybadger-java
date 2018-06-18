@@ -1,7 +1,9 @@
 package io.honeybadger.reporter.dto;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -60,8 +62,11 @@ public class BacktraceElement implements Serializable {
     private final String number;
     private final String context;
 
-    public BacktraceElement(final ConfigContext config, final String number, final String file,
-                            final String method) {
+    @JsonCreator
+    public BacktraceElement(@JacksonInject("config") final ConfigContext config,
+                            @JsonProperty("number") final String number,
+                            @JsonProperty("file") final String file,
+                            @JsonProperty("method") final String method) {
         this.config = config;
         this.number = number;
         this.file = file;

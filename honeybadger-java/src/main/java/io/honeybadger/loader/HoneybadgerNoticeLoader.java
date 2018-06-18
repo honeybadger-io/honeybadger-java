@@ -24,6 +24,11 @@ import java.util.UUID;
  * Utility class used to load a fault's details into a readable object
  * structure.
  *
+ * This class is currently only suitable for consumption by integration tests,
+ * as much of the data in the reporter dto is not returned by the Notice API.
+ * If you have an use case for Notice deserialization, please file an issue
+ * at https://github.com/honeybadger-io/honeybadger-java
+ *
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
@@ -110,7 +115,7 @@ public class HoneybadgerNoticeLoader {
         OBJECT_MAPPER.setInjectableValues(injectableValues);
         injectableValues.addValue("config", config);
 
-        error = OBJECT_MAPPER.readValue(originalJson.asText(), Notice.class);
+        error = OBJECT_MAPPER.readValue(originalJson.toString(), Notice.class);
         return error;
     }
 }
