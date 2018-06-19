@@ -1,8 +1,10 @@
 package io.honeybadger.loader;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.dto.Notice;
@@ -22,6 +24,11 @@ import java.util.UUID;
  * Utility class used to load a fault's details into a readable object
  * structure.
  *
+ * This class is currently only suitable for consumption by integration tests,
+ * as much of the data in the reporter dto is not returned by the Notice API.
+ * If you have an use case for Notice deserialization, please file an issue
+ * at https://github.com/honeybadger-io/honeybadger-java
+ *
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
@@ -31,7 +38,8 @@ public class HoneybadgerNoticeLoader {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                    .configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
 
     private ConfigContext config;
 
@@ -103,13 +111,11 @@ public class HoneybadgerNoticeLoader {
                 .replace("cgi_data", cgiData);
         Notice error;
 
-        try {
-            ConfigContext.THREAD_LOCAL.set(config);
-            error = OBJECT_MAPPER.readValue(originalJson.asText(), Notice.class);
-        } finally {
-            ConfigContext.THREAD_LOCAL.remove();
-        }
+        InjectableValues.Std injectableValues = new InjectableValues.Std();
+        OBJECT_MAPPER.setInjectableValues(injectableValues);
+        injectableValues.addValue("config", config);
 
+        error = OBJECT_MAPPER.readValue(originalJson.toString(), Notice.class);
         return error;
     }
 }

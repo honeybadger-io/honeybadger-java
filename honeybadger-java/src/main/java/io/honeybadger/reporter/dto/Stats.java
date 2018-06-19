@@ -1,6 +1,8 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -32,7 +34,9 @@ public class Stats implements Serializable {
         this.load = new Load();
     }
 
-    public Stats(final Memory mem, final Load load) {
+    @JsonCreator
+    public Stats(@JsonProperty("mem") final Memory mem,
+                 @JsonProperty("load") final Load load) {
         this.mem = mem;
         this.load = load;
     }

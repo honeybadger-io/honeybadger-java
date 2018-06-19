@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -47,8 +48,13 @@ public class ServerDetails implements Serializable {
         this.stats = new Stats();
     }
 
-    public ServerDetails(final String environmentName, final String hostname, final String projectRoot,
-                         final Integer pid, final String time, final Stats stats) {
+    @JsonCreator
+    public ServerDetails(@JsonProperty("environment_name") final String environmentName,
+                         @JsonProperty("hostname") final String hostname,
+                         @JsonProperty("project_root") final String projectRoot,
+                         @JsonProperty("pid") final Integer pid,
+                         @JsonProperty("time") final String time,
+                         @JsonProperty("stats") final Stats stats) {
         this.environmentName = environmentName;
         this.hostname = hostname;
         this.projectRoot = projectRoot;

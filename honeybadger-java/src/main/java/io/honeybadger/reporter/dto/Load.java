@@ -1,6 +1,8 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -32,7 +34,10 @@ public class Load implements Serializable {
         this.fifteen = loadAverages[2];
     }
 
-    public Load(final Number one, final Number five, final Number fifteen) {
+    @JsonCreator
+    public Load(@JsonProperty("one") final Number one,
+                @JsonProperty("five") final Number five,
+                @JsonProperty("fifteen") final Number fifteen) {
         this.one = one;
         this.five = five;
         this.fifteen = fifteen;

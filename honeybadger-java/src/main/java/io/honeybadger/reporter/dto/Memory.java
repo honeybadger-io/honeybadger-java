@@ -1,5 +1,6 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.LoggerFactory;
@@ -76,9 +77,17 @@ public class Memory implements Serializable {
 
     @SuppressWarnings("ParameterNumber")
     // No reason to be restrictive for a DTO
-    public Memory(final Number total, final Number free, final Number buffers, final Number cached,
-                  final Number freeTotal, final Number vmFree, final Number vmMax,
-                  final Number vmTotal, final Number vmHeap, final Number vmNonheap) {
+    @JsonCreator
+    public Memory(@JsonProperty("total") final Number total,
+                  @JsonProperty("free") final Number free,
+                  @JsonProperty("buffers") final Number buffers,
+                  @JsonProperty("cached") final Number cached,
+                  @JsonProperty("free_total") final Number freeTotal,
+                  @JsonProperty("vm_free") final Number vmFree,
+                  @JsonProperty("vm_max") final Number vmMax,
+                  @JsonProperty("vm_total") final Number vmTotal,
+                  @JsonProperty("vm_heap") final Number vmHeap,
+                  @JsonProperty("vm_nonheap") final Number vmNonheap) {
         this.total = total;
         this.free = free;
         this.buffers = buffers;
