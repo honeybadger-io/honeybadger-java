@@ -300,15 +300,15 @@ as a preliminary step; that way you can be (moderately) sure that your pull requ
 1. Fork it.
 2. Create a topic branch `git checkout -b my_branch`
 3. Configure integration tests to use your API keys (see below).
-4. Run unit and integration tests `./gradlew check`
+4. Run unit and integration tests `./mvn verify`
 5. Commit your changes `git commit -am "Boom"`
 6. Push to your branch `git push origin my_branch`
 7. Send a [pull request](https://github.com/honeybadger-java/honeybadger-java/pulls)
 
 ### Testing
 For the purpose of one off testing, you can use the CLI utility. Just execute it using
-```./gradlew run``` and you can enter in your API key and message to be sent to
-Honeybadger.
+```mvn exec:java -Dexec.mainClass="io.honeybadger.reporter.HoneybadgerCLI"``` from the `honeybadger-java`
+subdirectory and you can enter in your API key and message to be sent to Honeybadger.
 
 #### Running the tests
 
