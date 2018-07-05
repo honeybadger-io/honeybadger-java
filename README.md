@@ -286,6 +286,19 @@ on the fault detail page.
 This behavior is enabled by default. To disable it set the configuration option 
 `honeybadger.display_feedback_form` to `false`.
 
+### Using tags
+
+This version of honeybadger-java supports sending tags, but it requires
+invoking a new overload of
+
+```
+  NoticeReporter.reportError(Throwable error, Object request, String message, Iterable<String> tags);
+```
+
+The existing error handler/filter implementations for Play, Spring, and Servlets do not
+currently invoke this variant. Those implementations can be overridden
+to customize the tagging behavior for your application.
+ 
 ## Changelog
 
 See https://github.com/honeybadger-io/honeybadger-java/blob/master/changes.txt
