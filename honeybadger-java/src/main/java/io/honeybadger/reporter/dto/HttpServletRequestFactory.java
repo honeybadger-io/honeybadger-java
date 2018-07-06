@@ -24,9 +24,9 @@ public final class HttpServletRequestFactory {
         String url = getFullURL(httpRequest);
         Params params = createParams(config, httpRequest);
         Session session = createSession(httpRequest);
-        CgiData cgi_data = createCgiData(httpRequest);
+        CgiData cgiData = createCgiData(httpRequest);
 
-        return new Request(context, url, params, session, cgi_data);
+        return new Request(context, url, params, session, cgiData);
     }
 
     protected static Context createContext(final HttpServletRequest httpRequest) {

@@ -1,5 +1,7 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -21,12 +23,8 @@ public class Params extends LinkedHashMap<String, String>
         this.excludedValues = excludedValues;
     }
 
-    @Deprecated
-    public Params() {
-        ConfigContext config = ConfigContext.THREAD_LOCAL.get();
-        if (config == null) throw new NullPointerException(
-                "Unable to get the expected ConfigContext from ThreadLocal");
-
+    @JsonCreator
+    public Params(final @JacksonInject("config") ConfigContext config) {
         this.excludedValues = config.getExcludedParams();
     }
 

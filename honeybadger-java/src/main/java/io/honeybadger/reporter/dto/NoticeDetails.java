@@ -1,6 +1,8 @@
 package io.honeybadger.reporter.dto;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -13,15 +15,17 @@ import java.util.Set;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({"class", "message", "tags", "backtrace", "causes"})
 public class NoticeDetails implements Serializable {
     private static final long serialVersionUID = -3055963787038629496L;
 
-    @SerializedName("class")
-    public final String className;
-    public final String message;
-    public final Set<String> tags;
-    public final Backtrace backtrace;
-    public final Causes causes;
+    @JsonProperty("class")
+    private final String className;
+    private final String message;
+    private final Set<String> tags;
+    private final Backtrace backtrace;
+    private final Causes causes;
 
     @SuppressWarnings("unchecked")
     public NoticeDetails(final ConfigContext config, final Throwable error) {
@@ -50,15 +54,35 @@ public class NoticeDetails implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NoticeDetails that = (NoticeDetails) o;
-        return Objects.equals(className, that.className) &&
-                Objects.equals(message, that.message) &&
-                Objects.equals(tags, that.tags) &&
-                Objects.equals(backtrace, that.backtrace) &&
-                Objects.equals(causes, that.causes);
+        return Objects.equals(getClassName(), that.getClassName()) &&
+                Objects.equals(getMessage(), that.getMessage()) &&
+                Objects.equals(getTags(), that.getTags()) &&
+                Objects.equals(getBacktrace(), that.getBacktrace()) &&
+                Objects.equals(getCauses(), that.getCauses());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(className, message, tags, backtrace, causes);
+        return Objects.hash(getClassName(), getMessage(), getTags(), getBacktrace(), getCauses());
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public Backtrace getBacktrace() {
+        return backtrace;
+    }
+
+    public Causes getCauses() {
+        return causes;
     }
 }

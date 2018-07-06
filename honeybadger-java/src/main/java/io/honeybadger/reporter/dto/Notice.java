@@ -1,5 +1,10 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -7,12 +12,16 @@ import java.util.Objects;
 
 /**
  * Class representing an error that is reported to the Honeybadger API.
+ *
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"environment", "created_at", "message", "token", "fault_id",
+        "application_trace", "backtrace", "deploy", "url"})
 public class Notice implements Serializable {
     private static final long serialVersionUID = 1661111694538362413L;
-
+    private Long id = null;
     private final ConfigContext config;
 
     private Notifier notifier = new Notifier();
@@ -28,6 +37,18 @@ public class Notice implements Serializable {
         this.server = new ServerDetails(config);
         this.details = new Details(this.config);
         this.details.addDefaultDetails();
+    }
+
+    @JsonCreator
+    public Notice(@JacksonInject("config") final ConfigContext config,
+                  @JsonProperty("id") final Long id,
+                  @JsonProperty("web_environment") final CgiData webEnvironment,
+                  @JsonProperty("request") final Request request) {
+        this.config = config;
+        this.id = id;
+        this.server = new ServerDetails(config);
+        this.request = request;
+        this.request.setCgiData(webEnvironment);
     }
 
     public Notifier getNotifier() {
@@ -91,5 +112,9 @@ public class Notice implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(config, notifier, server, details, request, error);
+    }
+
+    public Long getId() {
+        return id;
     }
 }

@@ -1,5 +1,8 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -10,6 +13,7 @@ import java.util.ArrayList;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Backtrace extends ArrayList<BacktraceElement>
         implements Serializable {
     private static final long serialVersionUID = 5788866962863555294L;
@@ -30,6 +34,14 @@ public class Backtrace extends ArrayList<BacktraceElement>
         }
 
         addTrace(error);
+    }
+
+    /**
+     * For the benefit of deserialization
+     */
+    @JsonCreator
+    public Backtrace(@JacksonInject("config") final ConfigContext config) {
+        this.config = config;
     }
 
     /**

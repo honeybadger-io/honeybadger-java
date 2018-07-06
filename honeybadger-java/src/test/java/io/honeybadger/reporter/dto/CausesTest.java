@@ -33,7 +33,7 @@ public class CausesTest {
         assertEquals("There should only be a single cause",
                 1, causes.size());
         assertEquals("The cause class should be stored",
-                     cause.getMessage(), causes.get(0).message);
+                     cause.getMessage(), causes.get(0).getMessage());
     }
 
     @Test
@@ -50,12 +50,12 @@ public class CausesTest {
         assertEquals("There should be 4 causes chained",
                 4, causes.size());
         assertEquals("The root cause class should be stored last",
-                cause1.getMessage(), causes.get(3).message);
+                cause1.getMessage(), causes.get(3).getMessage());
         assertEquals("The second cause class should be stored second to last",
-                cause2.getMessage(), causes.get(2).message);
+                cause2.getMessage(), causes.get(2).getMessage());
         assertEquals("The third cause class should be stored third to last",
-                cause3.getMessage(), causes.get(1).message);
+                cause3.getMessage(), causes.get(1).getMessage());
         assertEquals("The fourth cause class should be stored first",
-                cause4.getMessage(), causes.get(0).message);
+                cause4.getMessage(), causes.get(0).getMessage());
     }
 }

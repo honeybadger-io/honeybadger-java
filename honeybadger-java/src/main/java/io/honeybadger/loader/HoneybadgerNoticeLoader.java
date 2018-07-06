@@ -1,9 +1,11 @@
 package io.honeybadger.loader;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import io.honeybadger.reporter.HoneybadgerExclusionStrategy;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.dto.Notice;
 import org.apache.http.HttpResponse;
@@ -22,6 +24,11 @@ import java.util.UUID;
  * Utility class used to load a fault's details into a readable object
  * structure.
  *
+ * This class is currently only suitable for consumption by integration tests,
+ * as much of the data in the reporter dto is not returned by the Notice API.
+ * If you have an use case for Notice deserialization, please file an issue
+ * at https://github.com/honeybadger-io/honeybadger-java
+ *
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
@@ -29,9 +36,11 @@ public class HoneybadgerNoticeLoader {
     private static final int RETRIES = 3;
     public static final int RETRY_DELAY_MILLIS = 5000;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final Gson gson = new GsonBuilder()
-            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
-            .create();
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                    .configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+
     private ConfigContext config;
 
     public HoneybadgerNoticeLoader(final ConfigContext config) {
@@ -92,23 +101,21 @@ public class HoneybadgerNoticeLoader {
     }
 
     public Notice findErrorDetails(final UUID faultId) throws IOException {
-        String json = pullFaultJson(faultId);
+        String jsonText = pullFaultJson(faultId);
 
         // HACK: Since our API is not symmetric, we do this in order to rename fields
         // and get *some* of the data that we sent.
-        JsonObject originalJson = gson.fromJson(json, JsonObject.class).getAsJsonObject();
-        JsonObject cgiData = originalJson.get("web_environment").getAsJsonObject();
-        originalJson.get("request").getAsJsonObject().add("cgi_data", cgiData);
-
+        JsonNode originalJson = OBJECT_MAPPER.readTree(jsonText);
+        JsonNode cgiData = originalJson.get("web_environment");
+        ((ObjectNode)originalJson.get("request"))
+                .replace("cgi_data", cgiData);
         Notice error;
 
-        try {
-            ConfigContext.THREAD_LOCAL.set(config);
-            error = gson.fromJson(originalJson, Notice.class);
-        } finally {
-            ConfigContext.THREAD_LOCAL.remove();
-        }
+        InjectableValues.Std injectableValues = new InjectableValues.Std();
+        OBJECT_MAPPER.setInjectableValues(injectableValues);
+        injectableValues.addValue("config", config);
 
+        error = OBJECT_MAPPER.readValue(originalJson.toString(), Notice.class);
         return error;
     }
 }

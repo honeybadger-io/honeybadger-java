@@ -1,7 +1,9 @@
 package io.honeybadger.reporter;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.dto.HttpServletRequestFactory;
@@ -25,7 +27,6 @@ import java.io.Reader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -45,9 +46,8 @@ public class HoneybadgerReporter implements NoticeReporter {
 
     private ConfigContext config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final Gson gson = new GsonBuilder()
-            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
-            .create();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     public HoneybadgerReporter() {
         this(new SystemSettingsConfigContext());
@@ -261,9 +261,17 @@ public class HoneybadgerReporter implements NoticeReporter {
             notice.setError(noticeDetails);
         }
 
+        String json;
+        try {
+            json = OBJECT_MAPPER.writeValueAsString(notice);
+        } catch (JsonProcessingException e) {
+            logger.error("JSON Serialization of the Notice Failed.", e);
+            logger.error("Original Error", error);
+            return null;
+        }
+
         for (int retries = 0; retries < RETRIES; retries++) {
             try {
-                String json = gson.toJson(notice);
                 HttpResponse response = sendToHoneybadger(json)
                         .returnResponse();
                 int responseCode = response.getStatusLine().getStatusCode();
@@ -294,12 +302,11 @@ public class HoneybadgerReporter implements NoticeReporter {
             throws IOException {
         try (InputStream in = response.getEntity().getContent();
              Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
-            @SuppressWarnings("unchecked")
-            HashMap<String, String> map =
-                    (HashMap<String, String>)gson.fromJson(reader, HashMap.class);
 
-            if (map.containsKey("id")) {
-                return UUID.fromString(map.get("id"));
+            JsonNode responseNode = OBJECT_MAPPER.readTree(reader);
+
+            if (responseNode.has("id")) {
+                return UUID.fromString(responseNode.get("id").textValue());
             } else {
                 return null;
             }

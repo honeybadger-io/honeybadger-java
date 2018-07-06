@@ -108,17 +108,26 @@ public class HoneybadgerReporterIT {
 //        }
 
         assertEquals(expected.getNotifier(), actual.getNotifier());
-        assertEquals(expected.getServer(), actual.getServer());
+
+        // Because this is not retrieved by the API the V1 check is not a particularly useful
+        // validation. It only verifies that we return the same data that we put in,
+        // but memory and load data is automatically generated at construction time, so
+        // we'd have to store this context before verifying it.
+        //
+        // Accordingly, instead of this, we're doing some more narrow validation
+        //        assertEquals(expected.getServer(), actual.getServer());
+        assertEquals(expected.getServer().getHostname(), actual.getServer().getHostname());
+        assertEquals(expected.getServer().getEnvironmentName(), actual.getServer().getEnvironmentName());
 
         Request expectedRequest = expected.getRequest();
         Request actualRequest = actual.getRequest();
 
-        assertEquals(expectedRequest.context, actualRequest.context);
-        assertEquals(expectedRequest.params, actualRequest.params);
-        assertEquals(expectedRequest.session, actualRequest.session);
+        assertEquals(expectedRequest.getContext(), actualRequest.getContext());
+        assertEquals(expectedRequest.getParams(), actualRequest.getParams());
+        assertEquals(expectedRequest.getSession(), actualRequest.getSession());
 
-        CgiData expectedCgi = expectedRequest.cgi_data;
-        CgiData actualCgi = actualRequest.cgi_data;
+        CgiData expectedCgi = expectedRequest.getCgiData();
+        CgiData actualCgi = actualRequest.getCgiData();
 
         assertEquals(expectedCgi.getAsInteger(HttpHeaders.CONTENT_LENGTH.toUpperCase()),
                      actualCgi.getAsInteger(HttpHeaders.CONTENT_LENGTH.toUpperCase()));

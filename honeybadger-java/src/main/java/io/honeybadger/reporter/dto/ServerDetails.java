@@ -1,5 +1,9 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.honeybadger.reporter.config.ConfigContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,31 +25,39 @@ import java.util.TimeZone;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({"environment_name", "hostname", "project_root", "pid", "time", "stats", ""})
 public class ServerDetails implements Serializable {
     private static final long serialVersionUID = 4689643321013504425L;
     private static Logger logger = LoggerFactory.getLogger(ServerDetails.class);
-
-    public final String environment_name;
-    public final String hostname;
-    public final String project_root;
-    public final Integer pid;
-    public final String time;
-    public final Stats stats;
+    @JsonProperty("environment_name")
+    private final String environmentName;
+    private final String hostname;
+    @JsonProperty("project_root")
+    private final String projectRoot;
+    private final Integer pid;
+    private final String time;
+    private final Stats stats;
 
     public ServerDetails(final ConfigContext context) {
-        this.environment_name = context.getEnvironment();
+        this.environmentName = context.getEnvironment();
         this.hostname = hostname();
-        this.project_root = projectRoot();
+        this.projectRoot = projectRoot();
         this.pid = pid();
         this.time = time();
         this.stats = new Stats();
     }
 
-    public ServerDetails(final String environmentName, final String hostname, final String projectRoot,
-                         final Integer pid, final String time, final Stats stats) {
-        this.environment_name = environmentName;
+    @JsonCreator
+    public ServerDetails(@JsonProperty("environment_name") final String environmentName,
+                         @JsonProperty("hostname") final String hostname,
+                         @JsonProperty("project_root") final String projectRoot,
+                         @JsonProperty("pid") final Integer pid,
+                         @JsonProperty("time") final String time,
+                         @JsonProperty("stats") final Stats stats) {
+        this.environmentName = environmentName;
         this.hostname = hostname;
-        this.project_root = projectRoot;
+        this.projectRoot = projectRoot;
         this.pid = pid;
         this.time = time;
         this.stats = stats;
@@ -130,28 +142,52 @@ public class ServerDetails implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ServerDetails that = (ServerDetails) o;
-        return Objects.equals(environment_name, that.environment_name) &&
-                Objects.equals(hostname, that.hostname) &&
-                Objects.equals(project_root, that.project_root) &&
-                Objects.equals(pid, that.pid) &&
-                Objects.equals(time, that.time) &&
-                Objects.equals(stats, that.stats);
+        return Objects.equals(getEnvironmentName(), that.getEnvironmentName()) &&
+                Objects.equals(getHostname(), that.getHostname()) &&
+                Objects.equals(getProjectRoot(), that.getProjectRoot()) &&
+                Objects.equals(getPid(), that.getPid()) &&
+                Objects.equals(getTime(), that.getTime()) &&
+                Objects.equals(getStats(), that.getStats());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(environment_name, hostname, project_root, pid, time, stats);
+        return Objects.hash(getEnvironmentName(), getHostname(), getProjectRoot(), getPid(), getTime(), getStats());
     }
 
     @Override
     public String toString() {
         return "ServerDetails{" +
-                "environment_name='" + environment_name + '\'' +
-                ", hostname='" + hostname + '\'' +
-                ", project_root='" + project_root + '\'' +
-                ", pid=" + pid +
-                ", stats=" + stats +
+                "environment_name='" + getEnvironmentName() + '\'' +
+                ", hostname='" + getHostname() + '\'' +
+                ", project_root='" + getProjectRoot() + '\'' +
+                ", pid=" + getPid() +
+                ", stats=" + getStats() +
                 '}';
+    }
+
+    public String getEnvironmentName() {
+        return environmentName;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public String getProjectRoot() {
+        return projectRoot;
+    }
+
+    public Integer getPid() {
+        return pid;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public Stats getStats() {
+        return stats;
     }
 }

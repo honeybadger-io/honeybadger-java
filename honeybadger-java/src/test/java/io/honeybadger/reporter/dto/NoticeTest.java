@@ -1,7 +1,9 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
@@ -9,9 +11,6 @@ import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import io.honeybadger.reporter.HoneybadgerExclusionStrategy;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.config.SystemSettingsConfigContext;
 import io.honeybadger.reporter.servlet.FakeHttpServletRequest;
@@ -26,34 +25,42 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeThat;
 
+
+/**
+ * This test needs to be run on multiple platforms to be considered completely passing. On Linux
+ * we support reporting system memory utilization and historical load data which isn't available
+ * without fairly expensive process forking or environment-specific monitoring methods.
+ *
+ * Historically this test was skipped on non-Linux environments, but because serialization structure
+ * is fairly important we've revised the json schema to allow both Linux and Non-Linux variations
+ * of the Notice message.
+ */
 public class NoticeTest {
     private static final OperatingSystemMXBean OS_BEAN = ManagementFactory.getOperatingSystemMXBean();
     private static final String OS = OS_BEAN.getName();
     private static final String JSON_SCHEMA_URL =
-            "https://gist.githubusercontent.com/joshuap/94901ba378fd09a783be/raw/b632ff0a6b1ec82ced73735a321f1e44e94669d2/notices.json";
+            "https://gist.githubusercontent.com/JasonTrue/80e28e9debe4a9a94164c85bf5ec5f85/raw/fbd90c052133ac911606743547583797a5d1b8f3/notices.json";
+            // originally: "https://gist.githubusercontent.com/joshuap/94901ba378fd09a783be/raw/b632ff0a6b1ec82ced73735a321f1e44e94669d2/notices.json";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                    .configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+    // This should be mapper.setDefaultPropertyInclusion(
+    //   JsonInclude.Value.construct(Include.ALWAYS, Include.NON_NULL)) in jackson 2.9.
 
-    private final ObjectMapper mapper = new ObjectMapper();
     private final JsonNode schema;
 
     {
         try {
-            this.schema = mapper.readTree(new URL(JSON_SCHEMA_URL));
+            this.schema = OBJECT_MAPPER.readTree(new URL(JSON_SCHEMA_URL));
         } catch (IOException e) {
             throw new RuntimeException("Couldn't get JSON schema", e);
         }
     }
 
     private ConfigContext config = new SystemSettingsConfigContext();
-
-    Gson gson = new GsonBuilder()
-            .setExclusionStrategies(new HoneybadgerExclusionStrategy())
-            .setPrettyPrinting()
-            .create();
 
     @Test
     public void canSerializeReportedErrorWithoutRequest() throws Exception {
@@ -116,14 +123,11 @@ public class NoticeTest {
 
     private void validateReportedErrorJson(Notice error)
             throws ProcessingException, IOException {
-        String jsonText = gson.toJson(error);
-
+        String jsonText = OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(error);
         JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
-        JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
+        JsonValidator validator = factory.byDefault().getValidator();
 
-        JsonNode jsonNode = mapper.readTree(jsonText);
-        removeUnsupportedElements(jsonNode);
-
+        JsonNode jsonNode = OBJECT_MAPPER.readTree(jsonText);
         ProcessingReport report = validator.validate(schema, jsonNode);
 
         if (!report.isSuccess()) {
@@ -139,27 +143,9 @@ public class NoticeTest {
 
             builder.append(System.lineSeparator()).append(jsonText);
 
-            // Skip test if we aren't on Linux because load time stats will be different
-            assumeThat(builder.toString(), OS, is("Linux"));
             fail(builder.toString());
         } else {
             assertTrue("Generated JSON validated correctly", true);
-        }
-    }
-
-    private static void removeUnsupportedElements(JsonNode jsonNode) {
-        JsonNode server = jsonNode.get("server");
-        if (server == null) return;
-        JsonNode stats = server.get("stats");
-        if (stats == null) return;
-        JsonNode mem = stats.get("mem");
-        if (mem == null) return;
-
-        Iterator<Map.Entry<String, JsonNode>> itr = mem.fields();
-
-        while (itr.hasNext()) {
-            Map.Entry<String, JsonNode> next = itr.next();
-            if (next.getKey().startsWith("vm_")) itr.remove();
         }
     }
 }

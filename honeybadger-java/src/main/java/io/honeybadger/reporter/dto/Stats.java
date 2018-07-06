@@ -1,5 +1,9 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -9,18 +13,30 @@ import java.util.Objects;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.11
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Stats implements Serializable {
     private static final long serialVersionUID = 4563609532018909058L;
 
-    public final Memory mem;
-    public final Load load;
+    private final Memory mem;
+
+    public Memory getMem() {
+        return mem;
+    }
+
+    public Load getLoad() {
+        return load;
+    }
+
+    private final Load load;
 
     public Stats() {
         this.mem = new Memory();
         this.load = new Load();
     }
 
-    public Stats(final Memory mem, final Load load) {
+    @JsonCreator
+    public Stats(@JsonProperty("mem") final Memory mem,
+                 @JsonProperty("load") final Load load) {
         this.mem = mem;
         this.load = load;
     }

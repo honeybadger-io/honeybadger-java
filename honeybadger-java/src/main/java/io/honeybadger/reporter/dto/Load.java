@@ -1,5 +1,8 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -16,12 +19,13 @@ import java.util.Scanner;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.11
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Load implements Serializable {
     private static final long serialVersionUID = 3398000045209329774L;
 
-    public final Number one;
-    public final Number five;
-    public final Number fifteen;
+    private final Number one;
+    private final Number five;
+    private final Number fifteen;
 
     public Load() {
         Number[] loadAverages = findLoadAverages();
@@ -30,7 +34,10 @@ public class Load implements Serializable {
         this.fifteen = loadAverages[2];
     }
 
-    public Load(final Number one, final Number five, final Number fifteen) {
+    @JsonCreator
+    public Load(@JsonProperty("one") final Number one,
+                @JsonProperty("five") final Number five,
+                @JsonProperty("fifteen") final Number fifteen) {
         this.one = one;
         this.five = five;
         this.fifteen = fifteen;
@@ -101,23 +108,35 @@ public class Load implements Serializable {
         }
 
         final Load load = (Load) o;
-        return Objects.equals(one, load.one) &&
-                Objects.equals(five, load.five) &&
-                Objects.equals(fifteen, load.fifteen);
+        return Objects.equals(getOne(), load.getOne()) &&
+                Objects.equals(getFive(), load.getFive()) &&
+                Objects.equals(getFifteen(), load.getFifteen());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(one, five, fifteen);
+        return Objects.hash(getOne(), getFive(), getFifteen());
     }
 
     @Override
     public String toString() {
         return "Load{" +
-                "one=" + one +
-                ", five=" + five +
-                ", fifteen=" + fifteen +
+                "one=" + getOne() +
+                ", five=" + getFive() +
+                ", fifteen=" + getFifteen() +
                 '}';
+    }
+
+    public Number getOne() {
+        return one;
+    }
+
+    public Number getFive() {
+        return five;
+    }
+
+    public Number getFifteen() {
+        return fifteen;
     }
 }

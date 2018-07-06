@@ -1,5 +1,9 @@
 package io.honeybadger.reporter.dto;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.honeybadger.reporter.config.ConfigContext;
 
 import java.io.Serializable;
@@ -10,6 +14,7 @@ import java.util.Objects;
  * @author <a href="https://github.com/dekobon">Elijah Zupancic</a>
  * @since 1.0.9
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BacktraceElement implements Serializable {
     private static final long serialVersionUID = -4455225669072193184L;
 
@@ -33,14 +38,35 @@ public class BacktraceElement implements Serializable {
         }
     }
 
+    @JacksonInject("config")
     private final ConfigContext config;
-    public final String file;
-    public final String method;
-    public final String number;
-    public final String context;
 
-    public BacktraceElement(final ConfigContext config, final String number, final String file,
-                            final String method) {
+    public String getFile() {
+        return file;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
+    private final String file;
+    private final String method;
+    private final String number;
+    private final String context;
+
+    @JsonCreator
+    public BacktraceElement(@JacksonInject("config") final ConfigContext config,
+                            @JsonProperty("number") final String number,
+                            @JsonProperty("file") final String file,
+                            @JsonProperty("method") final String method) {
         this.config = config;
         this.number = number;
         this.file = file;
