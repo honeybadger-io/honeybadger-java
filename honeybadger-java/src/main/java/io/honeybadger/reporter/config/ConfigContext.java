@@ -11,9 +11,6 @@ import java.util.Set;
  * @since 1.0.10
  */
 public interface ConfigContext {
-    /** Global reference to the currently used config per thread. */
-    ThreadLocal<ConfigContext> THREAD_LOCAL = new ThreadLocal<>();
-
     /** @return name of environment */
     String getEnvironment();
 
