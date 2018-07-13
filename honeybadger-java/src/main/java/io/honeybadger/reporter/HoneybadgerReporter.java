@@ -261,6 +261,10 @@ public class HoneybadgerReporter implements NoticeReporter {
             notice.setError(noticeDetails);
         }
 
+        /* We may need to retry sending the JSON, so we temporarily keep it as a string.
+           Future enhancement may convert this to a stream, but that's likely to require a
+           bit more testing.
+         */
         String json;
         try {
             json = OBJECT_MAPPER.writeValueAsString(notice);
@@ -405,8 +409,7 @@ public class HoneybadgerReporter implements NoticeReporter {
     @SuppressWarnings("LiteralClassName")
     private static Set<Class<?>> findExceptionContextClasses() {
         final String[] classNames = new String[] {
-                "org.apache.commons.lang3.exception.ExceptionContext",
-                "com.joyent.manta.org.apache.commons.lang3.exception.ExceptionContext"
+                "org.apache.commons.lang3.exception.ExceptionContext"
         };
 
         final Set<Class<?>> classes = new LinkedHashSet<>(classNames.length);
