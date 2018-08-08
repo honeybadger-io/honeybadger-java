@@ -46,4 +46,8 @@ public interface ConfigContext {
 
     /** @return Port of proxy server to send traffic through */
     Integer getHttpProxyPort();
+
+    /** @return Optional configuration to adjust number of attempts to send an error
+     * in the event of a network timeout or other transmission exception. Defaults to 3. */
+    Integer getMaximumErrorReportingAttempts();
 }

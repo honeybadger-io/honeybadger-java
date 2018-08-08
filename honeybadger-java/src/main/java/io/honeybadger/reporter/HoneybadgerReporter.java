@@ -41,7 +41,6 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public class HoneybadgerReporter implements NoticeReporter {
-    public static final int RETRIES = 3;
     private static Set<Class<?>> exceptionContextClasses = findExceptionContextClasses();
 
     private ConfigContext config;
@@ -67,6 +66,14 @@ public class HoneybadgerReporter implements NoticeReporter {
         if (config.getHoneybadgerUrl() == null) {
             throw new IllegalArgumentException("Honeybadger URL must be set");
         }
+        if (config.getMaximumErrorReportingAttempts() == null) {
+            throw new IllegalArgumentException("Honeybadger property MaximumErrorReportingAttempts must be set");
+        }
+        if (config.getMaximumErrorReportingAttempts() < 1) {
+            throw new IllegalArgumentException("Honeybadger property MaximumErrorReportingAttempts must be an integer greater than or equal to 1");
+        }
+
+
     }
 
     /**
@@ -274,7 +281,7 @@ public class HoneybadgerReporter implements NoticeReporter {
             return null;
         }
 
-        for (int retries = 0; retries < RETRIES; retries++) {
+        for (int attempts = 0; attempts < config.getMaximumErrorReportingAttempts(); attempts++) {
             try {
                 HttpResponse response = sendToHoneybadger(json)
                         .returnResponse();
@@ -282,8 +289,8 @@ public class HoneybadgerReporter implements NoticeReporter {
 
                 if (responseCode != HttpStatus.SC_CREATED) {
                     logger.error("Honeybadger did not respond with the " +
-                                    "correct code. Response was [{}]. Retries={}",
-                            responseCode, retries);
+                                    "correct code. Response was [{}]. Retries={}, Maximum={}",
+                            responseCode, attempts, config.getMaximumErrorReportingAttempts());
                 } else {
                     UUID id = parseErrorId(response);
 
@@ -291,11 +298,11 @@ public class HoneybadgerReporter implements NoticeReporter {
                 }
             } catch (IOException e) {
                 String msg = String.format("There was an error when trying " +
-                                           "to send the error to " +
-                                           "Honeybadger. Retries=%d", retries);
+                                "to send the error to " +
+                                "Honeybadger. Retries=%d, Maximum=%d", attempts,
+                        config.getMaximumErrorReportingAttempts());
                 logger.error(msg, e);
                 logger.error("Original Error", error);
-                return null;
             }
         }
 
@@ -344,9 +351,9 @@ public class HoneybadgerReporter implements NoticeReporter {
      *
      * @param jsonError Error JSON payload
      * @return Status code from the Honeybadger API
-     * @throws IOException thrown when a network was encountered
+     * @throws IOException thrown when a network exception was encountered
      */
-    private Response sendToHoneybadger(final String jsonError) throws IOException {
+    protected Response sendToHoneybadger(final String jsonError) throws IOException {
         URI honeybadgerUrl = URI.create(
                 String.format("%s/%s", getConfig().getHoneybadgerUrl(), "v1/notices"));
         Request request = buildRequest(honeybadgerUrl, jsonError);
