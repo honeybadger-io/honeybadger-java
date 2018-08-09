@@ -35,7 +35,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     private String feedbackFormPath;
     private String httpProxyHost;
     private Integer httpProxyPort;
-    private Integer maximumErrorReportingAttempts;
+    private Integer maximumErrorReportingRetries;
 
     /**
      * Constructor that prepopulates configuration context with the default
@@ -171,12 +171,12 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     }
 
     @Override
-    public Integer getMaximumErrorReportingAttempts() {
-        return maximumErrorReportingAttempts;
+    public Integer getMaximumErrorReportingRetries() {
+        return maximumErrorReportingRetries;
     }
 
-    public BaseChainedConfigContext setMaximumErrorReportingAttempts(final Integer maximumErrorReportingAttempts) {
-        this.maximumErrorReportingAttempts = maximumErrorReportingAttempts;
+    public BaseChainedConfigContext getMaximumErrorReportingRetries(final Integer maximumRetries) {
+        this.maximumErrorReportingRetries = maximumRetries;
         return this;
     }
 
@@ -235,8 +235,8 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
             this.feedbackFormPath = context.getFeedbackFormPath();
         }
 
-        if (context.getMaximumErrorReportingAttempts() != null) {
-            this.maximumErrorReportingAttempts = context.getMaximumErrorReportingAttempts();
+        if (context.getMaximumErrorReportingRetries() != null) {
+            this.maximumErrorReportingRetries = context.getMaximumErrorReportingRetries();
         }
     }
 
@@ -268,7 +268,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
                 Objects.equals(feedbackFormPath, that.feedbackFormPath) &&
                 Objects.equals(httpProxyHost, that.httpProxyHost) &&
                 Objects.equals(httpProxyPort, that.httpProxyPort) &&
-                Objects.equals(maximumErrorReportingAttempts, that.maximumErrorReportingAttempts);
+                Objects.equals(maximumErrorReportingRetries, that.maximumErrorReportingRetries);
     }
 
     @Override
@@ -286,7 +286,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
                 ", feedbackFormPath='" + feedbackFormPath + '\'' +
                 ", httpProxyHost='" + httpProxyHost + '\'' +
                 ", httpProxyPort=" + httpProxyPort +
-                ", maximumErrorReportingAttempts=" + maximumErrorReportingAttempts +
+                ", maximumErrorReportingRetries=" + maximumErrorReportingRetries +
                 '}';
     }
 
@@ -294,7 +294,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     public int hashCode() {
         return Objects.hash(environment, honeybadgerUrl, apiKey, excludedSysProps, excludedParams,
                 excludedClasses, applicationPackage, honeybadgerReadApiKey, feedbackFormDisplayed,
-                feedbackFormPath, httpProxyHost, httpProxyPort, maximumErrorReportingAttempts);
+                feedbackFormPath, httpProxyHost, httpProxyPort, maximumErrorReportingRetries);
     }
 
     protected Boolean getFeedbackFormDisplayed() {

@@ -63,27 +63,37 @@ public class HoneyBadgerReporterTest {
         ConfigContext config = new SystemSettingsConfigContext().setApiKey("dummy");
         ExceptionThrowingReporter reporter = new ExceptionThrowingReporter(config);
         reporter.reportError(new Exception("Always fail"));
-        assertEquals(3, reporter.attemptCount);
-        assertEquals(3, (long)config.getMaximumErrorReportingAttempts());
+        assertEquals(4, reporter.attemptCount);
+        assertEquals(3, (long)config.getMaximumErrorReportingRetries());
     }
 
     @Test
     public void retriesUpTo5TimesWhenConfigured() throws Exception {
         ConfigContext config = new SystemSettingsConfigContext().setApiKey("dummy")
-                .setMaximumErrorReportingAttempts(5);
+                .getMaximumErrorReportingRetries(5);
         ExceptionThrowingReporter reporter = new ExceptionThrowingReporter(config);
         reporter.reportError(new Exception("Always fail"));
-        assertEquals(5, reporter.attemptCount);
-        assertEquals(5, (long)config.getMaximumErrorReportingAttempts());
+        assertEquals(6, reporter.attemptCount);
+        assertEquals(5, (long)config.getMaximumErrorReportingRetries());
+    }
+
+    @Test
+    public void neverRetriesWithConfigurationValue0() throws Exception {
+        ConfigContext config = new SystemSettingsConfigContext().setApiKey("dummy")
+                .getMaximumErrorReportingRetries(0);
+        ExceptionThrowingReporter reporter = new ExceptionThrowingReporter(config);
+        reporter.reportError(new Exception("Always fail"));
+        assertEquals(1, reporter.attemptCount);
+        assertEquals(0, (long)config.getMaximumErrorReportingRetries());
     }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void rejectsMaximumAttemptValuesLessThan1() throws Exception {
+    public void rejectsMaximumAttemptValuesLessThan0() throws Exception {
         ConfigContext config = new SystemSettingsConfigContext().setApiKey("dummy")
-                .setMaximumErrorReportingAttempts(0);
+                .getMaximumErrorReportingRetries(-1);
 
         thrown.expect(IllegalArgumentException.class);
 
@@ -95,6 +105,16 @@ public class HoneyBadgerReporterTest {
         ConfigContext config = new SystemSettingsConfigContext().setApiKey("dummy");
         BadResponseGivingReporter reporter = new BadResponseGivingReporter(config);
         reporter.reportError(new Exception("Always fail"));
-        assertEquals(3, reporter.attemptCount);
+        assertEquals(4, reporter.attemptCount);
+    }
+
+    @Test
+    public void neverRetriesWithConfigurationValue0Http500Response() throws Exception {
+        ConfigContext config = new SystemSettingsConfigContext().setApiKey("dummy")
+                .getMaximumErrorReportingRetries(0);
+        BadResponseGivingReporter reporter = new BadResponseGivingReporter(config);
+        reporter.reportError(new Exception("Always fail"));
+        assertEquals(1, reporter.attemptCount);
+        assertEquals(0, (long)config.getMaximumErrorReportingRetries());
     }
 }

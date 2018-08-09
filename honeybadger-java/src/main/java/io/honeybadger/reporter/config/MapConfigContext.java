@@ -75,7 +75,7 @@ public class MapConfigContext implements ConfigContext {
     /** System property key indicating the maximum number of attempts to submit an error.
      * see { @link HoneyBadgerReporter }
      */
-    public static final String HONEYBADGER_MAXIMUM_ERROR_REPORTING_ATTEMPTS_KEY =
+    public static final String HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY =
             "honeybadger.maximum_error_reporting_attempts";
 
     /** System property key indicating the proxy server. */
@@ -97,7 +97,7 @@ public class MapConfigContext implements ConfigContext {
             HONEYBADGER_EXCLUDED_CLASSES_KEY, APPLICATION_PACKAGE_PROP_KEY,
             READ_API_KEY_PROP_KEY, READ_API_KEY_ENV, DISPLAY_FEEDBACK_FORM_KEY,
             FEEDBACK_FORM_TEMPLATE_PATH_KEY, HTTP_PROXY_HOST_KEY,
-            HTTP_PROXY_PORT_KEY, HONEYBADGER_MAXIMUM_ERROR_REPORTING_ATTEMPTS_KEY
+            HTTP_PROXY_PORT_KEY, HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY
     };
 
     private final Map<?, ?> backingMap;
@@ -220,13 +220,13 @@ public class MapConfigContext implements ConfigContext {
     }
 
     @Override
-    public Integer getMaximumErrorReportingAttempts() {
-        Object value = backingMap.get(HONEYBADGER_MAXIMUM_ERROR_REPORTING_ATTEMPTS_KEY);
+    public Integer getMaximumErrorReportingRetries() {
+        Object value = backingMap.get(HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY);
 
         if (value == null) return null;
         if (value instanceof Number) return ((Number)value).intValue();
 
-        String port = normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_MAXIMUM_ERROR_REPORTING_ATTEMPTS_KEY);
+        String port = normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY);
 
         try {
             return Integer.parseInt(port);

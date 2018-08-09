@@ -33,7 +33,7 @@ public class DefaultsConfigContext implements ConfigContext {
     public static String DEFAULT_FEEDBACK_FORM_TEMPLATE_PATH =
             "templates/feedback-form.mustache";
 
-    public static Integer DEFAULT_MAXIMUM_ERROR_REPORTING_ATTEMPTS = 3;
+    public static Integer DEFAULT_MAXIMUM_ERROR_REPORTING_RETRIES = 3;
 
     public DefaultsConfigContext() {
     }
@@ -109,5 +109,5 @@ public class DefaultsConfigContext implements ConfigContext {
     }
 
     @Override
-    public Integer getMaximumErrorReportingAttempts() { return DEFAULT_MAXIMUM_ERROR_REPORTING_ATTEMPTS; }
+    public Integer getMaximumErrorReportingRetries() { return DEFAULT_MAXIMUM_ERROR_REPORTING_RETRIES; }
 }
