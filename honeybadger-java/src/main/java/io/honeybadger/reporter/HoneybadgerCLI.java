@@ -2,6 +2,8 @@ package io.honeybadger.reporter;
 
 import io.honeybadger.reporter.config.StandardConfigContext;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -30,5 +32,15 @@ public final class HoneybadgerCLI {
         RuntimeException exception = new RuntimeException(message);
         NoticeReporter reporter = new HoneybadgerReporter(config);
         reporter.reportError(exception);
+
+        io.honeybadger.reporter.dto.Context context = new io.honeybadger.reporter.dto.Context();
+        context.put("context1", "data1");
+        context.setUsername("bob");
+        io.honeybadger.reporter.dto.Request request = new io.honeybadger.reporter.dto.Request(context, null, null, null, null);
+
+        List<String> tags = new ArrayList<String>();
+        tags.add("asdf");
+        tags.add("baoo");
+        reporter.reportError(exception, request, "asefsfa", tags);
     }
 }
