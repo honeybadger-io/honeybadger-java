@@ -157,7 +157,7 @@ pass around Honeybadger error ids instead of the default Play error ids.
 #### Spring Framework Usage
 
 This library has been tested against Spring 4.2.2 using Spring Boot. After adding 
-Hondeybadger as a dependency to your dependency manager as explained
+Honeybadger as a dependency to your dependency manager as explained
 in the [Install the jar section](#instal-the-jar-section), you can enable Honeybadger
 as an error handler by adding the `honeybadger.api_key` configuration parameter to
 your [Spring configuration](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html).
@@ -238,6 +238,7 @@ Framework specific configuration contexts use of environment variables or system
 | **Name**: `honeybadger.excluded_exception_classes`<br>**Type**: CSV<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `co.foo.Exception`,<br>`com.myorg.AnnoyingException` | CSV of Java classes in which errors are never sent to Honeybadger. This is useful for errors that are bubbled up from underlying frameworks or application servers like Tomcat. If you are using Tomcat, you may want to include `org.apache.catalina.connector.ClientAbortException`. |
 | **Name**: `honeybadger.excluded_sys_props`<br>**Type**: CSV<br>**Required**: No<br>**Default**: `honeybadger.api_key`,<br>`honeybadger.read_api_key`,<br>`honeybadger.excluded_sys_props`,<br>`honeybadger.url`<br>**Sample Value**: `bonecp.password`,`bonecp.username` | CSV of Java system properties to exclude from being logged to Honeybadger. This is useful for excluding authentication information. Default values are automatically added. |
 | **Name**: `honeybadger.excluded_params`<br>**Type**: CSV<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `auth_token`,<br>`session_data`,<br>`credit_card_number` | CSV of HTTP GET/POST query parameter values that will be excluded from the data sent to Honeybadger. This is useful for excluding authentication information, parameters that are too long or sensitive. |
+| **Name**: `honeybadger.maximum_retry_attempts`<br>**Type**: Integer<br>**Required: No<br>**Default**: 3<br>**Sample Value:** 3 (must be >= 0) | Number of times HoneybadgerReporter will retry delivering an error report if the first attempt fails. (If set to 3, retries up to 3 times before giving up; if set to 0, tries once and gives up).   
 | &nbsp;||||
 | __FEEDBACK_FORM__||||
 | **Name**: `honeybadger.display_feedback_form`<br>**Type**: Boolean<br>**Required**: No<br>**Default**: `true`<br>**Sample Value**: `false` | Displays the feedback form or JSON output when an error is thrown via a servlet call. |
@@ -286,6 +287,19 @@ on the fault detail page.
 This behavior is enabled by default. To disable it set the configuration option 
 `honeybadger.display_feedback_form` to `false`.
 
+### Using tags
+
+This version of honeybadger-java supports sending tags, but it requires
+invoking a new overload of
+
+```
+  NoticeReporter.reportError(Throwable error, Object request, String message, Iterable<String> tags);
+```
+
+The existing error handler/filter implementations for Play, Spring, and Servlets do not
+currently invoke this variant. Those implementations can be overridden
+to customize the tagging behavior for your application.
+ 
 ## Changelog
 
 See https://github.com/honeybadger-io/honeybadger-java/blob/master/changes.txt
@@ -300,15 +314,15 @@ as a preliminary step; that way you can be (moderately) sure that your pull requ
 1. Fork it.
 2. Create a topic branch `git checkout -b my_branch`
 3. Configure integration tests to use your API keys (see below).
-4. Run unit and integration tests `./gradlew check`
+4. Run unit and integration tests `./mvn verify`
 5. Commit your changes `git commit -am "Boom"`
 6. Push to your branch `git push origin my_branch`
 7. Send a [pull request](https://github.com/honeybadger-java/honeybadger-java/pulls)
 
 ### Testing
 For the purpose of one off testing, you can use the CLI utility. Just execute it using
-```./gradlew run``` and you can enter in your API key and message to be sent to
-Honeybadger.
+```mvn exec:java -Dexec.mainClass="io.honeybadger.reporter.HoneybadgerCLI"``` from the `honeybadger-java`
+subdirectory and you can enter in your API key and message to be sent to Honeybadger.
 
 #### Running the tests
 
@@ -316,31 +330,35 @@ This library by requires access to the remote Honeybadger API, so in order to
 run automated tests you will need to specify system properties to Java in order
 configure the remote API key and other settings.
 
-If you are running the tests from gradle, it is easy to specify system properties
-using a gradle.properties file placed in the root of the project or in your 
-$HOME/.gradle directory.
+If you are running the tests from maven, the simplest solution is to set
+environment variables to do this.
 
-A sample gradle.properties file may look like:
-
-```
-systemProp.ENV = TEST
-systemProp.honeybadger.api_key = 1efa3d71
-```
-
-With this in place you can run the tests from gradle by using the wrapped
-version of gradle that is bundled with the project by:
+ENV=test
+HONEYBADGER_API_KEY=b889a6b2
+HONEYBADGER_READ_API_KEY=1b331858d937b5ba8f4c07c1f39c0127903980c8e013367e15a40fcee2fcb74e
 
 ```
-./gradlew check
+mvn verify
 ```
 
 If you are executing your tests from an IDE like IntelliJ, you may need to
 manually set the system variables as part of the test run configuration.
 
 For developers pushing to Maven repositories, you will need to specify
-the location of your signing keys in gradle.properties. You also shouldn't
-put the file in the project root, but rather store it in your .gradle directory
-within your home directory. Properties for signing look like:
+the location of your signing keys in ~/.m2/settings.xml.
+
+ Properties for signing look like:
+```
+<settings>
+  <servers>
+    <server>
+      <id>ossrh</id>
+      <username>your-jira-id</username>
+      <password>your-jira-pwd</password>
+    </server>
+  </servers>
+</settings>
+```
 
 ```
 signing.keyId=345A20CE
