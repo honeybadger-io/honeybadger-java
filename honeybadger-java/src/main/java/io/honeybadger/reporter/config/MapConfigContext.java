@@ -76,7 +76,7 @@ public class MapConfigContext implements ConfigContext {
      * see { @link HoneyBadgerReporter }
      */
     public static final String HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY =
-            "honeybadger.maximum_error_reporting_attempts";
+            "honeybadger.maximum_retry_attempts";
 
     /** System property key indicating the proxy server. */
     public static final String HTTP_PROXY_HOST_KEY =

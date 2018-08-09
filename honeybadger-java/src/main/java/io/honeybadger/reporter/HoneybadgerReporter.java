@@ -67,10 +67,11 @@ public class HoneybadgerReporter implements NoticeReporter {
             throw new IllegalArgumentException("Honeybadger URL must be set");
         }
         if (config.getMaximumErrorReportingRetries() == null) {
-            throw new IllegalArgumentException("Honeybadger property getMaximumErrorReportingRetries must be set");
+            throw new IllegalArgumentException("Honeybadger property honeybadger.maximum_retry_attempts must be set");
         }
         if (config.getMaximumErrorReportingRetries() < 0) {
-            throw new IllegalArgumentException("Honeybadger property getMaximumErrorReportingRetries must be an integer greater than or equal to 0");
+            throw new IllegalArgumentException("Honeybadger property honeybadger.maximum_retry_attempts must be an " +
+                    "integer greater than or equal to 0");
         }
     }
 
