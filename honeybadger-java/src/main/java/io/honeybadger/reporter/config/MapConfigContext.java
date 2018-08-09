@@ -226,10 +226,10 @@ public class MapConfigContext implements ConfigContext {
         if (value == null) return null;
         if (value instanceof Number) return ((Number)value).intValue();
 
-        String port = normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY);
+        String retries = normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY);
 
         try {
-            return Integer.parseInt(port);
+            return Integer.parseInt(retries);
         } catch (NumberFormatException e) {
             logger.warn("Error converting system property to integer. Property: {}",
                     HTTP_PROXY_PORT_KEY);
