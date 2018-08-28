@@ -34,6 +34,12 @@
             <email>elijah@zupancic.name</email>
             <organizationUrl>https://github.com/dekobon</organizationUrl>
         </developer>
+        <developer>
+            <id>JasonTrue</id>
+            <name>Jason Truesdell</name>
+            <email>jason@yuzuten.com</email>
+            <organizationUrl>https://github.com/JasonTrue</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
