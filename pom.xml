@@ -120,6 +120,9 @@
         <!-- Maven plugin dependency versions -->
         <maven-plexus-compiler-javac-errorprone.version>2.8.3</maven-plexus-compiler-javac-errorprone.version>
         <maven-error-prone-core.version>2.2.0</maven-error-prone-core.version>
+        <maven-directory-maven-plugin.version>0.2</maven-directory-maven-plugin.version>
+        <maven-build-helper-maven-plugin.version>3.0.0</maven-build-helper-maven-plugin.version>
+        <maven-maven-resources-plugin.version>3.0.2</maven-maven-resources-plugin.version>
     </properties>
 
     <build>
@@ -141,7 +144,30 @@
         </pluginManagement>
 
         <plugins>
-
+            <plugin>
+                <!-- This property is generated so we can refer to
+                     another module in a multi-module project without
+                     brittle relative paths. -->
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>directory-maven-plugin</artifactId>
+                <version>${maven-directory-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>directory-of-property</id>
+                        <goals>
+                            <goal>directory-of</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <property>multi.module.root</property>
+                            <project>
+                                <groupId>io.honeybadger</groupId>
+                                <artifactId>honeybadger-java</artifactId>
+                            </project>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- checkstyle is enabled in the site goal for now. There are too many errors
                  to add it to the build phase. -->
             <plugin>
@@ -175,7 +201,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>${maven-build-helper-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>add-test-source</id>
@@ -445,24 +471,68 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>attach-javadocs</id>
+                                <id>attach-sources</id>
+                                <phase>package</phase>
                                 <goals>
-                                    <goal>jar</goal>
+                                    <goal>jar-no-fork</goal>
                                 </goals>
                             </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <includeDependencySources>true</includeDependencySources>
+                            <dependencySourceIncludes>
+                                <dependencySourceInclude>
+                                    io.honeybadger:honeybadger-java
+                                </dependencySourceInclude>
+                            </dependencySourceIncludes>
+                            <includeTransitiveDependencySources>true</includeTransitiveDependencySources>
+                            <additionalDependencies>
+                                <dependency>
+                                    <groupId>javax.servlet</groupId>
+                                    <artifactId>javax.servlet-api</artifactId>
+                                    <version>${dependency.servlet-api.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>com.typesafe.play</groupId>
+                                    <artifactId>play_2.12</artifactId>
+                                    <version>${dependency.play.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>com.typesafe</groupId>
+                                    <artifactId>config</artifactId>
+                                    <version>1.3.3</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework</groupId>
+                                    <artifactId>spring-webmvc</artifactId>
+                                    <version>${dependency.spring.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework</groupId>
+                                    <artifactId>spring-beans</artifactId>
+                                    <version>${dependency.spring.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.springframework</groupId>
+                                    <artifactId>spring-core</artifactId>
+                                    <version>${dependency.spring.version}</version>
+                                </dependency>
+
+                            </additionalDependencies>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>attach-sources</id>
+                                <id>attach-javadocs</id>
                                 <goals>
-                                    <goal>jar-no-fork</goal>
+                                    <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>
