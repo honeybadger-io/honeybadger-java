@@ -40,6 +40,12 @@
             <email>jason@yuzuten.com</email>
             <organizationUrl>https://github.com/JasonTrue</organizationUrl>
         </developer>
+        <developer>
+            <id>joshuap</id>
+            <name>Joshua Wood</name>
+            <email>josh@joshuawood.net</email>
+            <organizationUrl>https://github.com/joshuap</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
