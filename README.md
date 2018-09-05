@@ -22,9 +22,9 @@ When an uncaught exception occurs, Honeybadger will POST the relevant data to th
 | Spring Framework  | 4.2.2   |
 
 The Play Framework Spring are supported natively (install/configure the library and your done). 
-For the Servlet API, you  will need to configure a [servlet filter](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/servlet/HoneybadgerFilter.java) 
+For the Servlet API, you  will need to configure a [servlet filter](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/servlet/HoneybadgerFilter.java) 
 and enable it in your application. As for manual invocation of the API, you will need to configure 
-your application to directly call the [reporter class](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/HoneybadgerReporter.java). 
+your application to directly call the [reporter class](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/HoneybadgerReporter.java). 
 You can find more information about this in the stand-alone usage section.
 
 ## Getting Started
@@ -81,7 +81,7 @@ Next, you'll set the API key and some configuration parameters for this project.
 #### Stand-alone Usage
 
 If you want to send all unhandled errors to Honeybadger and have them logged to slf4j via 
-the error log level, you will need to set the correct system properties (or provide a [ConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ConfigContext.java)) and add a single line to the thread in which you want to register the error handler.
+the error log level, you will need to set the correct system properties (or provide a [ConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/ConfigContext.java)) and add a single line to the thread in which you want to register the error handler.
 
 A typical stand-alone implementation may look like:
 
@@ -211,20 +211,20 @@ public class ApiUsage {
 
 ## Advanced Configuration
 
-There are a few ways to configure the Honeybadger library. Each one of the ways is implemented as a [ConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ConfigContext.java) that can be passed in the constructor of the [HoneybadgerReporter](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/HoneybadgerReporter.java) class. The implementations available are:
+There are a few ways to configure the Honeybadger library. Each one of the ways is implemented as a [ConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/ConfigContext.java) that can be passed in the constructor of the [HoneybadgerReporter](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/HoneybadgerReporter.java) class. The implementations available are:
 
- * [DefaultsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/DefaultsConfigContext.java) - This configuration context provides defaults that can be read by other context implementations.
- * [MapConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/MapConfigContext.java) - This reads configuration from a Map that is supplied to its constructor. 
- * [PlayConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/PlayConfigContext.java) - This reads configuration from the Play Framework's internal configuration mechanism.
- * [ServletFilterConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/ServletFilterConfigContext.java) - This reads configuration from a servlet filter configuration.
- * [SpringConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/SpringConfigContext.java) - This reads configuration from the Spring framework's internal configuration mechanism.
- * [StandardConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/StandardConfigContext.java) - This reads configuration from the system parameters, environment variables and defaults and is **the default configuration provider**.
- * [SystemSettingsConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/SystemSettingsConfigContext.java) - This reads configuration purely from system settings.
+ * [DefaultsConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/DefaultsConfigContext.java) - This configuration context provides defaults that can be read by other context implementations.
+ * [MapConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/MapConfigContext.java) - This reads configuration from a Map that is supplied to its constructor. 
+ * [PlayConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/PlayConfigContext.java) - This reads configuration from the Play Framework's internal configuration mechanism.
+ * [ServletFilterConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/ServletFilterConfigContext.java) - This reads configuration from a servlet filter configuration.
+ * [SpringConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/SpringConfigContext.java) - This reads configuration from the Spring framework's internal configuration mechanism.
+ * [StandardConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/StandardConfigContext.java) - This reads configuration from the system parameters, environment variables and defaults and is **the default configuration provider**.
+ * [SystemSettingsConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/SystemSettingsConfigContext.java) - This reads configuration purely from system settings.
  
 ### Configuring with Environment Variables or System Properties (12-factor style)
 
 All configuration options can also be read from environment variables or [Java system properties](https://docs.oracle.com/javase/tutorial/essential/environment/sysprop.html)
-when using the default [StandardConfigContext](https://github.com/honeybadger-io/honeybadger-java/blob/master/src/main/java/io/honeybadger/reporter/config/StandardConfigContext.java).
+when using the default [StandardConfigContext](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/config/StandardConfigContext.java).
 Framework specific configuration contexts use of environment variables or system properties depends on the framework's implementation.
 
 ## Configuration Options
