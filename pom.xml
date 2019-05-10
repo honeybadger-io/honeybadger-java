@@ -116,7 +116,7 @@
         <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
         <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
