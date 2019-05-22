@@ -83,6 +83,7 @@
         <failsafe.useSystemClassLoader>true</failsafe.useSystemClassLoader>
 
         <!-- Dependency versions -->
+        <dependency.apache-commons.version>3.9</dependency.apache-commons.version>
         <dependency.checkstyle.version>8.18</dependency.checkstyle.version>
         <dependency.slfj.version>1.7.26</dependency.slfj.version>
         <dependency.servlet-api.version>4.0.1</dependency.servlet-api.version>
