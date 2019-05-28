@@ -84,7 +84,7 @@
 
         <!-- Dependency versions -->
         <dependency.apache-commons.version>3.9</dependency.apache-commons.version>
-        <dependency.checkstyle.version>8.20</dependency.checkstyle.version>
+        <dependency.checkstyle.version>8.21</dependency.checkstyle.version>
         <dependency.slfj.version>1.7.26</dependency.slfj.version>
         <dependency.servlet-api.version>4.0.1</dependency.servlet-api.version>
         <dependency.play.version>2.7.2</dependency.play.version>
