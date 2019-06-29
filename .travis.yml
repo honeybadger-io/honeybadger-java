@@ -72,14 +72,14 @@ matrix:
         - DESC="zulu-9 unit tests"
         - CMD="mvn clean test -Dcheckstyle.skip=true"
         - LANG=en_US.utf8
-    - jdk: oraclejdk10
+    - jdk: openjdk10
       env:
-        - DESC="oraclejdk10 unit tests"
+        - DESC="openjdk10 unit tests"
         - CMD="mvn clean test -Dcheckstyle.skip=true"
         - LANG=en_US.utf8
-    - jdk: oraclejdk11
+    - jdk: openjdk11
       env:
-        - DESC="oraclejdk11 unit tests"
+        - DESC="openjdk11 unit tests"
         - CMD="mvn clean test -Dcheckstyle.skip=true"
         - LANG=en_US.utf8
 
