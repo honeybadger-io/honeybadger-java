@@ -12,7 +12,7 @@ import java.util.LinkedList;
  * @since 1.0.9
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@SuppressWarnings("JdkObsolete")
+@SuppressWarnings("JdkObsolete") // Reason: subtle interface change if we change LinkedList to ArrayList
 public class Causes extends LinkedList<Cause> implements Serializable {
     private static final long serialVersionUID = -5359764114506595006L;
 
@@ -34,15 +34,15 @@ public class Causes extends LinkedList<Cause> implements Serializable {
         int iterations = 0;
 
         do {
-            // If we are in a simple circular reference, exit
-            if (lastCause != null && lastCause.equals(nextCause)) break;
-
             addFirst(new Cause(config, nextCause));
-
-            // Since we could have multi-class circular ref we just check
-            // for too big of a cause trace
-            if (++iterations > MAX_CAUSES) break;
+            ++iterations;
             lastCause = nextCause;
-        } while (null != (nextCause = nextCause.getCause())); //checkstyle ignore
+            nextCause = nextCause.getCause();
+        } while (null != nextCause &&
+                // If we are in a simple circular reference, stop.
+                !lastCause.equals(nextCause) &&
+                // Since we could have multi-class circular ref we just check
+                // for too big of a cause trace
+                iterations <= MAX_CAUSES);
     }
 }
