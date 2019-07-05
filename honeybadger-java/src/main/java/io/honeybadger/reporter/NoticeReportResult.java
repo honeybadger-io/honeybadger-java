@@ -37,7 +37,7 @@ public class NoticeReportResult {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof NoticeReportResult)) return false;
         NoticeReportResult that = (NoticeReportResult) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(notice, that.notice) &&

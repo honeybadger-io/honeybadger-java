@@ -96,7 +96,7 @@ public class ServerDetails implements Serializable {
      */
     protected static String projectRoot() {
         try {
-            return (new File(".")).getCanonicalPath();
+            return new File(".").getCanonicalPath();
         } catch (IOException e) {
             logger.error("Can't get runtime root path", e);
             return "unknown";
@@ -140,7 +140,7 @@ public class ServerDetails implements Serializable {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof ServerDetails)) return false;
         ServerDetails that = (ServerDetails) o;
         return Objects.equals(getEnvironmentName(), that.getEnvironmentName()) &&
                 Objects.equals(getHostname(), that.getHostname()) &&

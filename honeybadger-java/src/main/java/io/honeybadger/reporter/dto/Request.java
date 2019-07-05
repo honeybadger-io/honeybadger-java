@@ -38,7 +38,7 @@ public class Request implements Serializable {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof Request)) return false;
         Request request = (Request) o;
         return Objects.equals(getContext(), request.getContext()) &&
                 Objects.equals(getUrl(), request.getUrl()) &&

@@ -103,7 +103,7 @@ public class Load implements Serializable {
             return true;
         }
 
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || !(o instanceof Load)) {
             return false;
         }
 

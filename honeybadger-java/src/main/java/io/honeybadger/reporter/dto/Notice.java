@@ -99,7 +99,7 @@ public class Notice implements Serializable {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof Notice)) return false;
         Notice notice = (Notice) o;
         return Objects.equals(config, notice.config) &&
                 Objects.equals(notifier, notice.notifier) &&

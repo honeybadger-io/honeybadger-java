@@ -1,10 +1,10 @@
 package io.honeybadger.loader;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.honeybadger.reporter.config.ConfigContext;
 import io.honeybadger.reporter.dto.Notice;
@@ -38,8 +38,9 @@ public class HoneybadgerNoticeLoader {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-                    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                    .configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+    .setDefaultPropertyInclusion(
+            JsonInclude.Value.construct(Include.ALWAYS, Include.NON_NULL))
+                    .setSerializationInclusion(Include.NON_NULL);
 
     private ConfigContext config;
 
