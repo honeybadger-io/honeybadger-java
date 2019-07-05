@@ -8,18 +8,24 @@ When an uncaught exception occurs, Honeybadger will POST the relevant data to th
 
 ## Supported JVM versions
 
-| JVM               | Supported Version |
+| JVM               | Supported Version | 
 | ----------------- | ----------------- |
-| Oracle (Java SE)  | 1.7, 1.8          |
-| OpenJDK JDK/JRE   | 1.7, 1.8          |
+| Oracle (Java SE)  | 1.7, 1.8, 9, [10, 11, 12]* |
+| OpenJDK JDK/JRE   | 1.7, 1.8, 9, 10, 11, 12    |
+
+*Limitations*:
+We don't currently test on Oracle's commercially licensed VMs, due to new
+licensing rules. Accordingly, Oracle JDK after version 9 is supported on a best-effort basis only.
+If you discover a defect specific to their commercially-licensed VM,
+please [submit an issue](https://github.com/honeybadger-io/honeybadger-java/issues/new).
 
 ## Supported web frameworks
 
-| Framework         | Version |
-| ----------------- | ------- |
-| Servlet API       | 3.1.0   |
-| Play Framework    | 2.4.2   |
-| Spring Framework  | 4.2.2   |
+| Framework         | Version | Notes |
+| ----------------- | ------- | ----- |
+| Servlet API       | 4.0.1   | |
+| Play Framework    | 2.7.2   | We still call one deprecated API. See [Issue #110](https://github.com/honeybadger-io/honeybadger-java/issues/110)|
+| Spring Framework  | 5.1.7   | |
 
 The Play Framework Spring are supported natively (install/configure the library and your done). 
 For the Servlet API, you  will need to configure a [servlet filter](https://github.com/honeybadger-io/honeybadger-java/tree/master/honeybadger-java/src/main/java/io/honeybadger/reporter/servlet/HoneybadgerFilter.java) 
