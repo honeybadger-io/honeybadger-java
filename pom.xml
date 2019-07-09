@@ -74,13 +74,15 @@
         <maven.integration.test.skip>false</maven.integration.test.skip>
         <java.min.src.version>1.8</java.min.src.version>
         <java.min.target.version>1.8</java.min.target.version>
-        <maven.min.version>3.0</maven.min.version>
+        <maven.min.version>3.0.5</maven.min.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <surefire.forkCount>1</surefire.forkCount>
         <surefire.useSystemClassLoader>true</surefire.useSystemClassLoader>
         <failsafe.forkCount>1</failsafe.forkCount>
         <failsafe.useSystemClassLoader>true</failsafe.useSystemClassLoader>
+        <!-- Only for Java 8 support, per https://errorprone.info/docs/installation -->
+        <javac.version>9+181-r4173-1</javac.version>
 
         <!-- Dependency versions -->
         <dependency.apache-commons.version>3.9</dependency.apache-commons.version>
@@ -96,7 +98,7 @@
         <!-- Test Dependency Versions -->
         <dependency.junit.version>4.12</dependency.junit.version>
         <dependency.guava.version>27.1-jre</dependency.guava.version>
-        <dependency.mockito.version>2.28.1</dependency.mockito.version>
+        <dependency.mockito.version>2.28.2</dependency.mockito.version>
         <dependency.logback.version>1.2.3</dependency.logback.version>
         <dependency.json-schema-validator>2.2.6</dependency.json-schema-validator>
 
@@ -106,12 +108,12 @@
         <maven-build-helper-plugin>1.10</maven-build-helper-plugin>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-        <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
+        <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
+        <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
         <maven-extra-enforcer-rules.version>1.2</maven-extra-enforcer-rules.version>
-        <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+        <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
         <maven-jarsigner-plugin.version>3.0.0</maven-jarsigner-plugin.version>
         <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
@@ -119,12 +121,11 @@
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
         <maven-cargo-plugin.version>1.6.7</maven-cargo-plugin.version>
         <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
         <!-- Maven plugin dependency versions -->
-        <maven-plexus-compiler-javac-errorprone.version>2.8.5</maven-plexus-compiler-javac-errorprone.version>
         <maven-error-prone-core.version>2.3.3</maven-error-prone-core.version>
         <maven-directory-maven-plugin.version>0.3.1</maven-directory-maven-plugin.version>
         <maven-build-helper-maven-plugin.version>3.0.0</maven-build-helper-maven-plugin.version>
@@ -233,23 +234,24 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <compilerId>javac-with-errorprone</compilerId>
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <fork>true</fork>
                     <source>${java.min.src.version}</source>
                     <target>${java.min.target.version}</target>
-                    <showWarnings>true</showWarnings>
                     <compilerArgs>
+                        <arg>-XDcompilePolicy=simple</arg>
+                        <arg>-Xplugin:ErrorProne</arg>
                         <arg>-Xlint:all</arg>
                     </compilerArgs>
+                    <showWarnings>true</showWarnings>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.google.errorprone</groupId>
+                            <artifactId>error_prone_core</artifactId>
+                            <version>${maven-error-prone-core.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
                 <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.plexus</groupId>
-                        <artifactId>plexus-compiler-javac-errorprone</artifactId>
-                        <version>${maven-plexus-compiler-javac-errorprone.version}</version>
-                    </dependency>
-                    <!-- override plexus-compiler-javac-errorprone's dependency on
-                         Error Prone with the latest version -->
                     <dependency>
                         <groupId>com.google.errorprone</groupId>
                         <artifactId>error_prone_core</artifactId>
@@ -542,6 +544,51 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- using github.com/google/error-prone-javac is required when running on JDK 8 -->
+            <!-- See https://errorprone.info/docs/installation -->
+            <id>jdk8</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <fork>true</fork>
+                            <compilerArgs combine.children="append">
+                                <arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- Current versions of Error-Prone fail on JDK 12, so we disable it
+                 when building with JDK 12 -->
+            <id>jdk12</id>
+            <activation>
+                <jdk>12</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <fork>true</fork>
+                            <compilerArgs>
+                                <arg>-XDcompilePolicy=simple</arg>
+                                <arg>-Xlint:all</arg>
+                            </compilerArgs>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

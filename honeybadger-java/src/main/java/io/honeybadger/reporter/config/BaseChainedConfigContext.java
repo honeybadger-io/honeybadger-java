@@ -254,7 +254,7 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof BaseChainedConfigContext)) return false;
         BaseChainedConfigContext that = (BaseChainedConfigContext) o;
         return Objects.equals(environment, that.environment) &&
                 Objects.equals(honeybadgerUrl, that.honeybadgerUrl) &&

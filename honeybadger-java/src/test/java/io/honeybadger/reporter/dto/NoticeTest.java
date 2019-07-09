@@ -1,9 +1,7 @@
 package io.honeybadger.reporter.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
@@ -25,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+import static com.fasterxml.jackson.annotation.JsonInclude.Value;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -45,10 +45,9 @@ public class NoticeTest {
             "https://gist.githubusercontent.com/JasonTrue/80e28e9debe4a9a94164c85bf5ec5f85/raw/fbd90c052133ac911606743547583797a5d1b8f3/notices.json";
             // originally: "https://gist.githubusercontent.com/joshuap/94901ba378fd09a783be/raw/b632ff0a6b1ec82ced73735a321f1e44e94669d2/notices.json";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-                    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                    .configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-    // This should be mapper.setDefaultPropertyInclusion(
-    //   JsonInclude.Value.construct(Include.ALWAYS, Include.NON_NULL)) in jackson 2.9.
+                    .setDefaultPropertyInclusion(
+                            Value.construct(Include.ALWAYS, Include.NON_NULL))
+                    .setSerializationInclusion(Include.NON_NULL);
 
     private final JsonNode schema;
 
@@ -124,8 +123,7 @@ public class NoticeTest {
     private void validateReportedErrorJson(Notice error)
             throws ProcessingException, IOException {
         String jsonText = OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(error);
-        JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
-        JsonValidator validator = factory.byDefault().getValidator();
+        JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
 
         JsonNode jsonNode = OBJECT_MAPPER.readTree(jsonText);
         ProcessingReport report = validator.validate(schema, jsonNode);

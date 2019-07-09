@@ -52,7 +52,7 @@ public class NoticeDetails implements Serializable {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof NoticeDetails)) return false;
         NoticeDetails that = (NoticeDetails) o;
         return Objects.equals(getClassName(), that.getClassName()) &&
                 Objects.equals(getMessage(), that.getMessage()) &&

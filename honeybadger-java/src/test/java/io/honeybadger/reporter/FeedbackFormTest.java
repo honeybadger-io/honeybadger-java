@@ -13,7 +13,7 @@ public class FeedbackFormTest {
     @Test
     public void feedbackFormRendersTemplate() throws Exception {
         StringWriter writer = new StringWriter();
-        String id = (new UUID(12L, 36L)).toString();
+        String id = new UUID(12L, 36L).toString();
         StandardConfigContext config = new StandardConfigContext();
         config.setFeedbackFormPath("templates/feedback-form.mustache");
         FeedbackForm instance = new FeedbackForm(config);

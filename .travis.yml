@@ -72,5 +72,20 @@ matrix:
         - DESC="zulu-9 unit tests"
         - CMD="mvn clean test -Dcheckstyle.skip=true"
         - LANG=en_US.utf8
+    - jdk: openjdk10
+      env:
+        - DESC="openjdk10 unit tests"
+        - CMD="mvn clean test -Dcheckstyle.skip=true"
+        - LANG=en_US.utf8
+    - jdk: openjdk11
+      env:
+        - DESC="openjdk11 unit tests"
+        - CMD="mvn clean test -Dcheckstyle.skip=true"
+        - LANG=en_US.utf8
+    - jdk: openjdk12
+      env:
+        - DESC="openjdk12 unit tests"
+        - CMD="mvn clean test -Dcheckstyle.skip=true"
+        - LANG=en_US.utf8
 
 script: echo ${CMD}; ${CMD}

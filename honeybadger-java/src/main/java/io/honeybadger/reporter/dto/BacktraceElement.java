@@ -107,7 +107,7 @@ public class BacktraceElement implements Serializable {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof BacktraceElement)) return false;
         BacktraceElement that = (BacktraceElement) o;
         return Objects.equals(config, that.config) &&
                 Objects.equals(file, that.file) &&
