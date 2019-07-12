@@ -4,11 +4,11 @@
 
     <artifactId>honeybadger-java</artifactId>
     <packaging>jar</packaging>
-    <version>2.0.2-SNAPSHOT</version>
+    <version>2.0.2</version>
     <parent>
         <groupId>io.honeybadger</groupId>
         <artifactId>honeybadger-parent</artifactId>
-        <version>2.0.2-SNAPSHOT</version>
+        <version>2.0.2</version>
     </parent>
     <dependencies>
         <dependency>
