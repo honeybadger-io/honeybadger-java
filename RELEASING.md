@@ -96,7 +96,7 @@ with this).
 
 7. Push tags to github:
 `git push --follow-tags`
-We also publish releases on Github so the created tag should be pushed back to java-manta
+We also publish releases on Github so the created tag should be pushed back to `honeybadger-java`
 in order to attach release artifacts for direct download.
 
 8. Perform the actual release:
