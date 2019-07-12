@@ -38,6 +38,8 @@ public class Backtrace extends ArrayList<BacktraceElement>
 
     /**
      * For the benefit of deserialization
+     *
+     * @param config injected
      */
     @JsonCreator
     public Backtrace(@JacksonInject("config") final ConfigContext config) {
