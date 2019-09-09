@@ -92,7 +92,7 @@
         <dependency.play.version>2.7.3</dependency.play.version>
         <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
         <dependency.jackson.version>2.9.9</dependency.jackson.version>
-        <dependency.fluent-hc.version>4.5.9</dependency.fluent-hc.version>
+        <dependency.fluent-hc.version>4.5.10</dependency.fluent-hc.version>
         <dependency.jcabi-manifests.version>1.1</dependency.jcabi-manifests.version>
         <dependency.mustache.version>0.9.6</dependency.mustache.version>
         <!-- Test Dependency Versions -->
