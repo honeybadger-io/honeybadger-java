@@ -97,7 +97,7 @@
         <dependency.mustache.version>0.9.6</dependency.mustache.version>
         <!-- Test Dependency Versions -->
         <dependency.junit.version>4.13</dependency.junit.version>
-        <dependency.guava.version>28.2-jre</dependency.guava.version>
+        <dependency.guava.version>29.0-jre</dependency.guava.version>
         <dependency.mockito.version>3.3.3</dependency.mockito.version>
         <dependency.logback.version>1.2.3</dependency.logback.version>
         <dependency.json-schema-validator>2.2.6</dependency.json-schema-validator>
