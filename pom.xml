@@ -91,7 +91,7 @@
         <dependency.servlet-api.version>4.0.1</dependency.servlet-api.version>
         <dependency.play.version>2.8.2</dependency.play.version>
         <dependency.spring.version>5.2.3.RELEASE</dependency.spring.version>
-        <dependency.jackson.version>2.11.2</dependency.jackson.version>
+        <dependency.jackson.version>2.11.3</dependency.jackson.version>
         <dependency.fluent-hc.version>4.5.12</dependency.fluent-hc.version>
         <dependency.jcabi-manifests.version>1.1</dependency.jcabi-manifests.version>
         <dependency.mustache.version>0.9.6</dependency.mustache.version>
