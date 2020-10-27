@@ -98,7 +98,7 @@
         <!-- Test Dependency Versions -->
         <dependency.junit.version>4.13.1</dependency.junit.version>
         <dependency.guava.version>29.0-jre</dependency.guava.version>
-        <dependency.mockito.version>3.5.15</dependency.mockito.version>
+        <dependency.mockito.version>3.6.0</dependency.mockito.version>
         <dependency.logback.version>1.2.3</dependency.logback.version>
         <dependency.json-schema-validator>2.2.6</dependency.json-schema-validator>
 
