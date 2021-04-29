@@ -1,0 +1,24 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "09:00"
+    timezone: America/Los_Angeles
+  open-pull-requests-limit: 99
+  assignees:
+  - joshuap
+  ignore:
+  - dependency-name: com.google.errorprone:error_prone_core
+    versions:
+    - 2.5.1
+    - 2.6.0
+  - dependency-name: com.puppycrawl.tools:checkstyle
+    versions:
+    - "8.39"
+    - "8.40"
+    - "8.41"
+  - dependency-name: org.apache.commons:commons-lang3
+    versions:
+    - "3.11"
