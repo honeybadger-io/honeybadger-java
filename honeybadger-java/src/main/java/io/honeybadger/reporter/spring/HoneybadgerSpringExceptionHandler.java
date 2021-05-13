@@ -77,6 +77,13 @@ public class HoneybadgerSpringExceptionHandler {
             throw exception;
         }
 
+        // Rethrow any exceptions that are excluded. Important to differentiate between
+        // this and NoticeReporter.reportError returning null which could indicate an
+        // error communicating with the Honeybadger API.
+        if (context.getExcludedClasses().contains(exception.getClass().getName())) {
+            throw exception;
+        }
+
         NoticeReportResult result = getReporter().reportError(exception, request);
 
         if (logger.isErrorEnabled()) {
