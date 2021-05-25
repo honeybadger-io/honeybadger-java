@@ -85,12 +85,12 @@
         <javac.version>9+181-r4173-1</javac.version>
 
         <!-- Dependency versions -->
-        <dependency.apache-commons.version>3.10</dependency.apache-commons.version>
-        <dependency.checkstyle.version>8.41.1</dependency.checkstyle.version>
+        <dependency.apache-commons.version>3.12.0</dependency.apache-commons.version>
+        <dependency.checkstyle.version>8.42</dependency.checkstyle.version>
         <dependency.slfj.version>1.7.30</dependency.slfj.version>
         <dependency.servlet-api.version>4.0.1</dependency.servlet-api.version>
         <dependency.play.version>2.8.8</dependency.play.version>
-        <dependency.spring.version>5.3.6</dependency.spring.version>
+        <dependency.spring.version>5.3.7</dependency.spring.version>
         <dependency.jackson.version>2.12.3</dependency.jackson.version>
         <dependency.fluent-hc.version>4.5.13</dependency.fluent-hc.version>
         <dependency.jcabi-manifests.version>1.1</dependency.jcabi-manifests.version>
@@ -98,7 +98,7 @@
         <!-- Test Dependency Versions -->
         <dependency.junit.version>4.13.2</dependency.junit.version>
         <dependency.guava.version>30.1.1-jre</dependency.guava.version>
-        <dependency.mockito.version>3.9.0</dependency.mockito.version>
+        <dependency.mockito.version>3.10.0</dependency.mockito.version>
         <dependency.logback.version>1.2.3</dependency.logback.version>
         <dependency.json-schema-validator>2.2.6</dependency.json-schema-validator>
 
@@ -116,7 +116,7 @@
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-jarsigner-plugin.version>3.0.0</maven-jarsigner-plugin.version>
-        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.3.0</maven-javadoc-plugin.version>
         <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
@@ -124,9 +124,9 @@
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
         <maven-cargo-plugin.version>1.6.7</maven-cargo-plugin.version>
-        <maven-project-info-reports-plugin.version>3.1.1</maven-project-info-reports-plugin.version>
+        <maven-project-info-reports-plugin.version>3.1.2</maven-project-info-reports-plugin.version>
         <!-- Maven plugin dependency versions -->
-        <maven-error-prone-core.version>2.6.0</maven-error-prone-core.version>
+        <maven-error-prone-core.version>2.7.1</maven-error-prone-core.version>
         <maven-directory-maven-plugin.version>0.3.1</maven-directory-maven-plugin.version>
         <maven-build-helper-maven-plugin.version>3.2.0</maven-build-helper-maven-plugin.version>
         <maven-maven-resources-plugin.version>3.0.2</maven-maven-resources-plugin.version>
