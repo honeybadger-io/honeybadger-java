@@ -1,6 +1,6 @@
 # Honeybadger for Java
  
-[![Build Status](https://travis-ci.org/honeybadger-io/honeybadger-java.svg?branch=master)](https://travis-ci.org/honeybadger-io/honeybadger-java)
+[![Build Status](https://travis-ci.com/honeybadger-io/honeybadger-java.svg?branch=master)](https://travis-ci.com/honeybadger-io/honeybadger-java)
 
 This is the notifier JVM library for integrating applications with the :zap: [Honeybadger.io error notification
 service](https://www.honeybadger.io/).
