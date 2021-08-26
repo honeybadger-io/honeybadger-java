@@ -375,6 +375,16 @@ ossrhUsername=user
 ossrhPassword=AFbz3BjdE4Q9g2E&
 ```
 
+## Testing with Docker
+
+A Docker environment is available to make testing/releasing more consistent. To
+run the tests:
+
+```bash
+docker build . -t honeybadger-java
+docker run -it --rm -v $HOME/.m2:/root/.m2 --env-file .env honeybadger-java mvn verify
+```
+
 #### Platform differences
 
 We collect performance metrics on the machine in which an error occurs. This means that we have

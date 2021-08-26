@@ -109,3 +109,7 @@ buildNumber.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
+
+# Docker --env-file
+# See https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file
+.env
