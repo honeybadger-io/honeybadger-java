@@ -36,6 +36,8 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     private String httpProxyHost;
     private Integer httpProxyPort;
     private Integer maximumErrorReportingRetries;
+    private Integer socketTimeout;
+    private Integer connectTimeout;
 
     /**
      * Constructor that prepopulates configuration context with the default
@@ -180,6 +182,25 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         return this;
     }
 
+    @Override
+    public Integer getSocketTimeout() {
+        return socketTimeout;
+    }
+
+    public BaseChainedConfigContext setSocketTimeout(final Integer socketTimeout) {
+        this.socketTimeout = socketTimeout;
+        return this;
+    }
+
+    @Override
+    public Integer getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public BaseChainedConfigContext setConnectTimeout(final Integer connectTimeout) {
+        this.connectTimeout = connectTimeout;
+        return this;
+    }
 
     /**
      * Overwrites the configuration values with the values of the passed context
@@ -238,6 +259,14 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
         if (context.getMaximumErrorReportingRetries() != null) {
             this.maximumErrorReportingRetries = context.getMaximumErrorReportingRetries();
         }
+
+        if (context.getSocketTimeout() != null) {
+            this.socketTimeout = context.getSocketTimeout();
+        }
+
+        if (context.getConnectTimeout() != null) {
+            this.connectTimeout = context.getConnectTimeout();
+        }
     }
 
     @SuppressWarnings("HiddenField")
@@ -268,7 +297,9 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
                 Objects.equals(feedbackFormPath, that.feedbackFormPath) &&
                 Objects.equals(httpProxyHost, that.httpProxyHost) &&
                 Objects.equals(httpProxyPort, that.httpProxyPort) &&
-                Objects.equals(maximumErrorReportingRetries, that.maximumErrorReportingRetries);
+                Objects.equals(maximumErrorReportingRetries, that.maximumErrorReportingRetries) &&
+                Objects.equals(socketTimeout, that.socketTimeout) &&
+                Objects.equals(connectTimeout, that.connectTimeout);
     }
 
     @Override
@@ -287,6 +318,8 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
                 ", httpProxyHost='" + httpProxyHost + '\'' +
                 ", httpProxyPort=" + httpProxyPort +
                 ", maximumErrorReportingRetries=" + maximumErrorReportingRetries +
+                ", socketTimeout=" + socketTimeout +
+                ", connectTimeout=" + connectTimeout +
                 '}';
     }
 
@@ -294,7 +327,8 @@ public abstract class BaseChainedConfigContext implements ConfigContext {
     public int hashCode() {
         return Objects.hash(environment, honeybadgerUrl, apiKey, excludedSysProps, excludedParams,
                 excludedClasses, applicationPackage, honeybadgerReadApiKey, feedbackFormDisplayed,
-                feedbackFormPath, httpProxyHost, httpProxyPort, maximumErrorReportingRetries);
+                feedbackFormPath, httpProxyHost, httpProxyPort, maximumErrorReportingRetries,
+                socketTimeout, connectTimeout);
     }
 
     protected Boolean getFeedbackFormDisplayed() {

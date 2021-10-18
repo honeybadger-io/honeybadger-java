@@ -86,6 +86,14 @@ public class MapConfigContext implements ConfigContext {
     public static final String HTTP_PROXY_PORT_KEY =
             "http.proxyPort";
 
+    /** System property key identifying the socket timeout */
+    public static final String SOCKET_TIMEOUT =
+            "honeybadger.socketTimeout";
+
+    /** System property key identifying the connect timeout */
+    public static final String CONNECT_TIMEOUT =
+            "honeybadger.connectTimeout";
+
     // I know manually adding them all sucks, but it is the simplest operation
     // for a shared library. We could do all sorts of complicated reflection
     // or annotation processing, but they are error-prone.
@@ -97,7 +105,8 @@ public class MapConfigContext implements ConfigContext {
             HONEYBADGER_EXCLUDED_CLASSES_KEY, APPLICATION_PACKAGE_PROP_KEY,
             READ_API_KEY_PROP_KEY, READ_API_KEY_ENV, DISPLAY_FEEDBACK_FORM_KEY,
             FEEDBACK_FORM_TEMPLATE_PATH_KEY, HTTP_PROXY_HOST_KEY,
-            HTTP_PROXY_PORT_KEY, HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY
+            HTTP_PROXY_PORT_KEY, HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY,
+            SOCKET_TIMEOUT, CONNECT_TIMEOUT
     };
 
     private final Map<?, ?> backingMap;
@@ -203,38 +212,22 @@ public class MapConfigContext implements ConfigContext {
 
     @Override
     public Integer getHttpProxyPort() {
-        Object value = backingMap.get(HTTP_PROXY_PORT_KEY);
-
-        if (value == null) return null;
-        if (value instanceof Number) return ((Number)value).intValue();
-
-        String port = normalizeEmptyAndNullAndDefaultToStringValue(HTTP_PROXY_PORT_KEY);
-
-        try {
-            return Integer.parseInt(port);
-        } catch (NumberFormatException e) {
-            logger.warn("Error converting system property to integer. Property: {}",
-                    HTTP_PROXY_PORT_KEY);
-            return null;
-        }
+        return parseInteger(HTTP_PROXY_PORT_KEY);
     }
 
     @Override
     public Integer getMaximumErrorReportingRetries() {
-        Object value = backingMap.get(HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY);
+        return parseInteger(HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY);
+    }
 
-        if (value == null) return null;
-        if (value instanceof Number) return ((Number)value).intValue();
+    @Override
+    public Integer getSocketTimeout() {
+        return parseInteger(SOCKET_TIMEOUT);
+    }
 
-        String retries = normalizeEmptyAndNullAndDefaultToStringValue(HONEYBADGER_MAXIMUM_ERROR_REPORTING_RETRIES_KEY);
-
-        try {
-            return Integer.parseInt(retries);
-        } catch (NumberFormatException e) {
-            logger.warn("Error converting system property to integer. Property: {}",
-                    HTTP_PROXY_PORT_KEY);
-            return null;
-        }
+    @Override
+    public Integer getConnectTimeout() {
+        return parseInteger(CONNECT_TIMEOUT);
     }
 
     /**
@@ -292,6 +285,23 @@ public class MapConfigContext implements ConfigContext {
         }
 
         return null;
+    }
+
+    private Integer parseInteger(final Object key) {
+        Object value = backingMap.get(key);
+
+        if (value == null) return null;
+        if (value instanceof Number) return ((Number)value).intValue();
+
+        String port = normalizeEmptyAndNullAndDefaultToStringValue(key);
+
+        try {
+            return Integer.parseInt(port);
+        } catch (NumberFormatException e) {
+            logger.warn("Error converting system property to integer. Property: {}",
+                    key);
+            return null;
+        }
     }
 
     private Set<String> parseCsvStringSetOrPassOnObject(final Object key) {

@@ -112,4 +112,14 @@ public class DefaultsConfigContext implements ConfigContext {
     public Integer getMaximumErrorReportingRetries() {
         return DEFAULT_MAXIMUM_ERROR_REPORTING_RETRIES;
     }
+
+    @Override
+    public Integer getSocketTimeout() {
+        return null;
+    }
+
+    @Override
+    public Integer getConnectTimeout() {
+        return null;
+    }
 }

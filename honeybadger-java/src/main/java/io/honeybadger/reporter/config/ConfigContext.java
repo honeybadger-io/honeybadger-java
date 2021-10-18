@@ -50,4 +50,10 @@ public interface ConfigContext {
     /** @return Optional configuration parameter to adjust number of attempts to retry sending an error
      * report in the event of a network timeout or other transmission exception. Defaults to 3. */
     Integer getMaximumErrorReportingRetries();
+
+    /** @return Timeout for socket connection within HTTP client */
+    Integer getSocketTimeout();
+
+    /** @return Timeout for initial connect within HTTP client */
+    Integer getConnectTimeout();
 }
