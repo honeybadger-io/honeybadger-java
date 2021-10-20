@@ -88,11 +88,11 @@ public class MapConfigContext implements ConfigContext {
 
     /** System property key identifying the socket timeout */
     public static final String SOCKET_TIMEOUT =
-            "honeybadger.socketTimeout";
+            "honeybadger.socket_timeout";
 
     /** System property key identifying the connect timeout */
     public static final String CONNECT_TIMEOUT =
-            "honeybadger.connectTimeout";
+            "honeybadger.connect_timeout";
 
     // I know manually adding them all sucks, but it is the simplest operation
     // for a shared library. We could do all sorts of complicated reflection
