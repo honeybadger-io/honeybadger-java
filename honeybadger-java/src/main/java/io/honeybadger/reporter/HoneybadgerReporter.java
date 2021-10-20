@@ -385,6 +385,14 @@ public class HoneybadgerReporter implements NoticeReporter {
             request.viaProxy(proxy);
         }
 
+        if (getConfig().getSocketTimeout() != null) {
+            request.socketTimeout(getConfig().getSocketTimeout());
+        }
+
+        if (getConfig().getConnectTimeout() != null) {
+            request.connectTimeout(getConfig().getConnectTimeout());
+        }
+
         return request;
     }
 
