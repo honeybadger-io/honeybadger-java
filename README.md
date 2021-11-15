@@ -253,8 +253,8 @@ Framework specific configuration contexts use of environment variables or system
 | __NETWORK__||||
 | **Name**: `http.proxyHost`<br>**Type**: String<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `localhost` | Standard Java system property for specifying the host to proxy all HTTP traffic through. |
 | **Name**: `http.proxyPort`<br>**Type**: Integer<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `8888` | Standard Java system property for specifying the port to proxy all HTTP traffic through. |
-| **Name**: `honeybadger.socket_timeout`<br>**Type**: Integer<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `60` | Length of time the HTTP socket can be open. |
-| **Name**: `honeybadger.connect_timeout`<br>**Type**: Integer<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `60` | Length of time the HTTP socket is allowed to be in the connecting phase. |
+| **Name**: `honeybadger.socket_timeout`<br>**Type**: Integer<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `60000` | Duration in milliseconds the HTTP socket can be open. |
+| **Name**: `honeybadger.connect_timeout`<br>**Type**: Integer<br>**Required**: No<br>**Default**: N/A<br>**Sample Value**: `60000` | Duration in milliseconds the HTTP socket is allowed to be in the connecting phase. |
 | &nbsp;||||
 | __DEVELOPMENT__||||
 | **Name**: `honeybadger.read_api_key` or `HONEYBADGER_READ_API_KEY`<br>**Type**: String<br>**Required**: When testing<br>**Default**: N/A<br>**Sample Value**: `qjcp6c7Nv9yR-bsvGZ77` | API key used to access the Read API. |
