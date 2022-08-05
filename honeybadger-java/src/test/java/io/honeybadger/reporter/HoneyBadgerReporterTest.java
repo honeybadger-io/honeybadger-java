@@ -63,7 +63,7 @@ public class HoneyBadgerReporterTest {
         ConfigContext config = new SystemSettingsConfigContext().setApiKey("dummy");
         ExceptionThrowingReporter reporter = new ExceptionThrowingReporter(config);
         reporter.reportError(new Exception("Always fail"));
-        assertEquals(5, reporter.attemptCount);
+        assertEquals(4, reporter.attemptCount);
         assertEquals(3, (long)config.getMaximumErrorReportingRetries());
     }
 
