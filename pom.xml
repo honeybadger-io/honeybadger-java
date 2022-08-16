@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.honeybadger</groupId>
@@ -109,8 +110,8 @@
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
-        <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
-        <maven-extra-enforcer-rules.version>1.5.1</maven-extra-enforcer-rules.version>
+        <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
+        <maven-extra-enforcer-rules.version>1.6.1</maven-extra-enforcer-rules.version>
         <maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <maven-install-plugin.version>3.0.0</maven-install-plugin.version>
@@ -126,7 +127,7 @@
         <maven-cargo-plugin.version>1.6.7</maven-cargo-plugin.version>
         <maven-project-info-reports-plugin.version>3.3.0</maven-project-info-reports-plugin.version>
         <!-- Maven plugin dependency versions -->
-        <maven-error-prone-core.version>2.13.1</maven-error-prone-core.version>
+        <maven-error-prone-core.version>2.9.0</maven-error-prone-core.version>
         <maven-directory-maven-plugin.version>0.3.1</maven-directory-maven-plugin.version>
         <maven-build-helper-maven-plugin.version>3.3.0</maven-build-helper-maven-plugin.version>
         <maven-maven-resources-plugin.version>3.0.2</maven-maven-resources-plugin.version>
@@ -308,7 +309,7 @@
                         </goals>
                         <configuration>
                             <rules>
-                                <banCircularDependencies />
+                                <banCircularDependencies/>
                             </rules>
                             <fail>true</fail>
                         </configuration>
@@ -393,7 +394,9 @@
                     </systemPropertyVariables>
                     <useSystemClassLoader>${surefire.useSystemClassLoader}</useSystemClassLoader>
                     <systemProperties>
-                        <java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
+                        <java.util.logging.config.file>
+                            ${project.build.testOutputDirectory}/logging.properties
+                        </java.util.logging.config.file>
                     </systemProperties>
                 </configuration>
             </plugin>
@@ -566,7 +569,9 @@
                         <configuration>
                             <fork>true</fork>
                             <compilerArgs combine.children="append">
-                                <arg>-J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar</arg>
+                                <arg>
+                                    -J-Xbootclasspath/p:${settings.localRepository}/com/google/errorprone/javac/${javac.version}/javac-${javac.version}.jar
+                                </arg>
                             </compilerArgs>
                         </configuration>
                     </plugin>
