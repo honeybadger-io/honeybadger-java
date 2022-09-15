@@ -91,7 +91,7 @@
         <dependency.slfj.version>2.0.1</dependency.slfj.version>
         <dependency.servlet-api.version>4.0.1</dependency.servlet-api.version>
         <dependency.play.version>2.8.16</dependency.play.version>
-        <dependency.spring.version>5.3.22</dependency.spring.version>
+        <dependency.spring.version>5.3.23</dependency.spring.version>
         <dependency.jackson.version>2.13.4</dependency.jackson.version>
         <dependency.fluent-hc.version>4.5.13</dependency.fluent-hc.version>
         <dependency.jcabi-manifests.version>1.2.1</dependency.jcabi-manifests.version>
