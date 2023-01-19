@@ -26,6 +26,7 @@ public class NoticeDetails implements Serializable {
     private final Set<String> tags;
     private final Backtrace backtrace;
     private final Causes causes;
+    private final String fingerprint;
 
     @SuppressWarnings("unchecked")
     public NoticeDetails(final ConfigContext config, final Throwable error) {
@@ -33,11 +34,11 @@ public class NoticeDetails implements Serializable {
     }
 
     public NoticeDetails(final ConfigContext config, final Throwable error, final Set<String> tags) {
-        this(config, error, tags, error.getMessage());
+        this(config, error, tags, error.getMessage(), null);
     }
 
     public NoticeDetails(final ConfigContext config, final Throwable error, final Set<String> tags,
-                         final String message) {
+                         final String message, String fingerprint) {
         if (error == null) {
             throw new IllegalArgumentException("Error can't be null");
         }
@@ -47,6 +48,7 @@ public class NoticeDetails implements Serializable {
         this.tags = tags;
         this.backtrace = new Backtrace(config, error);
         this.causes = new Causes(config, error);
+        this.fingerprint = fingerprint;
     }
 
     @Override
@@ -84,5 +86,9 @@ public class NoticeDetails implements Serializable {
 
     public Causes getCauses() {
         return causes;
+    }
+
+    public String getFingerprint() {
+        return fingerprint;
     }
 }
