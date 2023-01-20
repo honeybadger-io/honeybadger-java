@@ -16,7 +16,7 @@ import java.util.Set;
  * @since 1.0.9
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"class", "message", "tags", "backtrace", "causes"})
+@JsonPropertyOrder({"class", "message", "tags", "backtrace", "causes", "fingerprint"})
 public class NoticeDetails implements Serializable {
     private static final long serialVersionUID = -3055963787038629496L;
 
@@ -60,12 +60,13 @@ public class NoticeDetails implements Serializable {
                 Objects.equals(getMessage(), that.getMessage()) &&
                 Objects.equals(getTags(), that.getTags()) &&
                 Objects.equals(getBacktrace(), that.getBacktrace()) &&
-                Objects.equals(getCauses(), that.getCauses());
+                Objects.equals(getCauses(), that.getCauses()) &&
+                Objects.equals(getFingerprint(), that.getFingerprint());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getClassName(), getMessage(), getTags(), getBacktrace(), getCauses());
+        return Objects.hash(getClassName(), getMessage(), getTags(), getBacktrace(), getCauses(), getFingerprint());
     }
 
     public String getClassName() {

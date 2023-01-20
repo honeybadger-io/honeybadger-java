@@ -274,7 +274,7 @@ public class HoneybadgerReporter implements NoticeReporter {
                     getConfig(), error, tags, reportedMessage, fingerprint);
             notice.setRequest(request).setError(noticeDetails);
         } else {
-            NoticeDetails noticeDetails = new NoticeDetails(getConfig(), error, tags);
+            NoticeDetails noticeDetails = new NoticeDetails(getConfig(), error, tags, null, fingerprint);
             notice.setError(noticeDetails);
         }
 
