@@ -123,6 +123,14 @@ public class HoneybadgerReporter implements NoticeReporter {
         return reportError(error, request, message, Collections.emptySet());
     }
 
+    @Override
+    public NoticeReportResult reportError(final Throwable error,
+                                          final Object request,
+                                          final String message,
+                                          final Iterable<String> tags) {
+        return reportError(error, request, message, Collections.emptySet(), null);
+    }
+
     /**
      * Send any Java {@link java.lang.Throwable} to the Honeybadger error
      * reporting interface.
@@ -133,6 +141,7 @@ public class HoneybadgerReporter implements NoticeReporter {
      * @param error error to report
      * @param request Object to parse for request properties
      * @param message message to report instead of message associated with exception
+     * @param fingerprint custom fingerprint (used to group errors)
      * @param tags tag values (duplicates will be removed)
      * @return UUID of error created, if there was a problem or ignored null
      */
@@ -140,7 +149,8 @@ public class HoneybadgerReporter implements NoticeReporter {
     public NoticeReportResult reportError(final Throwable error,
                                           final Object request,
                                           final String message,
-                                          final Iterable<String> tags) {
+                                          final Iterable<String> tags,
+                                          final String fingerprint) {
         if (error == null) {
             return null;
         }
@@ -148,7 +158,7 @@ public class HoneybadgerReporter implements NoticeReporter {
         final Set<String> tagsSet = aggregateTags(tags);
 
         if (request == null) {
-            return submitError(error, null, message, tagsSet);
+            return submitError(error, null, message, tagsSet, fingerprint);
         }
 
         final io.honeybadger.reporter.dto.Request requestDetails;
@@ -174,7 +184,7 @@ public class HoneybadgerReporter implements NoticeReporter {
             requestDetails = null;
         }
 
-        return submitError(error, requestDetails, message, tagsSet);
+        return submitError(error, requestDetails, message, tagsSet, fingerprint);
     }
 
     @Override
@@ -242,7 +252,8 @@ public class HoneybadgerReporter implements NoticeReporter {
     protected NoticeReportResult submitError(final Throwable error,
                                              final io.honeybadger.reporter.dto.Request request,
                                              final String message,
-                                             final Set<String> tags) {
+                                             final Set<String> tags,
+                                             final String fingerprint) {
         final String errorClassName = error.getClass().getName();
         if (errorClassName != null &&
                 getConfig().getExcludedClasses().contains(errorClassName)) {
@@ -260,10 +271,10 @@ public class HoneybadgerReporter implements NoticeReporter {
             }
 
             NoticeDetails noticeDetails = new NoticeDetails(
-                    getConfig(), error, tags, reportedMessage);
+                    getConfig(), error, tags, reportedMessage, fingerprint);
             notice.setRequest(request).setError(noticeDetails);
         } else {
-            NoticeDetails noticeDetails = new NoticeDetails(getConfig(), error, tags);
+            NoticeDetails noticeDetails = new NoticeDetails(getConfig(), error, tags, null, fingerprint);
             notice.setError(noticeDetails);
         }
 
