@@ -1,0 +1,96 @@
+name: Java Deploy
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: Set new version!
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        token: ${{ secrets.JAVA_PUBLISH_PAT }}
+        fetch-depth: 0
+        ref: master
+
+      - name: Git Config
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 12
+          distribution: 'zulu'
+
+      - name: Generate settings.xml for Maven Builds
+        uses: whelk-io/maven-settings-xml-action@v21
+        with:
+          output_file: .m2/settings.xml
+          active_profiles: >
+            [
+              "allow-snapshots"
+            ]
+          servers: >
+            [
+              {
+                "id": "ossrh",
+                "username": "${{ secrets.SONATYPE_USERNAME }}",
+                "password": "${{ secrets.SONATYPE_PASSWORD }}",
+              }
+            ]
+          repositories: >
+            [
+              {
+                "id": "snapshots-repo",
+                "url": "https://oss.sonatype.org/content/repositories/snapshots",
+                "releases": {
+                  "enabled": "false",
+                },
+                "snapshots": {
+                  "enabled": "true",
+                }
+              }
+            ]
+          profiles: >
+            [
+              {
+                "id": "allow-snapshots",
+              },              
+              {
+                "id": "gpg",
+                "properties": {
+                  "gpg.executable": "gpg",
+                  "gpg.keyname": "${{ secrets.GPG_KEYNAME }}"
+                  "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}"
+                  "gpg.secretKeyring": "${{ secrets.GPG_SECRET_KEYRING }}"
+                }
+              }
+            ]
+
+      - name: print settings.xml
+        run: cat ~/.m2/settings.xml
+
+#      - name: Verify build
+#        run: mvn clean verify -Prelease
+#
+#      - name: Clean slate
+#        run: mvn clean
+#
+#      - name: Prepare release
+#        run: mvn release:clean release:prepare
+#
+#      - name: Push version on git
+#        run: |
+#          git commit -am "Release ${{ inputs.version }}"
+#          git tag v${{ inputs.version }}
+#          git push origin master --tags
+
+
+
