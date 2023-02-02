@@ -37,6 +37,7 @@ jobs:
             [
               "allow-snapshots"
             ]
+          servers: '[{ "id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_PASSWORD }}" }]'
 
       - name: print settings.xml
         run: cat ~/.m2/settings.xml
