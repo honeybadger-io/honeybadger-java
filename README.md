@@ -117,7 +117,7 @@ In your web.xml file:
         <filter-class>io.honeybadger.reporter.servlet.HoneybadgerFilter</filter-class>
         <init-param>
             <param-name>honeybadger.api_key</param-name>
-            <param-value>API KEY GOES HERE</param-value>
+            <param-value>{{PROJECT_API_KEY}}</param-value>
         </init-param>
         <init-param>
             <param-name>honeybadger.excluded_sys_props</param-name>
@@ -151,7 +151,7 @@ Honeybadger as an error handler by adding the following lines to your
 conf/application.conf file:
 
 ```
-honeybadger.api_key = <<API KEY>>
+honeybadger.api_key = {{PROJECT_API_KEY|[Your project API key]}}
 # You can add any of the Honeybadger configuration parameters here directly
 # honeybadger.excluded_exception_classes = com.myorg.AnnoyingException 
 play.http.errorHandler = io.honeybadger.reporter.play.HoneybadgerErrorHandler
@@ -174,7 +174,7 @@ parameters as follows:
 
 ```
 ENV = production
-honeybadger.api_key = <<API KEY>>
+honeybadger.api_key = {{PROJECT_API_KEY|[Your project API key]}}
 honeybadger.excluded_exception_classes = com.myorg.AnnoyingException
 ```
 
