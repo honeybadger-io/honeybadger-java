@@ -38,42 +38,6 @@ jobs:
             [
               "allow-snapshots"
             ]
-          servers: >
-            [
-              {
-                "id": "ossrh",
-                "username": "${{ secrets.SONATYPE_USERNAME }}",
-                "password": "${{ secrets.SONATYPE_PASSWORD }}"
-              }
-            ]
-          repositories: >
-            [
-              {
-                "id": "snapshots-repo",
-                "url": "https://oss.sonatype.org/content/repositories/snapshots",
-                "releases": {
-                  "enabled": "false"
-                },
-                "snapshots": {
-                  "enabled": "true"
-                }
-              }
-            ]
-          profiles: >
-            [
-              {
-                "id": "allow-snapshots"
-              },              
-              {
-                "id": "gpg",
-                "properties": {
-                  "gpg.executable": "gpg",
-                  "gpg.keyname": "${{ secrets.GPG_KEYNAME }}"
-                  "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}"
-                  "gpg.secretKeyring": "${{ secrets.GPG_SECRET_KEYRING }}"
-                }
-              }
-            ]
 
       - name: print settings.xml
         run: cat ~/.m2/settings.xml
