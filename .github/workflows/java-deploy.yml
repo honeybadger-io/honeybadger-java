@@ -58,6 +58,21 @@ jobs:
                 }
               }
             ]
+          profiles: >
+            [
+              {
+                "id": "allow-snapshots"
+              },              
+              {
+                "id": "gpg",
+                "properties": {
+                  "gpg.executable": "gpg",
+                  "gpg.keyname": "${{ secrets.GPG_KEYNAME }}"
+                  "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}"
+                  "gpg.secretKeyring": "${{ secrets.GPG_SECRET_KEYRING }}"
+                }
+              }
+            ]
 
       - name: print settings.xml
         run: cat ~/.m2/settings.xml
