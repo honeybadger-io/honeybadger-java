@@ -43,7 +43,7 @@ jobs:
               {
                 "id": "ossrh",
                 "username": "${{ secrets.SONATYPE_USERNAME }}",
-                "password": "${{ secrets.SONATYPE_PASSWORD }}",
+                "password": "${{ secrets.SONATYPE_PASSWORD }}"
               }
             ]
           repositories: >
@@ -52,17 +52,17 @@ jobs:
                 "id": "snapshots-repo",
                 "url": "https://oss.sonatype.org/content/repositories/snapshots",
                 "releases": {
-                  "enabled": "false",
+                  "enabled": "false"
                 },
                 "snapshots": {
-                  "enabled": "true",
+                  "enabled": "true"
                 }
               }
             ]
           profiles: >
             [
               {
-                "id": "allow-snapshots",
+                "id": "allow-snapshots"
               },              
               {
                 "id": "gpg",
