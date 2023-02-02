@@ -14,9 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        token: ${{ secrets.JAVA_PUBLISH_PAT }}
-        fetch-depth: 0
-        ref: master
+        with:
+          token: ${{ secrets.JAVA_PUBLISH_PAT }}
+          fetch-depth: 0
+          ref: main
 
       - name: Git Config
         run: |
