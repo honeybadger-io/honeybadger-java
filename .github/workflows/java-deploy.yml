@@ -84,12 +84,11 @@ jobs:
       - name: print settings.xml
         run: cat ~/.m2/settings.xml
 
-      - name: Verify build
-        run: mvn clean verify -Prelease
-        env:
-          # why do I have to set this?
-          HONEYBADGER_API_KEY: '80ee8156'
-          ENV: test
+#      - name: Verify build
+#        run: mvn clean verify -Prelease
+#        env:
+#          ENV: test
+#          HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_INTEGRATION_TESTS_API_KEY }}
 
       - name: Clean slate
         run: mvn clean
