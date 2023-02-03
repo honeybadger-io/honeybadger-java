@@ -29,6 +29,11 @@ jobs:
         with:
           java-version: 12
           distribution: 'zulu'
+          server-id: 'ossrh'
+          server-username: SONATYPE_USERNAME
+          server-password: SONATYPE_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_KEYNAME }}
+          gpg-passphrase: GPG_PASSPHRASE
 
       - name: Generate settings.xml for Maven Builds
         uses: whelk-io/maven-settings-xml-action@v21
@@ -41,8 +46,8 @@ jobs:
             [
               {
                 "id": "ossrh",
-                "username": "${{ secrets.SONATYPE_USERNAME }}",
-                "password": "${{ secrets.SONATYPE_PASSWORD }}"
+                "username": "${env.SONATYPE_USERNAME}",
+                "password": "${env.SONATYPE_PASSWORD}"
               }
             ]
           repositories: >
@@ -68,7 +73,7 @@ jobs:
                 "properties": {
                   "gpg.executable": "gpg",
                   "gpg.keyname": "${{ secrets.GPG_KEYNAME }}",
-                  "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}",
+                  "gpg.passphrase": "${env.GPG_PASSPHRASE}",
                   "gpg.secretKeyring": "$HOME/.gnupg/secring.gpg"
                 }
               }
