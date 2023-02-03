@@ -51,8 +51,8 @@ jobs:
             [
               {
                 "id": "ossrh",
-                "username": "${env.SONATYPE_USERNAME}",
-                "password": "${env.SONATYPE_PASSWORD}"
+                "username": "${{ secrets.SONATYPE_USERNAME }}",
+                "password": "${{ secrets.SONATYPE_PASSWORD }}"
               }
             ]
           repositories: >
@@ -77,8 +77,8 @@ jobs:
                 "id": "gpg",
                 "properties": {
                   "gpg.executable": "gpg",
-                  "gpg.keyname": "${env.GPG_KEYNAME}",
-                  "gpg.passphrase": "${env.GPG_PASSPHRASE}",
+                  "gpg.keyname": "${{ secrets.GPG_KEYNAME }}",
+                  "gpg.passphrase": "$ {{ secrets.GPG_PASSPHRASE }}",
                   "gpg.secretKeyring": "$HOME/.gnupg/secring.gpg"
                 }
               }
