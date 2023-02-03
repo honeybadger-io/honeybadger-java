@@ -32,7 +32,7 @@ jobs:
           server-id: 'ossrh'
           server-username: SONATYPE_USERNAME
           server-password: SONATYPE_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_KEYNAME }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
       - name: Generate settings.xml for Maven Builds
