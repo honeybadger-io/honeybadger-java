@@ -44,7 +44,7 @@ jobs:
         with:
           active_profiles: >
             [
-              "allow-snapshots"
+              "gpg"
             ]
           servers: >
             [
