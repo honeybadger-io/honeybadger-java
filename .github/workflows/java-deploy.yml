@@ -93,14 +93,11 @@ jobs:
           HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_INTEGRATION_TESTS_API_KEY }}
           HONEYBADGER_READ_API_KEY: 1b331858d937b5ba8f4c07c1f39c0127903980c8e013367e15a40fcee2fcb74e
 
-      - name: Check git status
-        run: git status
-
-#      - name: Push version on git
-#        run: |
-#          git commit -am "Release ${{ inputs.version }}"
-#          git tag v${{ inputs.version }}
-#          git push origin master --tags
+#      - name: Git push
+#        run: git push --follow-tags
+#
+#      - name: Publish release
+#        run: mvn release:perform
 
 
 
