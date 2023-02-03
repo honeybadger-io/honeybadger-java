@@ -77,18 +77,15 @@ jobs:
       - name: print settings.xml
         run: cat ~/.m2/settings.xml
 
-      - name: print hello
-        run: echo hello
+      - name: Verify build
+        run: mvn clean verify -Prelease
 
-#      - name: Verify build
-#        run: mvn clean verify -Prelease
-#
-#      - name: Clean slate
-#        run: mvn clean
-#
-#      - name: Prepare release
-#        run: mvn release:clean release:prepare
-#
+      - name: Clean slate
+        run: mvn clean
+
+      - name: Prepare release
+        run: mvn release:clean release:prepare
+
 #      - name: Push version on git
 #        run: |
 #          git commit -am "Release ${{ inputs.version }}"
