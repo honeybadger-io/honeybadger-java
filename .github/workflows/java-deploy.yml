@@ -67,8 +67,8 @@ jobs:
                 "id": "gpg",
                 "properties": {
                   "gpg.executable": "gpg",
-                  "gpg.keyname": "${{ secrets.GPG_KEYNAME }}"
-                  "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}"
+                  "gpg.keyname": "${{ secrets.GPG_KEYNAME }}",
+                  "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}",
                   "gpg.secretKeyring": "$HOME/.gnupg/secring.gpg"
                 }
               }
