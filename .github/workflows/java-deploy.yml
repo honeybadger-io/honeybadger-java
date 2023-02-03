@@ -12,6 +12,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -72,7 +77,7 @@ jobs:
                 "id": "gpg",
                 "properties": {
                   "gpg.executable": "gpg",
-                  "gpg.keyname": "${{ secrets.GPG_KEYNAME }}",
+                  "gpg.keyname": "${env.GPG_KEYNAME}",
                   "gpg.passphrase": "${env.GPG_PASSPHRASE}",
                   "gpg.secretKeyring": "$HOME/.gnupg/secring.gpg"
                 }
