@@ -15,7 +15,6 @@ jobs:
     env:
       SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
       SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-      GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
     steps:
       - uses: actions/checkout@v3
@@ -77,9 +76,7 @@ jobs:
                 "id": "gpg",
                 "properties": {
                   "gpg.executable": "gpg",
-                  "gpg.keyname": "${{ secrets.GPG_KEYNAME }}",
-                  "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}",
-                  "gpg.secretKeyring": "$HOME/.gnupg/secring.gpg"
+                  "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}"
                 }
               }
             ]
