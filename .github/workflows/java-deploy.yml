@@ -88,13 +88,17 @@ jobs:
         run: mvn clean verify -Prelease
         env:
           # why do I have to set this?
-          HONEYBADGER_API_KEY: 'ci-deploy'
+          HONEYBADGER_API_KEY: '80ee8156'
+          ENV: test
 
       - name: Clean slate
         run: mvn clean
 
       - name: Prepare release
         run: mvn release:clean release:prepare
+
+      - name: Check git status
+        run: git status
 
 #      - name: Push version on git
 #        run: |
