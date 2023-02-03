@@ -84,17 +84,14 @@ jobs:
       - name: print settings.xml
         run: cat ~/.m2/settings.xml
 
-#      - name: Verify build
-#        run: mvn clean verify -Prelease
-#        env:
-#          ENV: test
-#          HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_INTEGRATION_TESTS_API_KEY }}
-
       - name: Clean slate
         run: mvn clean
 
       - name: Prepare release
         run: mvn release:clean release:prepare
+        env:
+          HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_INTEGRATION_TESTS_API_KEY }}
+          HONEYBADGER_READ_API_KEY: 1b331858d937b5ba8f4c07c1f39c0127903980c8e013367e15a40fcee2fcb74e
 
       - name: Check git status
         run: git status
