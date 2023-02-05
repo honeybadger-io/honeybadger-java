@@ -1,7 +1,6 @@
 name: Java Deploy
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       version:
