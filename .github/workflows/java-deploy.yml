@@ -10,6 +10,9 @@ jobs:
       SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
       SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
       GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      # for the tests
+      HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_INTEGRATION_TESTS_API_KEY }}
+      HONEYBADGER_READ_API_KEY: 1b331858d937b5ba8f4c07c1f39c0127903980c8e013367e15a40fcee2fcb74e
     steps:
       - uses: actions/checkout@v3
         with:
@@ -83,9 +86,6 @@ jobs:
 
       - name: Prepare release
         run: mvn release:clean release:prepare
-        env:
-          HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_INTEGRATION_TESTS_API_KEY }}
-          HONEYBADGER_READ_API_KEY: 1b331858d937b5ba8f4c07c1f39c0127903980c8e013367e15a40fcee2fcb74e
 
       - name: Git push
         run: git push --follow-tags
