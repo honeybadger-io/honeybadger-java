@@ -4,7 +4,7 @@
 
     <groupId>io.honeybadger</groupId>
     <artifactId>honeybadger-parent</artifactId>
-    <version>2.1.1</version>
+    <version>2.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>honeybadger-java</module>
@@ -51,7 +51,7 @@
         <connection>scm:git:git@github.com:honeybadger-io/honeybadger-java.git</connection>
         <developerConnection>scm:git:git@github.com:honeybadger-io/honeybadger-java.git</developerConnection>
         <url>git@github.com:honeybadger-io/honeybadger-java.git</url>
-        <tag>honeybadger-parent-2.1.1</tag>
+        <tag>HEAD</tag>
     </scm>
     <issueManagement>
         <system>github.com</system>
