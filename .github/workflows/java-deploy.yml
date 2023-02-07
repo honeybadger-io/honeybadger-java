@@ -87,11 +87,11 @@ jobs:
       - name: Prepare release
         run: mvn release:clean release:prepare
 
+      - name: Publish release
+        run: mvn release:perform -DinteractiveMode=false
+
       - name: Git push
         run: git push --follow-tags
-
-      - name: Publish release
-        run: mvn release:perform
 
 
 
