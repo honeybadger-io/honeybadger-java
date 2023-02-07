@@ -2,11 +2,6 @@ name: Java Deploy
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        type: string
-        description: Set new version!
-        required: true
 
 jobs:
   build:
