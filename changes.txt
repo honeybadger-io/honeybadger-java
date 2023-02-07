@@ -44,3 +44,4 @@
        - We now require Java 8.
        - System properties are now sorted.
        - API for manually building request objects improved.
+2.1.1  - Added support for custom fingerprint.
