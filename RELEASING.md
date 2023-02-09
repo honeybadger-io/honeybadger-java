@@ -1,11 +1,41 @@
 ### Releasing
 
+### Prerequisites
+
 In order to release to [Maven central](https://search.maven.org/), you will need [an account](https://issues.sonatype.org) with [Sonatype OSSRH](http://central.sonatype.org/pages/ossrh-guide.html).
 If you do not already have an account, you can click the signup link from the login screen
-to begin the process of registering for an account.  After signing up, you will need to add
-your sonatype credentials to your your maven settings file.  By default this settings file is
-located at `$HOME/.m2/settings.xml`.  In addition to sonatype credentials, you will
-also need to add a PGP key (which can be [generated with gpg](https://help.github.com/articles/generating-a-new-gpg-key/)), [gpg signing](https://maven.apache.org/plugins/maven-gpg-plugin/sign-mojo.html) key configuration and [upload your key](http://central.sonatype.org/pages/working-with-pgp-signatures.html#distributing-your-public-key) to a public keyserver.
+to begin the process of registering for an account:
+- Open a ticket (similar to [this](https://issues.sonatype.org/browse/OSSRH-88484)) on [issues.sonatype.org](https://issues.sonatype.org) and request permissions to verify and promote builds on [oss.sonatype.org](https://oss.sonatype.org) for _io.honeybadger_.
+- An existing deployer of the honeybadger packages will probably have to approve you by commenting on the ticket, so reach out to them!
+
+### Semi-Automated Releases
+
+The easiest (and recommended) way to make a release is to run the ["Java Deploy" Github Workflow](./.github/workflows/java-deploy.yml).
+This workflow is simply executing the steps outlined below in the [Manual Releases](#manual-releases) section.
+
+1. Navigate to the [workflow page](https://github.com/honeybadger-io/honeybadger-java/actions/workflows/java-deploy.yml)
+2. Click on `Run workflow`
+3. Set the release version (i.e. `3.2.5`)
+4. Initiate the workflow
+5. Wait for the workflow to complete
+6. Log into the [Sonatype OSSHR Next](https://oss.sonatype.org) web interface
+   to [verify and promote](http://central.sonatype.org/pages/releasing-the-deployment.html)
+   the build:
+    - Click on `Staging Repositories`
+    - Click on the version that was just uploaded
+    - Inspect the `Content` tab
+    - Click on `Close`
+    - Now you have to wait a while, until the `Release` button becomes available
+    - Click `Release`
+7. That's it! Congrats!
+
+**Note**: The workflow can **only** be executed by users with _write_ permissions (i.e. Collaborators).
+
+### Manual Releases
+
+You will need to add your sonatype credentials to your your maven settings file.
+By default this settings file is located at `$HOME/.m2/settings.xml`.
+In addition to sonatype credentials, you will also need to add a PGP key (which can be [generated with gpg](https://help.github.com/articles/generating-a-new-gpg-key/)), [gpg signing](https://maven.apache.org/plugins/maven-gpg-plugin/sign-mojo.html) key configuration and [upload your key](http://central.sonatype.org/pages/working-with-pgp-signatures.html#distributing-your-public-key) to a public keyserver.
 
 For the security conscious, a [guide to encrypting credentials in maven settings files](https://maven.apache.org/guides/mini/guide-encryption.html) exists to
 illustrate how credentials can be protected.

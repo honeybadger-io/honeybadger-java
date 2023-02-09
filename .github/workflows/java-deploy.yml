@@ -5,7 +5,7 @@ on:
     inputs:
       releaseVersion:
         type: string
-        description: Set the release version!
+        description: Set the release version! (i.e. '3.2.5')
         required: true
 
 jobs:
