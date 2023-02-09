@@ -90,7 +90,7 @@ jobs:
         run: mvn clean
 
       - name: Prepare release
-        run: mvn --batch-mode release:clean release:prepare -DreleaseVersion=${{ inputs.releaseVersion }}
+        run: mvn --batch-mode release:clean release:prepare -DreleaseVersion=${{ inputs.releaseVersion }} -DautoVersionSubmodules=true
 
       - name: Publish release
         run: mvn release:perform -DinteractiveMode=false
