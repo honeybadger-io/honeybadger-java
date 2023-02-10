@@ -45,4 +45,5 @@
        - System properties are now sorted.
        - API for manually building request objects improved.
 2.1.1  - Added support for custom fingerprint.
-2.1.2  - Automated releases with Github Actions
+2.1.2  - Automated releases with Github Actions.
+       - Fixed bug reported message is ignored.
