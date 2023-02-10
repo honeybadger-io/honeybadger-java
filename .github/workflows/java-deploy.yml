@@ -1,0 +1,102 @@
+name: Java Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseVersion:
+        type: string
+        description: Set the release version! (i.e. '3.2.5')
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      # for the tests
+      HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_INTEGRATION_TESTS_API_KEY }}
+      HONEYBADGER_READ_API_KEY: 1b331858d937b5ba8f4c07c1f39c0127903980c8e013367e15a40fcee2fcb74e
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.JAVA_PUBLISH_PAT }}
+          fetch-depth: 0
+          ref: main
+
+      - name: Git Config
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 8
+          distribution: 'zulu'
+          server-id: 'ossrh'
+          server-username: SONATYPE_USERNAME
+          server-password: SONATYPE_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Generate settings.xml for Maven Builds
+        uses: whelk-io/maven-settings-xml-action@v21
+        with:
+          active_profiles: >
+            [
+              "gpg"
+            ]
+          servers: >
+            [
+              {
+                "id": "ossrh",
+                "username": "${{ secrets.SONATYPE_USERNAME }}",
+                "password": "${{ secrets.SONATYPE_PASSWORD }}"
+              }
+            ]
+          repositories: >
+            [
+              {
+                "id": "snapshots-repo",
+                "url": "https://oss.sonatype.org/content/repositories/snapshots",
+                "releases": {
+                  "enabled": "false"
+                },
+                "snapshots": {
+                  "enabled": "true"
+                }
+              }
+            ]
+          profiles: >
+            [
+              {
+                "id": "allow-snapshots"
+              },              
+              {
+                "id": "gpg",
+                "properties": {
+                  "gpg.executable": "gpg",
+                  "gpg.passphrase": "${{ secrets.GPG_PASSPHRASE }}"
+                }
+              }
+            ]
+
+      - name: print settings.xml
+        run: cat ~/.m2/settings.xml
+
+      - name: Clean slate
+        run: mvn clean
+
+      - name: Prepare release
+        run: mvn --batch-mode release:clean release:prepare -DreleaseVersion=${{ inputs.releaseVersion }} -DautoVersionSubmodules=true
+
+      - name: Publish release
+        run: mvn release:perform -DinteractiveMode=false
+
+      - name: Git push
+        run: git push --follow-tags
+
+
+
