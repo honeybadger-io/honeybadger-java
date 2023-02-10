@@ -262,20 +262,16 @@ public class HoneybadgerReporter implements NoticeReporter {
 
         final Notice notice = new Notice(getConfig());
 
-        if (request != null) {
-            final String reportedMessage;
-            if (message != null && !message.isEmpty()) {
-                reportedMessage = message;
-            } else {
-                reportedMessage = parseMessage(error);
-            }
-
-            NoticeDetails noticeDetails = new NoticeDetails(
-                    getConfig(), error, tags, reportedMessage, fingerprint);
-            notice.setRequest(request).setError(noticeDetails);
+        final String reportedMessage;
+        if (message != null && !message.isEmpty()) {
+            reportedMessage = message;
         } else {
-            NoticeDetails noticeDetails = new NoticeDetails(getConfig(), error, tags, null, fingerprint);
-            notice.setError(noticeDetails);
+            reportedMessage = parseMessage(error);
+        }
+        NoticeDetails noticeDetails = new NoticeDetails(getConfig(), error, tags, reportedMessage, fingerprint);
+        notice.setError(noticeDetails);
+        if (request != null) {
+            notice.setRequest(request);
         }
 
         /* We may need to retry sending the JSON, so we temporarily keep it as a string.
