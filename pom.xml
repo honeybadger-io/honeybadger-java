@@ -94,7 +94,7 @@
         <dependency.jackson.version>2.17.0</dependency.jackson.version>
         <dependency.fluent-hc.version>4.5.14</dependency.fluent-hc.version>
         <dependency.jcabi-manifests.version>2.1.0</dependency.jcabi-manifests.version>
-        <dependency.mustache.version>0.9.10</dependency.mustache.version>
+        <dependency.mustache.version>0.9.12</dependency.mustache.version>
         <!-- Test Dependency Versions -->
         <dependency.junit.version>4.13.2</dependency.junit.version>
         <dependency.guava.version>33.1.0-jre</dependency.guava.version>
