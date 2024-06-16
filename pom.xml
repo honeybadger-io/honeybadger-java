@@ -128,7 +128,7 @@
         <!-- Maven plugin dependency versions -->
         <maven-error-prone-core.version>2.9.0</maven-error-prone-core.version>
         <maven-directory-maven-plugin.version>0.3.1</maven-directory-maven-plugin.version>
-        <maven-build-helper-maven-plugin.version>3.5.0</maven-build-helper-maven-plugin.version>
+        <maven-build-helper-maven-plugin.version>3.6.0</maven-build-helper-maven-plugin.version>
         <maven-maven-resources-plugin.version>3.0.2</maven-maven-resources-plugin.version>
     </properties>
 
