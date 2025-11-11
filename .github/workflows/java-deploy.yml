@@ -19,9 +19,16 @@ jobs:
       HONEYBADGER_API_KEY: ${{ secrets.HONEYBADGER_INTEGRATION_TESTS_API_KEY }}
       HONEYBADGER_READ_API_KEY: 1b331858d937b5ba8f4c07c1f39c0127903980c8e013367e15a40fcee2fcb74e
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/create-github-app-token@v2
+        id: generate-token
         with:
-          token: ${{ secrets.JAVA_PUBLISH_PAT }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Git Checkout
+        uses: actions/checkout@v5
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
           fetch-depth: 0
           ref: main
 
