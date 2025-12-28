@@ -85,7 +85,7 @@
         <javac.version>9+181-r4173-1</javac.version>
 
         <!-- Dependency versions -->
-        <dependency.apache-commons.version>3.14.0</dependency.apache-commons.version>
+        <dependency.apache-commons.version>3.17.0</dependency.apache-commons.version>
         <dependency.checkstyle.version>10.17.0</dependency.checkstyle.version>
         <dependency.slfj.version>2.0.13</dependency.slfj.version>
         <dependency.servlet-api.version>4.0.1</dependency.servlet-api.version>
