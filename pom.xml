@@ -112,7 +112,7 @@
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <maven-extra-enforcer-rules.version>1.8.0</maven-extra-enforcer-rules.version>
         <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
-        <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.2.5</maven-gpg-plugin.version>
         <maven-install-plugin.version>3.1.2</maven-install-plugin.version>
         <maven-jar-plugin.version>3.4.1</maven-jar-plugin.version>
         <maven-jarsigner-plugin.version>3.0.0</maven-jarsigner-plugin.version>
