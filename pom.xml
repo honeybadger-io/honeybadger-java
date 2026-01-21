@@ -124,7 +124,7 @@
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
         <maven-cargo-plugin.version>1.6.7</maven-cargo-plugin.version>
-        <maven-project-info-reports-plugin.version>3.5.0</maven-project-info-reports-plugin.version>
+        <maven-project-info-reports-plugin.version>3.7.0</maven-project-info-reports-plugin.version>
         <!-- Maven plugin dependency versions -->
         <maven-error-prone-core.version>2.9.0</maven-error-prone-core.version>
         <maven-directory-maven-plugin.version>0.3.1</maven-directory-maven-plugin.version>
